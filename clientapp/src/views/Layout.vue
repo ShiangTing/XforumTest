@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import Navbar from "./Navbar";
+import Navbar from "../components/common/Navbar";
 export default {
   components: { Navbar },
   data() {
@@ -15,4 +15,6 @@ export default {
 };
 </script>
 
-<style></style>
+<style lang="scss">
+@import "../assets/scss/style.scss";
+</style>
