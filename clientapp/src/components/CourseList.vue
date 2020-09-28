@@ -13,9 +13,9 @@
 </template>
 
 <script>
-import img1 from "../img/asset30.png";
-import img2 from "../img/asset31.png";
-import img3 from "../img/asset32.png";
+import img1 from "../assets/img/asset30.png";
+import img2 from "../assets/img/asset31.png";
+import img3 from "../assets/img/asset32.png";
 
 export default {
   data() {
