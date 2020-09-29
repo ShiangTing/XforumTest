@@ -7,3 +7,17 @@
   height: 50px;
   z-index: -1;
 }
+
+@media (min-width: 768px) {
+  .header {
+    nav {
+      div {
+        .navbar-brand {
+          font-size: 30px;
+        }
+      }
+    }
+  }
+}
+@media (max-width: 767px) {
+}
