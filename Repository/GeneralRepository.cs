@@ -19,7 +19,14 @@ namespace XforumTest.Repository
             get { return context; }
         }
 
-
+        public GeneralRepository(MyDBContext contexts)
+        {
+            if (contexts == null)
+            {
+                throw new ArgumentNullException();
+            }
+            context = contexts;
+        }
 
 
         public void Create(T entity)
