@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace XforumTest.Models
+namespace XforumTest.DataTable
 {
     public partial class Product
     {
         public Product()
         {
-            CartItems = new HashSet<CartItems>();
-            OrderDetails = new HashSet<OrderDetails>();
             ProductTags = new HashSet<ProductTags>();
-            WishList = new HashSet<WishList>();
         }
 
         public Guid ProductId { get; set; }
@@ -28,9 +25,6 @@ namespace XforumTest.Models
         public DateTime PublishedDate { get; set; }
         public string Language { get; set; }
 
-        public virtual ICollection<CartItems> CartItems { get; set; }
-        public virtual ICollection<OrderDetails> OrderDetails { get; set; }
         public virtual ICollection<ProductTags> ProductTags { get; set; }
-        public virtual ICollection<WishList> WishList { get; set; }
     }
 }

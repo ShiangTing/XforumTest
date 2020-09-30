@@ -4,16 +4,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using XforumTest.Context;
+
 using XforumTest.Models;
 using XforumTest.NewFolder;
 
 namespace XforumTest.Repository
 {
-    public class GeneralRepository<T> : IRepository<T> where T :class
+    public class GeneralRepository<T> : IRepository<T> where T : class
     {
-        private static XForomTestDBContext context;
+        private static MyDBContext context;
 
-        protected XForomTestDBContext Context
+        protected MyDBContext Context
         {
             get { return context; }
         }

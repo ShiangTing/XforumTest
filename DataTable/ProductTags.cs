@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace XforumTest.Models
+namespace XforumTest.DataTable
 {
     public partial class ProductTags
     {

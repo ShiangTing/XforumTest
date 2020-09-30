@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace XforumTest.Models
+namespace XforumTest.DataTable
 {
     public partial class AspNetUsers
     {
@@ -10,8 +10,6 @@ namespace XforumTest.Models
             AspNetUserClaims = new HashSet<AspNetUserClaims>();
             AspNetUserLogins = new HashSet<AspNetUserLogins>();
             AspNetUserRoles = new HashSet<AspNetUserRoles>();
-            Order = new HashSet<Order>();
-            WishList = new HashSet<WishList>();
         }
 
         public string Id { get; set; }
@@ -30,7 +28,5 @@ namespace XforumTest.Models
         public virtual ICollection<AspNetUserClaims> AspNetUserClaims { get; set; }
         public virtual ICollection<AspNetUserLogins> AspNetUserLogins { get; set; }
         public virtual ICollection<AspNetUserRoles> AspNetUserRoles { get; set; }
-        public virtual ICollection<Order> Order { get; set; }
-        public virtual ICollection<WishList> WishList { get; set; }
     }
 }
