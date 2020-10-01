@@ -20,8 +20,29 @@ export default new VueRouter({
           path: "",
           name: "home",
           component: () => import("./views/Index.vue"),
+          children: [
+            {
+              path: ":id",
+              component: () => import("./views/Thread.vue"),
+            },
+          ],
         },
       ],
     },
   ],
 });
+
+// {
+//   path: "/courses",
+//   component: Courses,
+//   children: [
+//     {
+//       path: "",
+//       component: CourseList,
+//     },
+//     {
+//       path: ":id",
+//       component: CourseDetail,
+//     },
+//   ],
+// },
