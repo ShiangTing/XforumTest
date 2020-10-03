@@ -15,15 +15,47 @@ export default new VueRouter({
     {
       path: "/",
       component: () => import("./views/Layout.vue"),
+
       children: [
         {
           path: "",
           name: "home",
+
           component: () => import("./views/Index.vue"),
+          meta: {
+            breadcrumb: [
+              {
+                name: "首頁",
+                link: "/",
+              },
+            ],
+          },
           children: [
             {
-              path: ":id",
+              path: ":routeName",
               component: () => import("./views/Thread.vue"),
+              meta: {
+                breadcrumb: [
+                  {
+                    name: "首頁",
+                    link: "/",
+                  },
+                  {
+                    name: "Xforum討論區！！",
+                    // link: `${$route.params.routeName}`,
+                  },
+                ],
+              },
+              // meta: {
+              //   breadcrumb: [
+              //     {
+              //       name: "123",
+              //     },
+              //     // {
+              //     //   name: "關於我",
+              //     // },
+              //   ],
+              // },
             },
           ],
         },
