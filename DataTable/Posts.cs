@@ -13,5 +13,9 @@ namespace XforumTest.DataTable
         public int? LikeNumber { get; set; }
         public int? DisLikeNumber { get; set; }
         public DateTime? CreatedDate { get; set; }
+        public Guid? UserId { get; set; }
+
+        public virtual Forums Forum { get; set; }
+        public virtual ForumMembers User { get; set; }
     }
 }

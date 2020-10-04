@@ -32,14 +32,14 @@ namespace XforumTest.Context
         public virtual DbSet<Tags> Tags { get; set; }
         public virtual DbSet<Titles> Titles { get; set; }
 
-//        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-//        {
-//            if (!optionsBuilder.IsConfigured)
-//            {
-//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-//                optionsBuilder.UseSqlServer("Server=azurewebtest.database.windows.net,1433;Database=MyDB;User=azurewebtest;Password=yphrT8Cn;");
-//            }
-//        }
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
+                optionsBuilder.UseSqlServer("Server=azurewebtest.database.windows.net,1433;Database=MyDB;User=azurewebtest;Password=yphrT8Cn;");
+            }
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -131,7 +131,15 @@ namespace XforumTest.Context
 
                 entity.Property(e => e.Points).HasColumnType("decimal(18, 6)");
 
-                entity.Property(e => e.TitleId).HasMaxLength(50);
+                entity.HasOne(d => d.Role)
+                    .WithMany(p => p.ForumMembers)
+                    .HasForeignKey(d => d.RoleId)
+                    .HasConstraintName("FK_ForumMembers_ForumRoles");
+
+                entity.HasOne(d => d.Title)
+                    .WithMany(p => p.ForumMembers)
+                    .HasForeignKey(d => d.TitleId)
+                    .HasConstraintName("FK_ForumMembers_Titles");
             });
 
             modelBuilder.Entity<ForumRoles>(entity =>
@@ -164,11 +172,18 @@ namespace XforumTest.Context
                     .HasMaxLength(50);
 
                 entity.Property(e => e.Img).HasMaxLength(50);
+
+                entity.HasOne(d => d.Moderator)
+                    .WithMany(p => p.Forums)
+                    .HasForeignKey(d => d.ModeratorId)
+                    .HasConstraintName("FK_Forums_ForumMembers");
             });
 
             modelBuilder.Entity<Posts>(entity =>
             {
-                entity.HasNoKey();
+                entity.HasKey(e => e.PostId);
+
+                entity.Property(e => e.PostId).ValueGeneratedNever();
 
                 entity.Property(e => e.CreatedDate).HasColumnType("datetime");
 
@@ -179,6 +194,16 @@ namespace XforumTest.Context
                     .IsFixedLength();
 
                 entity.Property(e => e.Title).HasMaxLength(50);
+
+                entity.HasOne(d => d.Forum)
+                    .WithMany(p => p.Posts)
+                    .HasForeignKey(d => d.ForumId)
+                    .HasConstraintName("FK_Posts_Forums");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.Posts)
+                    .HasForeignKey(d => d.UserId)
+                    .HasConstraintName("FK_Posts_ForumMembers");
             });
 
             modelBuilder.Entity<Product>(entity =>
@@ -238,6 +263,11 @@ namespace XforumTest.Context
                 entity.Property(e => e.Context).HasMaxLength(50);
 
                 entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+
+                entity.HasOne(d => d.Post)
+                    .WithMany()
+                    .HasForeignKey(d => d.PostId)
+                    .HasConstraintName("FK_ReposiveMessages_Posts");
             });
 
             modelBuilder.Entity<Tags>(entity =>
