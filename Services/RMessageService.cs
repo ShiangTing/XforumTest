@@ -70,12 +70,15 @@ namespace XforumTest.Services
             }
         }
 
-        public  async  Task<List<RMessageDTO>> GetAllbyPostId(Guid postId)
+        public async Task<List<RMessageDTO>> GetAllbyPostId(Guid postId)
         {
             var repository = new GeneralRepository<ReposiveMessages>(context);
+            var memberRepository = new GeneralRepository<ForumMembers>(context);
             var mDto = new RMessageDTO();
 
             var mRepo = from m in repository.GetAll()
+                            //join u in memberRepository.GetAll()
+                            //on m.
                         where m.MessageId == postId
                         select new RMessageDTO
                         {
@@ -87,12 +90,39 @@ namespace XforumTest.Services
                             Context = m.Context,
                         };
 
+
             return await mRepo.ToListAsync();
         }
+
+
+        //public  async  Task<List<RMessageDTO>> GetAllPostbyId(Guid postId)
+        //{
+        //    var repository = new GeneralRepository<ReposiveMessages>(context);
+        //    var memberRepository = new GeneralRepository<ForumMembers>(context);
+        //    var mDto = new RMessageDTO();
+
+        //    var mRepo = from m in repository.GetAll()
+        //                //join u in memberRepository.GetAll()
+        //                //on m.
+        //                where m.MessageId == postId
+        //                select new RMessageDTO
+        //                {
+        //                    MessageId = m.MessageId,
+        //                    LikeNumber = m.LikeNumber,
+        //                    DisLikeNumber = m.DisLikeNumber,
+        //                    PostId = m.PostId,
+        //                    CreatedDate = m.CreatedDate,
+        //                    Context = m.Context,
+        //                };
+
+
+        //    return await mRepo.ToListAsync();
+        //}
 
         public void GetSingle()
         {
             throw new NotImplementedException();
         }
+
     }
 }

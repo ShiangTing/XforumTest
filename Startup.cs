@@ -24,6 +24,17 @@ namespace XforumTest
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            services.AddCors(options =>
+            {
+                // CorsPolicy 是自訂的 Policy 名稱
+                options.AddPolicy("CorsPolicy", policy =>
+                {
+                    policy.WithOrigins("http://localhost:3000")
+                          .AllowAnyHeader()
+                          .AllowAnyMethod()
+                          .AllowCredentials();
+                });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -40,6 +51,7 @@ namespace XforumTest
                 app.UseHsts();
             }
             app.UseHttpsRedirection();
+            app.UseCors("CorsPolicy");
             app.UseStaticFiles();
 
             app.UseRouting();
