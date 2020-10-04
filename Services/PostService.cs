@@ -2,18 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using XforumTest.Context;
-using XforumTest.DataTable;
 using XforumTest.Interface;
-using XforumTest.Repository;
 
 namespace XforumTest.Services
 {
-    public class FourmService : IFourmService
+    public class PostService : IPostService
     {
-        static MyDBContext db = new MyDBContext();
-        GeneralRepository<Forums> forums = new GeneralRepository<Forums>(db);
-
         public void Create()
         {
             throw new NotImplementedException();
@@ -21,7 +15,6 @@ namespace XforumTest.Services
 
         public void Delete()
         {
-            //使用軟刪除 修改狀態
             throw new NotImplementedException();
         }
 
@@ -37,7 +30,22 @@ namespace XforumTest.Services
 
         public void GetAll()
         {
-            forums.GetAll();
+            throw new NotImplementedException();
+        }
+
+        public void GetDislike()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void GetLike()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void GetSingleByFourm()
+        {
+            throw new NotImplementedException();
         }
     }
 }

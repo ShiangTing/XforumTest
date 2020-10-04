@@ -5,16 +5,14 @@ using System.Threading.Tasks;
 
 namespace XforumTest.Interface
 {
-    public interface IFourmService
+    public interface IResponseService
     {
-        //創建論壇
         void Create();
         void Find();
-        void Delete();
-
-        //編輯修改論壇資料
         void Edit();
-       
         void GetAll();
+        void GetSingleByPost();
+        void GetLike();
+        void GetDislike();
     }
 }
