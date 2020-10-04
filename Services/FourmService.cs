@@ -11,16 +11,17 @@ namespace XforumTest.Services
 {
     public class FourmService : IFourmService
     {
+        static MyDBContext db = new MyDBContext();
+        GeneralRepository<Forums> forums = new GeneralRepository<Forums>(db);
 
         public void Create()
         {
-            var contenxt = new MyDBContext();
-            var frepo = new GeneralRepository<Forums>(contenxt);
-
+            throw new NotImplementedException();
         }
 
         public void Delete()
         {
+            //使用軟刪除 修改狀態
             throw new NotImplementedException();
         }
 
@@ -29,19 +30,14 @@ namespace XforumTest.Services
             throw new NotImplementedException();
         }
 
-        public void GetAll()
+        public void Find()
         {
             throw new NotImplementedException();
         }
 
-        public void GetFirst()
+        public  GetAll()
         {
-            throw new NotImplementedException();
-        }
-
-        public void SoftDelete()
-        {
-            throw new NotImplementedException();
+            forums.GetAll();
         }
     }
 }
