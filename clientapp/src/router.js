@@ -13,6 +13,24 @@ export default new VueRouter({
       // },
     },
     {
+      path: "/post",
+      component: () => import("./views/Post.vue"),
+      name: "post",
+      meta: {
+        breadcrumb: [
+          {
+            name: "首頁",
+            link: "/",
+          },
+          {
+            name: "發文區",
+            link: "./views/Post.vue",
+          },
+        ],
+      },
+
+    },
+    {
       path: "/",
       component: () => import("./views/Layout.vue"),
 
@@ -20,7 +38,6 @@ export default new VueRouter({
         {
           path: "",
           name: "home",
-
           component: () => import("./views/Index.vue"),
           meta: {
             breadcrumb: [
@@ -41,8 +58,8 @@ export default new VueRouter({
                     link: "/",
                   },
                   {
-                    name: "Xforum討論區！！",
-                    // link: `${$route.params.routeName}`,
+                    // name: `${VueRouter.$route.name}`,
+                    // link: `${Vue.$route.params.routeName}`,
                   },
                 ],
               },
@@ -61,6 +78,7 @@ export default new VueRouter({
         },
       ],
     },
+
   ],
 });
 

@@ -1,7 +1,7 @@
 <template>
   <div class="main-nav">
     <b-navbar toggleable="lg" type="dark" variant="dark">
-      <router-link class="title mx-5 my-2" to="home">Xforum</router-link>
+      <router-link class="title mx-5 my-2" to="/">Xforum</router-link>
       <!-- <b-navbar-brand href="#">Xforum</b-navbar-brand> -->
 
       <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
@@ -18,6 +18,8 @@
               >Search</b-button
             >
           </b-nav-form>
+          <router-link class="title mx-5 my-2" to="/post">Post</router-link>
+
           <b-nav-item-dropdown class="mx-5 my-2">
             <!-- Using 'button-content' slot -->
             <template v-slot:button-content>

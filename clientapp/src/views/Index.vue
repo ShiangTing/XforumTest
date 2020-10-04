@@ -15,6 +15,9 @@
         <b-col cols="8">
           <div>
             <router-view />
+
+            <!-- 這裡是index區域的貼文 -->
+
             <vue-particles
               color="#dedede"
               :particleOpacity="0.7"
@@ -39,7 +42,7 @@
             <!-- <div v-for="article in articles" :key="article.id"> -->
             <div
               style="border-bottom: 1px solid gray; display: flex"
-              v-for="(article, index) in temp"
+              v-for="(article, index) in titles"
               :key="index"
             >
               <div style="padding: 30px 20px">
@@ -51,9 +54,11 @@
               </div>
             </div>
             <!-- </div> -->
-            <infinite-loading @infinite="infiniteHandler">
-              <!-- <span slot="no-more"> 我們是有底線的 </span> -->
-            </infinite-loading>
+            <infinite-loading
+              v-if="titles.length"
+              spinner="spiral"
+              @infinite="infiniteScroll"
+            ></infinite-loading>
           </div>
         </b-col>
         <b-col> </b-col>
@@ -73,8 +78,8 @@ export default {
   },
   data() {
     return {
+      titles: [],
       page: 1,
-      // list: [],
 
       detective: detectiveImg,
 
@@ -208,65 +213,43 @@ export default {
     };
   },
   methods: {
-    // infiniteHandler($state) {
-    //   setTimeout(() => {
-    //     const temp = [];
-    //     for (
-    //       let i = this.articles.length + 1;
-    //       i <= this.articles.length + 10;
-    //       i++
-    //     ) {
-    //       temp.push(i);
-    //     }
-    //     this.articles = this.articles.concat(temp);
-    //     $state.loaded();
-    //     $state.complete();
-    //   }, 1000);
-    // },
-    infiniteHandler($state) {
-      // axios
-      //   .get(api, {
-      //     params: {
-      //       page: this.page,
-      //     },
-      //   })
-      //   .then(({ data }) => {
-      if (this.articles.length > 10) {
-        $state.complete();
-      } else {
-        setTimeout(() => {
-          const temp = [];
-          for (
-            var i = this.articles.length;
-            i <= this.articles.length + 10;
-            i++
-          ) {
-            temp.push(this.articles[i]);
-          }
-
-          // this.articles.push(temp);
-          $state.loaded();
-        }, 1000);
-      }
+    //  async fetchData() {
+    //       const response = await axios.get(this.url);
+    //       this.titles = response.data;
+    //     },
+    async fetchData() {
+      // const response = await axios.get(this.url);
+      this.titles = this.articles;
     },
+    infiniteScroll($state) {
+      setTimeout(() => {
+        this.page++;
+        if (this.articles.length > 10) {
+          this.articles.forEach((item) => this.titles.push(item));
+          $state.loaded();
+        } else {
+          $state.complete();
+        }
 
-    //   if (this.list.length < this.articles.length) {
-    //     this.page += 1;
-    //     this.list.push(...this.articles);
-    //     $state.loaded();
-    //   } else {
-    //     $state.complete();
-    //   }
-    //   // });
-    // },
+        // axios
+        //   .get(this.url)
+        //   .then((response) => {
+        //     if (response.data.length > 1) {
+        //       response.data.forEach((item) => this.titles.push(item));
+        //       $state.loaded();
+        //     } else {
+        //       $state.complete();
+        //     }
+        //   })
+        //   .catch((err) => {
+        //     console.log(err);
+        //   });
+      }, 500);
+    },
   },
-  computed: {},
-  //   mounted:{
-  // data.articles.forEach(element => element.content.length>20)
-  //   if () {
-
-  //   }
-  // }
+  created() {
+    this.fetchData();
+  },
 };
 </script>
 
