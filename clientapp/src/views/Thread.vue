@@ -1,14 +1,26 @@
 <template>
   <div>
-    <b-card
+    <!-- <b-card
+      style="height: 100px; width: 100%"
       overlay
-      img-src="https://picsum.photos/900/250/?image=3"
+      :img-src="require(`../assets/img/${threadDetail.img}`)"
       img-alt="Card Image"
       text-variant="white"
       :title="$route.params.routeName"
-    >
-      <b-card-text></b-card-text>
-    </b-card>
+    > -->
+
+    <!-- </b-card> -->
+    <b-card-img
+      :src="require(`../assets/img/${threadDetail.img}`)"
+      width="50"
+      height="250"
+    ></b-card-img>
+    <!-- <img
+      :src="`@/assets/img/${threadDetail.img}`"
+      width="50"
+      height="50"
+      alt="logo"
+    /> -->
     <vue-particles
       color="#dedede"
       :particleOpacity="0.7"
@@ -28,6 +40,8 @@
     >
     </vue-particles>
     <p style="border-bottom: 1px solid gray; padding: 10px 0">全部 / 追蹤</p>
+    <h2 style="color: wheat">{{ threadDetail.name }}</h2>
+
     <!-- <div v-for="article in articles" :key="article.id"> -->
     <div
       style="border-bottom: 1px solid gray; display: flex"
@@ -60,6 +74,7 @@ export default {
     return {
       titles: [],
       page: 1,
+      threadDetail: { name: "", img: "" },
       articles: [
         {
           userName: "Amy",
@@ -192,6 +207,12 @@ export default {
   },
   created() {
     this.fetchData();
+    this.$bus.$on("specialEvent", (event) => {
+      // alert(event.event.img);
+      this.threadDetail.name = event.event.name;
+      this.threadDetail.img = event.event.img;
+      // this.threadDetail.routeName = event.routeName;
+    });
   },
   computed: {},
 };

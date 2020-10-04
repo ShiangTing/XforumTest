@@ -14,11 +14,12 @@
               class="mr-sm-2 mx-5"
               placeholder="Search"
             ></b-form-input>
-            <b-button size="sm" class="my-2 my-sm-0" type="submit"
+            <b-button size="sm" class="my-2 ml-5 my-sm-0" type="submit"
               >Search</b-button
             >
           </b-nav-form>
-          <router-link class="title mx-5 my-2" to="/post">Post</router-link>
+          <b-nav-item to="/post" class="mx-5 my-2">Po文!</b-nav-item>
+          <!-- <router-link class="mx-5 my-2" to="/post">Po文!</router-link> -->
 
           <b-nav-item-dropdown class="mx-5 my-2">
             <!-- Using 'button-content' slot -->

@@ -3,7 +3,7 @@
   <div>
     <Navbar />
     <b-row class="">
-      <b-col></b-col>
+      <b-col> </b-col>
       <b-col cols="8">
         <b-form inline class="mt-3">
           <label class="mr-sm-2" for="inline-form-custom-select-pref"
@@ -58,6 +58,7 @@ export default {
   name: "App",
   data() {
     return {
+      message: "我是寫在helloworld.vue的,訊息",
       content: `<p>hello world</p>`,
       editorOption: {},
     };
@@ -76,6 +77,10 @@ export default {
     onEditorChange() {}, // 內容改變事件
     saveHtml: function () {
       alert(this.content);
+    },
+
+    doShowAlert(msg) {
+      this.$bus.$emit("alert:message", msg);
     },
   },
 };

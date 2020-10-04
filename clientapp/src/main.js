@@ -30,6 +30,8 @@ library.add(
   faUserGraduate,
   faGhost
 );
+
+Vue.prototype.$bus = new Vue();
 Vue.use(VueParticles);
 Vue.use(BoostrapVue);
 Vue.use(VueQuillEditor);

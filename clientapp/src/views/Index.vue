@@ -2,16 +2,7 @@
   <div>
     <b-container fluid>
       <b-row class="">
-        <b-col>
-          <b-list-group style="max-width: 250px">
-            <b-list-group-item v-for="(thread, index) in threads" :key="index">
-              <font-awesome-icon :icon="thread.iconName" size="lg" />
-              <router-link :to="`/${thread.routeName}`">{{
-                thread.name
-              }}</router-link>
-            </b-list-group-item>
-          </b-list-group>
-        </b-col>
+        <b-col> <SideBar /></b-col>
         <b-col cols="8">
           <div>
             <router-view />
@@ -50,7 +41,7 @@
                 <span class="pl-4">{{ article.userName }}</span>
                 <h5 class="py-3">{{ article.threadName }}</h5>
                 <h5>{{ article.title }}</h5>
-                <p id="KKKK">{{ article.content }}</p>
+                <p id="article-content">{{ article.content }}</p>
               </div>
             </div>
             <!-- </div> -->
@@ -70,11 +61,13 @@
 <script>
 import detectiveImg from "../assets/img/detective.png";
 import InfiniteLoading from "vue-infinite-loading";
+import SideBar from "../components/Home/Sidbar";
 // import axios from "axios";
 // const api = "http://hn.algolia.com/api/v1/items/:id";
 export default {
   components: {
     InfiniteLoading,
+    SideBar,
   },
   data() {
     return {
@@ -177,39 +170,6 @@ export default {
             "Lorem ipsum dolor sit amet consectetur, adipisicing elit.Minus odit excepturi dicta blanditiis obcaecati dolores assumenda. Fugiat, unde quidem magnam quis, tempore sitmolestiae at esse, perferendis provident excepturi mollitia?",
         },
       ],
-
-      threads: [
-        {
-          iconName: "coffee",
-          // img: img1,
-          name: "心情閒聊區",
-          routeName: "SecretGarden",
-        },
-        {
-          // img: img2,
-          iconName: "angry",
-          name: "新書怒灌區",
-          routeName: "Talk",
-        },
-        {
-          // img: img3,
-          iconName: "ghost",
-          name: "推理懸疑區",
-          routeName: "Detective",
-        },
-        {
-          // img: img3,
-          iconName: "book-dead",
-          name: "奇幻冒險區",
-          routeName: "Adventure.",
-        },
-        {
-          // img: img3,
-          iconName: "user-graduate",
-          name: "人物傳記區",
-          routeName: "Biography",
-        },
-      ],
     };
   },
   methods: {
@@ -254,7 +214,7 @@ export default {
 </script>
 
 <style lang="scss">
-#KKKK {
+#article-content {
   width: 20%;
   overflow: hidden;
   text-overflow: ellipsis;
