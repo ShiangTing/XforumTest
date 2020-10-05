@@ -35,9 +35,14 @@ namespace XforumTest.Services
             throw new NotImplementedException();
         }
 
-        public  GetAll()
+        public void GetAll()
         {
-            forums.GetAll();
+            throw new NotImplementedException();
         }
+
+        //public  GetAll()
+        //{
+        //    forums.GetAll();
+        //}
     }
 }

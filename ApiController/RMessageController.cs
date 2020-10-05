@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using XforumTest.DataTable;
 using XforumTest.DTO;
+using XforumTest.Interface;
 using XforumTest.Services;
 
 namespace XforumTest.ApiController
@@ -57,6 +58,19 @@ namespace XforumTest.ApiController
         }
 
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="Dto"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public IActionResult PostLikeAndDisLike(MessageLikeDto Dto)
+        {
+            var service = new LikeService2();
+            service.PostLikeAndDisLike(Dto);
+
+            return Ok("delete msg");
+        }
     //}
 }
 }

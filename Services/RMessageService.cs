@@ -77,8 +77,8 @@ namespace XforumTest.Services
             var mDto = new RMessageDTO();
 
             var mRepo = from m in repository.GetAll()
-                            //join u in memberRepository.GetAll()
-                            //on m.
+                        join u in memberRepository.GetAll()
+                        on m.UserId equals u.UserId
                         where m.MessageId == postId
                         select new RMessageDTO
                         {
@@ -88,6 +88,7 @@ namespace XforumTest.Services
                             PostId = m.PostId,
                             CreatedDate = m.CreatedDate,
                             Context = m.Context,
+                            UserId = (Guid)m.UserId
                         };
 
 
