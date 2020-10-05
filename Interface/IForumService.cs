@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using XforumTest.DTO;
+using XforumTest.NewFolder;
 
 namespace XforumTest.Interface
 {
-    public interface IFourmService
+    public interface IForumService
     {
         //創建論壇
         void Create();
@@ -13,8 +15,8 @@ namespace XforumTest.Interface
         void Delete();
 
         //編輯修改論壇資料
-        void Edit();
+        IQueryable Edit(string forumid);
        
-        void GetAll();
+        IQueryable<ForumGetAllDTO> GetAll();
     }
 }
