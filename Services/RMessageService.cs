@@ -88,7 +88,7 @@ namespace XforumTest.Services
             var repository = new GeneralRepository<ReposiveMessages>(context);
             //var memberRepository = new GeneralRepository<ForumMembers>(context);
             //var mDto = new RMessageDTO();
-
+            //if (repository.getall().getfirst(x=>x.messageId==postid)!=null)
             var mRepo = from m in repository.GetAll()
                         where m.MessageId == postId
                         select new RMessageDTO
