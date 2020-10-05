@@ -5,25 +5,27 @@
     <b-row class="">
       <b-col> </b-col>
       <b-col cols="8">
+        <!-- <h1>selected: {{ select }}</h1> -->
+        <span>會員名稱:</span>
         <b-form inline class="mt-3">
           <label class="mr-sm-2" for="inline-form-custom-select-pref"
             >選擇看板:</label
           >
-          <b-form-select
+
+          <select class="selectpicker" ref="select" v-model="select">
+            <option v-for="(l, idx) in listData" :key="idx">{{ l }}</option>
+          </select>
+          <!-- <b-form-select
+            v-on:change="getSelectedItem"
             id="inline-form-custom-select-pref"
             class="mb-2 mr-sm-2 mb-sm-0"
-            :options="[
-              { text: '選擇看板名稱', value: null },
-              '心情抒發區',
-              '新書怒灌區',
-              '懸疑哈哈區',
-            ]"
-            :value="null"
-          ></b-form-select>
+            :options="options"
+          ></b-form-select> -->
         </b-form>
         <b-form inline class="mt-3">
           <label class="mr-3">標題:</label>
           <b-input
+            v-model="titleContent"
             id="inline-form-input-name"
             class="mb-2 mr-sm-2 mb-sm-0"
             placeholder="請輸入標題名稱"
@@ -52,12 +54,29 @@
 
 <script>
 import Navbar from "../components/common/Navbar";
-
+import axios from "axios";
 export default {
   components: { Navbar },
   name: "App",
   data() {
     return {
+      replyObj: {
+        threadName: "",
+        postTitle: "",
+        postContent: "",
+        postDate: "",
+        postMember: "",
+      },
+      listData: [
+        "心情閒聊區",
+        "新書怒灌區",
+        "推理懸疑區",
+        "奇幻冒險區",
+        "人物傳記區",
+        "程式討論區",
+      ],
+      select: "心情閒聊區",
+      titleContent: "",
       message: "我是寫在helloworld.vue的,訊息",
       content: `<p>hello world</p>`,
       editorOption: {},
@@ -69,6 +88,12 @@ export default {
     },
   },
   methods: {
+    updated() {
+      this.$refs.select.selectpicker("refresh");
+    },
+    getSelectedItem() {
+      console.log(this.selected);
+    },
     // onEditorReady(editor) {
     //   // 準備編輯器
     // },
@@ -76,11 +101,22 @@ export default {
     onEditorFocus() {}, // 獲得焦點事件
     onEditorChange() {}, // 內容改變事件
     saveHtml: function () {
-      alert(this.content);
-    },
-
-    doShowAlert(msg) {
-      this.$bus.$emit("alert:message", msg);
+      this.replyObj.threadName = this.select;
+      this.replyObj.postTitle = this.titleContent;
+      this.replyObj.postContent = this.content;
+      this.replyObj.postDate = new Date();
+      this.replyObj.postMember = "訪客1";
+      let json = JSON.stringify(this.replyObj);
+      console.log(json);
+      axios
+        .post(json)
+        .then((response) => {
+          console.log(response);
+          console.log("成功");
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
   },
 };
@@ -94,5 +130,13 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+
+.ql-container {
+  overflow-y: auto;
+  height: 15rem !important;
+}
+.ql-editor {
+  min-height: 25rem;
 }
 </style>

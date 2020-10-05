@@ -10,11 +10,18 @@
     > -->
 
     <!-- </b-card> -->
-    <b-card-img
-      :src="require(`../assets/img/${threadDetail.img}`)"
-      width="50"
-      height="250"
-    ></b-card-img>
+    <div v-if="threadDetail.img && threadDetail.name">
+      <b-card-img
+        :src="require(`@/assets/img/${threadDetail.img}`)"
+        width="50"
+        height="350"
+      ></b-card-img>
+      <h2 style="color: wheat">{{ threadDetail.name }}</h2>
+    </div>
+    <!-- <div v-else>
+   
+    </div> -->
+
     <!-- <img
       :src="`@/assets/img/${threadDetail.img}`"
       width="50"
@@ -40,7 +47,6 @@
     >
     </vue-particles>
     <p style="border-bottom: 1px solid gray; padding: 10px 0">全部 / 追蹤</p>
-    <h2 style="color: wheat">{{ threadDetail.name }}</h2>
 
     <!-- <div v-for="article in articles" :key="article.id"> -->
     <div
@@ -205,14 +211,18 @@ export default {
       }, 500);
     },
   },
+
   created() {
     this.fetchData();
     this.$bus.$on("specialEvent", (event) => {
       // alert(event.event.img);
-      this.threadDetail.name = event.event.name;
-      this.threadDetail.img = event.event.img;
+      this.threadDetail.name = event.name;
+      this.threadDetail.img = event.img;
       // this.threadDetail.routeName = event.routeName;
     });
+  },
+  beforeDestroy: function () {
+    this.$bus.$off("specialEvent");
   },
   computed: {},
 };

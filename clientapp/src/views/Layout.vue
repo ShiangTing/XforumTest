@@ -1,16 +1,16 @@
 <template>
   <div>
     <Navbar />
-    <BreadCrumb />
+    <!-- <BreadCrumb /> -->
     <router-view />
   </div>
 </template>
 
 <script>
 import Navbar from "../components/common/Navbar";
-import BreadCrumb from "../components/BreadCrumb";
+// import BreadCrumb from "../components/BreadCrumb";
 export default {
-  components: { Navbar, BreadCrumb },
+  components: { Navbar },
   data() {
     return {};
   },

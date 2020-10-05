@@ -1,19 +1,14 @@
 <template>
-  <div>
-    <b-list-group style="max-width: 250px">
-      <b-list-group-item
-        v-for="(thread, index) in threads"
-        :key="index"
-        @click="doSomethingSpecial(thread)"
-      >
-        <font-awesome-icon :icon="thread.iconName" size="lg" />
-        <router-link :to="`/${thread.routeName}`">{{
-          thread.name
-        }}</router-link>
-      </b-list-group-item>
-    </b-list-group>
-    <!-- <button @click="doSomethingSpecial()">doShowAlerts</button> -->
-  </div>
+  <b-list-group>
+    <b-list-group-item
+      v-for="(thread, index) in threads"
+      :key="index"
+      @click="doSomethingSpecial(thread)"
+    >
+      <font-awesome-icon :icon="thread.iconName" size="lg" />
+      <router-link :to="`/${thread.routeName}`">{{ thread.name }}</router-link>
+    </b-list-group-item>
+  </b-list-group>
 </template>
 
 <script>
@@ -60,17 +55,23 @@ export default {
       ],
     };
   },
+  beforeRouteUpdate() {},
   methods: {
     showAlert(msg) {
       console.log(msg);
     },
+
     doSomethingSpecial(event) {
-      console.log(event);
-      // emit the event and pass with it an object of "event data".
-      this.$bus.$emit("specialEvent", {
-        event,
-        // routeName: event.routeName,
-      });
+      setTimeout(() => {
+        console.log(event);
+        // emit the event and pass with it an object of "event data".
+        this.$bus.$emit(
+          "specialEvent",
+          event
+          // routeName: event.routeName,
+        );
+      }, 100);
+      //   debugger;
     },
   },
   //   created() {

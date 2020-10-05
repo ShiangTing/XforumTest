@@ -1,14 +1,12 @@
 <template>
   <div>
     <b-container fluid>
-      <b-row class="">
+      <b-row>
         <b-col> <SideBar /></b-col>
         <b-col cols="8">
           <div>
             <router-view />
-
             <!-- 這裡是index區域的貼文 -->
-
             <vue-particles
               color="#dedede"
               :particleOpacity="0.7"
@@ -49,12 +47,19 @@
               v-if="titles.length"
               spinner="spiral"
               @infinite="infiniteScroll"
-            ></infinite-loading>
-          </div>
-        </b-col>
-        <b-col> </b-col>
+            ></infinite-loading></div
+        ></b-col>
+        <b-col></b-col>
       </b-row>
     </b-container>
+
+    <!-- <b-row>
+      <b-col> <SideBar /></b-col>
+      <b-col cols="8">
+       
+      </b-col>
+      <b-col> </b-col>
+    </b-row> -->
   </div>
 </template>
 
