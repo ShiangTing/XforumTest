@@ -27,19 +27,25 @@ namespace XforumTest.Services
             try
             {
                 var repository = new GeneralRepository<ReposiveMessages>(context);
+                var postRepo = new GeneralRepository<Posts>(context);
+                //  if (postRepo.GetAll().FirstOrDefault(x => x.PostId == dto.PostId) != null)
+                //  {
+            
 
                 ReposiveMessages messages = new ReposiveMessages()
-                {
-                    MessageId = Guid.NewGuid(),
-                    Context = dto.Context,
-                    LikeNumber = dto.LikeNumber,
-                    DisLikeNumber = dto.DisLikeNumber,
-                    CreatedDate = DateTime.Now,
-                    PostId = dto.PostId
-                };
+                    {
+                        MessageId = Guid.NewGuid(),
+                        Context = dto.Context,
+                        LikeNumber = dto.LikeNumber,
+                        DisLikeNumber = dto.DisLikeNumber,
+                        CreatedDate = DateTime.Now,
+                        PostId = dto.PostId
+                    };
 
-
-                repository.SaveContext();
+                    repository.Create(messages);
+                    repository.SaveContext();
+               // }
+             
 
             }
 
@@ -58,9 +64,16 @@ namespace XforumTest.Services
 
                 var repository = new GeneralRepository<ReposiveMessages>(context);
                 var deletMessage = repository.GetFirst(x => x.MessageId==id);
+                if (deletMessage != null)
+                {
+                    repository.Delete(deletMessage);
+                    repository.SaveContext();
+                }
+                else
+                {
 
-                repository.Delete(deletMessage);
-                repository.SaveContext();
+                }
+    
 
             }
 
@@ -73,12 +86,10 @@ namespace XforumTest.Services
         public async Task<List<RMessageDTO>> GetAllbyPostId(Guid postId)
         {
             var repository = new GeneralRepository<ReposiveMessages>(context);
-            var memberRepository = new GeneralRepository<ForumMembers>(context);
-            var mDto = new RMessageDTO();
+            //var memberRepository = new GeneralRepository<ForumMembers>(context);
+            //var mDto = new RMessageDTO();
 
             var mRepo = from m in repository.GetAll()
-                        join u in memberRepository.GetAll()
-                        on m.UserId equals u.UserId
                         where m.MessageId == postId
                         select new RMessageDTO
                         {

@@ -36,9 +36,10 @@ namespace XforumTest.ApiController
         /// <param name="postId"></param>
         /// <returns></returns>
 
-        [HttpGet("{id}")]
+        [HttpGet("{postId}")]
         public async Task<ActionResult<List<RMessageDTO>>> GetAllMessages(Guid postId)
         {
+
             var service = new RMessageService();
             return await service.GetAllbyPostId(postId);
         }
@@ -63,7 +64,7 @@ namespace XforumTest.ApiController
         /// </summary>
         /// <param name="Dto"></param>
         /// <returns></returns>
-        [HttpPost]
+        [HttpPut]
         public IActionResult PostLikeAndDisLike(MessageLikeDto Dto)
         {
             var service = new LikeService2();
@@ -71,6 +72,6 @@ namespace XforumTest.ApiController
 
             return Ok("delete msg");
         }
-    //}
-}
+    
+    }
 }
