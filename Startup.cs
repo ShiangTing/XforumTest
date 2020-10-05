@@ -24,11 +24,25 @@ namespace XforumTest
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            services.AddCors(options =>
+            {
+                // CorsPolicy 是自訂的 Policy 名稱
+                options.AddPolicy("CorsPolicy", policy =>
+                {
+                    policy.WithOrigins("http://localhost:3000")
+                          .AllowAnyHeader()
+                          .AllowAnyMethod()
+                          .AllowCredentials();
+                });
+            });
+
+            services.AddSwaggerGen();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+          
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -40,8 +54,16 @@ namespace XforumTest
                 app.UseHsts();
             }
             app.UseHttpsRedirection();
+            app.UseCors("CorsPolicy");
             app.UseStaticFiles();
-
+            // Enable middleware to serve generated Swagger as a JSON endpoint.
+            app.UseSwagger();
+            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
+            // specifying the Swagger JSON endpoint.
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+            });
             app.UseRouting();
 
             app.UseAuthorization();
