@@ -15,8 +15,9 @@ namespace XforumTest.Interface
         void Delete();
 
         //編輯修改論壇資料
-        IQueryable Edit(string forumid);
-       
+        IQueryable Edit(string forumid);  //測試
+        //IQueryable Edit(Guid forumid);
+
         IQueryable<ForumGetAllDTO> GetAll();
     }
 }

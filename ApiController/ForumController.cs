@@ -26,6 +26,11 @@ namespace XforumTest.ApiController
         }
 
         [HttpGet]
+        //public IQueryable Edit(Guid id)
+        //{
+        //    var edit = new ForumService().Edit(id);
+        //    return edit;
+        //}
         public IQueryable Edit()
         {
             var edit = new ForumService().Edit("e356a9a0-5f15-4c75-a2dc-19011a823fb3");
