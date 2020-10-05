@@ -47,35 +47,34 @@ export default new VueRouter({
               },
             ],
           },
-          children: [
-            {
-              path: ":routeName",
-              component: () => import("./views/Thread.vue"),
-              meta: {
-                breadcrumb: [
-                  {
-                    name: "首頁",
-                    link: "/",
-                  },
-                  {
-                    // name: `${VueRouter.$route.name}`,
-                    // link: `${Vue.$route.params.routeName}`,
-                  },
-                ],
-              },
-              // meta: {
-              //   breadcrumb: [
-              //     {
-              //       name: "123",
-              //     },
-              //     // {
-              //     //   name: "關於我",
-              //     // },
-              //   ],
-              // },
-            },
-          ],
+
         },
+        {
+          path: "/:routeName",
+          component: () => import("./views/Thread.vue"),
+          meta: {
+            breadcrumb: [
+              {
+                name: "首頁",
+                link: "/",
+              },
+              {
+                // name: `${VueRouter.$route.name}`,
+                // link: `${Vue.$route.params.routeName}`,
+              },
+            ],
+          },
+          // meta: {
+          //   breadcrumb: [
+          //     {
+          //       name: "123",
+          //     },
+          //     // {
+          //     //   name: "關於我",
+          //     // },
+          //   ],
+          // },
+        }
       ],
     },
 

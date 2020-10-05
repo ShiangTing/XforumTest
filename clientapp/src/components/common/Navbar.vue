@@ -32,7 +32,7 @@
           </b-nav-item-dropdown>
 
           <!-- Using 'button-content' slot -->
-
+          <b-nav-item class="sidebarGroup"><SideBar /></b-nav-item>
           <b-nav-item href="#" class="mx-5 my-2">訪客</b-nav-item>
         </b-navbar-nav>
       </b-collapse>
@@ -40,6 +40,19 @@
   </div>
 </template>
 
-<script></script>
+<script>
+import SideBar from "../Home/Sidbar";
+export default {
+  components: {
+    SideBar,
+  },
+};
+</script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+@media screen and (min-width: 996px) {
+  .sidebarGroup {
+    display: none;
+  }
+}
+</style>

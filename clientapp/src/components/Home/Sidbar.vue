@@ -38,7 +38,7 @@ export default {
           img: "adventure.jpg",
           iconName: "book-dead",
           name: "奇幻冒險區",
-          routeName: "Adventure.",
+          routeName: "Adventure",
         },
         {
           img: "biography.jpg",
@@ -71,18 +71,8 @@ export default {
           // routeName: event.routeName,
         );
       }, 100);
-      //   debugger;
     },
   },
-  //   created() {
-  //     this.$bus.$on("alert:message", (msg) => {
-  //       // 並將接收到的 message 傳給自己的 methods showAlert 去觸發 alert 事件。
-  //       this.showAlert(msg);
-  //     });
-  //   },
-  //   beforedestory: function () {
-  //     this.$bus.$off("alert:message");
-  //   },
 };
 </script>
 

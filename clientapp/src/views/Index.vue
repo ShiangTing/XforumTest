@@ -2,10 +2,9 @@
   <div>
     <b-container fluid>
       <b-row>
-        <b-col> <SideBar /></b-col>
+        <b-col> <SideBar class="sidebar" /></b-col>
         <b-col cols="8">
           <div>
-            <router-view />
             <!-- 這裡是index區域的貼文 -->
             <vue-particles
               color="#dedede"
@@ -39,7 +38,7 @@
                 <span class="pl-4">{{ article.userName }}</span>
                 <h5 class="py-3">{{ article.threadName }}</h5>
                 <h5>{{ article.title }}</h5>
-                <p id="article-content">{{ article.content }}</p>
+                <p class="ellipsis">{{ article.content }}</p>
               </div>
             </div>
             <!-- </div> -->
@@ -219,12 +218,18 @@ export default {
 </script>
 
 <style lang="scss">
-#article-content {
-  width: 20%;
+.ellipsis {
+  max-width: 20%;
   overflow: hidden;
+  /* word-wrap: break-word; */
   text-overflow: ellipsis;
   white-space: nowrap;
   display: inline-block;
   color: #000;
+}
+@media screen and (max-width: 996px) {
+  .sidebar {
+    display: none;
+  }
 }
 </style>

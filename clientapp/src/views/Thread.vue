@@ -1,23 +1,65 @@
 <template>
   <div>
-    <!-- <b-card
-      style="height: 100px; width: 100%"
-      overlay
-      :img-src="require(`../assets/img/${threadDetail.img}`)"
-      img-alt="Card Image"
-      text-variant="white"
-      :title="$route.params.routeName"
-    > -->
+    <b-container fluid>
+      <b-row>
+        <b-col cols="2"> <Sidebar /></b-col>
+        <b-col cols="7">
+          <div>
+            <!-- 這裡是index區域的貼文 -->
+            <vue-particles
+              color="#dedede"
+              :particleOpacity="0.7"
+              :particlesNumber="80"
+              shapeType="circle"
+              :particleSize="4"
+              linesColor="#dedede"
+              :linesWidth="1"
+              :lineLinked="true"
+              :lineOpacity="0.4"
+              :linesDistance="150"
+              :moveSpeed="5"
+              :hoverEffect="false"
+              hoverMode="grab"
+              :clickEffect="false"
+              clickMode="push"
+            >
+            </vue-particles>
+            <div v-if="threadDetail.img && threadDetail.name">
+              <b-card-img
+                :src="require(`@/assets/img/${threadDetail.img}`)"
+                width="50"
+                height="350"
+              ></b-card-img>
+              <h2 style="color: wheat">{{ threadDetail.name }}</h2>
+            </div>
+            <p style="border-bottom: 1px solid gray; padding: 10px 0">
+              全部 / 追蹤
+            </p>
 
-    <!-- </b-card> -->
-    <div v-if="threadDetail.img && threadDetail.name">
-      <b-card-img
-        :src="require(`@/assets/img/${threadDetail.img}`)"
-        width="50"
-        height="350"
-      ></b-card-img>
-      <h2 style="color: wheat">{{ threadDetail.name }}</h2>
-    </div>
+            <!-- <div v-for="article in articles" :key="article.id"> -->
+            <div
+              style="border-bottom: 1px solid gray; display: flex"
+              v-for="(article, index) in titles"
+              :key="index"
+            >
+              <div class="w-100" style="padding: 30px 20px">
+                <font-awesome-icon icon="user" size="lg" />
+                <span class="pl-4">{{ article.userName }}</span>
+                <h3 class="pt-3">{{ article.title }}</h3>
+                <p class="ellipsis">{{ article.content }}</p>
+              </div>
+            </div>
+            <!-- </div> -->
+            <infinite-loading
+              v-if="titles.length"
+              spinner="spiral"
+              @infinite="infiniteScroll"
+            ></infinite-loading></div
+        ></b-col>
+        <b-col></b-col>
+      </b-row>
+    </b-container>
+
     <!-- <div v-else>
    
     </div> -->
@@ -28,53 +70,16 @@
       height="50"
       alt="logo"
     /> -->
-    <vue-particles
-      color="#dedede"
-      :particleOpacity="0.7"
-      :particlesNumber="80"
-      shapeType="circle"
-      :particleSize="4"
-      linesColor="#fa0"
-      :linesWidth="1"
-      :lineLinked="true"
-      :lineOpacity="0.4"
-      :linesDistance="150"
-      :moveSpeed="5"
-      :hoverEffect="false"
-      hoverMode="grab"
-      :clickEffect="false"
-      clickMode="push"
-    >
-    </vue-particles>
-    <p style="border-bottom: 1px solid gray; padding: 10px 0">全部 / 追蹤</p>
-
-    <!-- <div v-for="article in articles" :key="article.id"> -->
-    <div
-      style="border-bottom: 1px solid gray; display: flex"
-      v-for="(article, index) in titles"
-      :key="index"
-    >
-      <div style="padding: 30px 20px">
-        <font-awesome-icon icon="user" size="lg" />
-        <span class="pl-4">{{ article.userName }}</span>
-        <h5 class="pt-3">{{ article.title }}</h5>
-        <p id="KKKK">{{ article.content }}</p>
-      </div>
-    </div>
-    <!-- </div> -->
-    <infinite-loading
-      v-if="titles.length"
-      spinner="spiral"
-      @infinite="infiniteScroll"
-    ></infinite-loading>
   </div>
 </template>
 
 <script>
 import InfiniteLoading from "vue-infinite-loading";
+import Sidebar from "../components/Home/Sidbar";
 export default {
   components: {
     InfiniteLoading,
+    Sidebar,
   },
   data() {
     return {
@@ -229,9 +234,10 @@ export default {
 </script>
 
 <style lang="scss">
-#KKKK {
-  width: 20%;
+.ellipsis {
+  max-width: 20%;
   overflow: hidden;
+  /* word-wrap: break-word; */
   text-overflow: ellipsis;
   white-space: nowrap;
   display: inline-block;
