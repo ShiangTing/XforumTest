@@ -14,29 +14,49 @@ namespace XforumTest.ApiController
     [ApiController]
     public class ForumController : ControllerBase
     {
+        private static ForumService forumservice = new ForumService();
+        /// <summary>
+        /// Create新版資料
+        /// </summary>
+        /// <param name="create"></param>
+        /// <returns></returns>
         [HttpPost]
-        public IActionResult Create(ForumCreate create)
+        public IActionResult Create([FromBody]ForumCreate create)
         {
+
             if (ModelState.IsValid)
             {
-
+                forumservice.Create(create);
                 return Ok();
             }
             return Ok();
         }
 
+        /// <summary>
+        /// Edit getsingle取得各版資料，edit post 以編輯的資料回DB
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
-        public IQueryable Edit()
+        //public IQueryable Edit(Guid id)
+        //{
+        //    var edit = new ForumService().Edit(id);
+        //    return edit;
+        //}
+        public IQueryable GetSingle()
         {
-            var edit = new ForumService().Edit("e356a9a0-5f15-4c75-a2dc-19011a823fb3");
+            var edit = forumservice.GetSingle("bfacfa2c-dca9-4efb-8554-daed27024913");
             return edit;
         }
         [HttpPost]
-        public void Edit(ForumCreate model)
+        public void Edit(ForumCreate json)
         {
-            
+            forumservice.Edit(json);
         }
 
+        /// <summary>
+        /// 取得所有版資料
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public IQueryable<ForumGetAllDTO> GetAll()
         {

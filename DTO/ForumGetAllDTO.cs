@@ -13,7 +13,7 @@ namespace XforumTest.DTO
 
     public class ForumCreate
     {
-        //public Guid ForumId { get; set; }
+        public Guid? ForumId { get; set; }
         public DateTime? CreatedDate { get; set; }
         public string Img { get; set; }
         public Guid? ModeratorId { get; set; }
