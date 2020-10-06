@@ -61,11 +61,12 @@ export default {
   data() {
     return {
       replyObj: {
-        createdDate: "",
-        img: "",
-        moderatorId: "",
-        description: "",
-        forumName: "",
+        ForumId: "",
+        PostId: "",
+        Title: "",
+        Description: "",
+        CreatedDate: "",
+        UserId: "",
       },
       listData: [
         "心情閒聊區",
@@ -101,16 +102,18 @@ export default {
     onEditorFocus() {}, // 獲得焦點事件
     onEditorChange() {}, // 內容改變事件
     saveHtml: function() {
-      this.replyObj.forumName = this.select;
-      this.replyObj.img = "";
-      this.replyObj.description = this.content;
-      this.replyObj.createdDate = "";
-      this.replyObj.moderatorId = "";
-      console.log(process.env.VUE_APP_API + "/api/Forum/Create");
+      this.replyObj.ForumId = "e356a9a0-5f15-4c75-a2dc-19011a823fb3";
+      this.replyObj.PostId = "";
+      this.replyObj.Title = this.titleContent;
+      this.replyObj.Description = this.content;
+      this.replyObj.CreatedDate = "";
+      this.replyObj.UserId = "0e42d4e5-2cbb-47dc-b7e9-25c1bac99ef5";
+      // let json = JSON.stringify(this.replyObj);
+      console.log(process.env.VUE_APP_API + "/api/Post/Create");
       // let json = JSON.stringify(this.replyObj);
       // console.log(json);
       axios
-        .post(process.env.VUE_APP_API + "/api/Forum/Create", this.replyObj)
+        .post(process.env.VUE_APP_API + "/api/Post/Create", this.replyObj)
         .then((response) => {
           console.log(response);
           console.log("成功");
