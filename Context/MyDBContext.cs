@@ -258,14 +258,16 @@ namespace XforumTest.Context
 
             modelBuilder.Entity<ReposiveMessages>(entity =>
             {
-                entity.HasNoKey();
+                entity.HasKey(e => e.MessageId);
+
+                entity.Property(e => e.MessageId).ValueGeneratedNever();
 
                 entity.Property(e => e.Context).HasMaxLength(50);
 
                 entity.Property(e => e.CreatedDate).HasColumnType("datetime");
 
                 entity.HasOne(d => d.Post)
-                    .WithMany()
+                    .WithMany(p => p.ReposiveMessages)
                     .HasForeignKey(d => d.PostId)
                     .HasConstraintName("FK_ReposiveMessages_Posts");
             });

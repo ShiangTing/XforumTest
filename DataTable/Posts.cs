@@ -5,6 +5,11 @@ namespace XforumTest.DataTable
 {
     public partial class Posts
     {
+        public Posts()
+        {
+            ReposiveMessages = new HashSet<ReposiveMessages>();
+        }
+
         public Guid PostId { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
@@ -17,5 +22,6 @@ namespace XforumTest.DataTable
 
         public virtual Forums Forum { get; set; }
         public virtual ForumMembers User { get; set; }
+        public virtual ICollection<ReposiveMessages> ReposiveMessages { get; set; }
     }
 }
