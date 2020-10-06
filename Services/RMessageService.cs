@@ -73,7 +73,6 @@ namespace XforumTest.Services
                 {
 
                 }
-    
 
             }
 
@@ -82,6 +81,8 @@ namespace XforumTest.Services
 
             }
         }
+
+
 
         public async Task<List<RMessageDTO>> GetAllbyPostId(Guid postId)
         {
