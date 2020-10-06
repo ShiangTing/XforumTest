@@ -7,6 +7,8 @@ using XforumTest.DataTable;
 using XforumTest.Interface;
 using XforumTest.Repository;
 using XforumTest.DTO;
+using Newtonsoft.Json;
+using System.Text.Json;
 
 namespace XforumTest.Services
 {
@@ -16,9 +18,26 @@ namespace XforumTest.Services
         GeneralRepository<Forums> forums = new GeneralRepository<Forums>(db);
         GeneralRepository<ForumMembers> forummembers = new GeneralRepository<ForumMembers>(db);
 
-        public void Create()
+        public void Create(ForumCreate create)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var createforum = new Forums
+                {
+                    ForumId = Guid.NewGuid(),
+                    CreatedDate = create.CreatedDate,
+                    Img = create.Img,
+                    ModeratorId = create.ModeratorId,
+                    Description = create.Description,
+                    ForumName = create.ForumName
+                };
+                forums.Create(createforum);
+                forums.SaveContext();
+            }
+            catch (Exception ex)
+            {
+                
+            }
         }
 
         public void Delete()
@@ -27,9 +46,11 @@ namespace XforumTest.Services
             throw new NotImplementedException();
         }
 
-        public IQueryable Edit(string forumid)
+        public IQueryable GetSingle(string forumid)
         {
+
             var forum = from f in forums.GetAll()
+                        where f.ForumId.ToString() == forumid
                         select new
                         {
                             title = f.ForumName,
@@ -38,6 +59,19 @@ namespace XforumTest.Services
                             content = f.Description
                         };
             return forum;
+        }
+
+        public void Edit(ForumCreate json)
+        {
+            //var json = JsonConvert.DeserializeObject<ForumCreate>(data);
+            var oldforum = forums.GetAll().FirstOrDefault(f => f.ModeratorId == json.ModeratorId);
+            oldforum.Img = json.Img;
+            oldforum.ModeratorId = json.ModeratorId;
+            oldforum.Description = json.Description;
+            oldforum.ForumName = json.ForumName;
+                           
+            forums.Update(oldforum);
+            forums.SaveContext();
         }
         
         public void Find()
