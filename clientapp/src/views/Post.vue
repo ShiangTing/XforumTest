@@ -61,11 +61,11 @@ export default {
   data() {
     return {
       replyObj: {
-        threadName: "",
+        forumName: "",
         postTitle: "",
-        postContent: "",
-        postDate: "",
-        postMember: "",
+        description: "",
+        createdDate: "",
+        moderatorId: "",
       },
       listData: [
         "心情閒聊區",
@@ -100,16 +100,19 @@ export default {
     onEditorBlur() {}, // 失去焦點事件
     onEditorFocus() {}, // 獲得焦點事件
     onEditorChange() {}, // 內容改變事件
-    saveHtml: function () {
-      this.replyObj.threadName = this.select;
+    saveHtml: function() {
+      this.replyObj.forumName = this.select;
       this.replyObj.postTitle = this.titleContent;
-      this.replyObj.postContent = this.content;
-      this.replyObj.postDate = new Date();
-      this.replyObj.postMember = "訪客1";
-      let json = JSON.stringify(this.replyObj);
-      console.log(json);
+      this.replyObj.description = this.content;
+      this.replyObj.createdDate = new Date();
+      this.replyObj.moderatorId = "";
+      // let json = JSON.stringify(this.replyObj);
+      // console.log(json);
       axios
-        .post(json)
+        .post(
+          "​https://localhost:5001/api​/RMessage​/CreateMessage",
+          this.replyObj
+        )
         .then((response) => {
           console.log(response);
           console.log("成功");

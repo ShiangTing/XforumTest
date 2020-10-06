@@ -2,7 +2,7 @@
   <div>
     <b-container fluid>
       <b-row>
-        <b-col cols="2"> <Sidebar /></b-col>
+        <b-col cols="2"> <Sidebar class="sidebar"/></b-col>
         <b-col cols="7">
           <div>
             <!-- 這裡是index區域的貼文 -->
@@ -226,14 +226,14 @@ export default {
       // this.threadDetail.routeName = event.routeName;
     });
   },
-  beforeDestroy: function () {
+  beforeDestroy: function() {
     this.$bus.$off("specialEvent");
   },
   computed: {},
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .ellipsis {
   max-width: 20%;
   overflow: hidden;
@@ -242,5 +242,10 @@ export default {
   white-space: nowrap;
   display: inline-block;
   color: #000;
+}
+@media screen and (max-width: 996px) {
+  .sidebar {
+    display: none;
+  }
 }
 </style>
