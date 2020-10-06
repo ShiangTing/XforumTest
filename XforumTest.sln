@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30114.105
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XforumTest", "XforumTest\XforumTest.csproj", "{204ADB62-CF1C-484D-BE57-DECCCCFAF0F6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XforumTest", "XforumTest.csproj", "{66E4F515-7461-4A6D-9C82-B978E78BCFD7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{204ADB62-CF1C-484D-BE57-DECCCCFAF0F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{204ADB62-CF1C-484D-BE57-DECCCCFAF0F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{204ADB62-CF1C-484D-BE57-DECCCCFAF0F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{204ADB62-CF1C-484D-BE57-DECCCCFAF0F6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{66E4F515-7461-4A6D-9C82-B978E78BCFD7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{66E4F515-7461-4A6D-9C82-B978E78BCFD7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{66E4F515-7461-4A6D-9C82-B978E78BCFD7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{66E4F515-7461-4A6D-9C82-B978E78BCFD7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {510DFB6A-C53D-4DDB-BC09-1F26D1CE2D03}
+		SolutionGuid = {E794C3C2-8302-40A2-ADB4-0F1662A04E76}
 	EndGlobalSection
 EndGlobal
