@@ -61,11 +61,11 @@ export default {
   data() {
     return {
       replyObj: {
-        forumName: "",
-        postTitle: "",
-        description: "",
         createdDate: "",
+        img: "",
         moderatorId: "",
+        description: "",
+        forumName: "",
       },
       listData: [
         "心情閒聊區",
@@ -102,17 +102,15 @@ export default {
     onEditorChange() {}, // 內容改變事件
     saveHtml: function() {
       this.replyObj.forumName = this.select;
-      this.replyObj.postTitle = this.titleContent;
+      this.replyObj.img = "";
       this.replyObj.description = this.content;
-      this.replyObj.createdDate = new Date();
+      this.replyObj.createdDate = "";
       this.replyObj.moderatorId = "";
+      console.log(process.env.VUE_APP_API + "/api/Forum/Create");
       // let json = JSON.stringify(this.replyObj);
       // console.log(json);
       axios
-        .post(
-          "​https://localhost:5001/api​/RMessage​/CreateMessage",
-          this.replyObj
-        )
+        .post(process.env.VUE_APP_API + "/api/Forum/Create", this.replyObj)
         .then((response) => {
           console.log(response);
           console.log("成功");
