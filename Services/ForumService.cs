@@ -89,11 +89,11 @@ namespace XforumTest.Services
             //                 UserName = fm.Name,
             //                 Age = fm.Age
             //             };
-            var getall = from fm in forummembers.GetAll()
+            var getall = from fm in forums.GetAll()
                          select new ForumGetAllDTO
                          {
-                             UserName = fm.Name,
-                             Age = fm.Age
+                             ForumName = fm.ForumName,
+                             ForumId = fm.ForumId
                          };
 
             //forums.GetAll();

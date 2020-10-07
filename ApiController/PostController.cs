@@ -15,6 +15,7 @@ namespace XforumTest.ApiController
     public class PostController : ControllerBase
     {
         private static PostService post = new PostService();
+
         [HttpPost]
         public IActionResult Create(PostDto po)
         {
@@ -43,10 +44,15 @@ namespace XforumTest.ApiController
         {
 
         }
-        //取得所有留言資訊
+        /// <summary>
+        /// 取得所有的留言資訊
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
-        void GetAll()
+        public IQueryable<PostListDto> GetAllPosts()
         {
+            var service = new PostService();
+            return service.GetAll();
 
         }
 

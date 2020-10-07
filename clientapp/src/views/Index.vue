@@ -2,7 +2,7 @@
   <div>
     <b-container fluid>
       <b-row>
-        <b-col> <SideBar class="sidebar" /></b-col>
+        <b-col> <SideBar class="sidebar"/></b-col>
         <b-col cols="8">
           <div>
             <!-- 這裡是index區域的貼文 -->
@@ -55,7 +55,7 @@
     <!-- <b-row>
       <b-col> <SideBar /></b-col>
       <b-col cols="8">
-       
+
       </b-col>
       <b-col> </b-col>
     </b-row> -->
@@ -66,6 +66,7 @@
 import detectiveImg from "../assets/img/detective.png";
 import InfiniteLoading from "vue-infinite-loading";
 import SideBar from "../components/Home/Sidbar";
+import axios from "axios";
 // import axios from "axios";
 // const api = "http://hn.algolia.com/api/v1/items/:id";
 export default {
@@ -210,8 +211,22 @@ export default {
         //   });
       }, 500);
     },
+
+    GetAll() {
+      const url = process.env.VUE_APP_API + "/api/Forum/GetAll";
+      axios
+        .get(url)
+        .then((response) => {
+          console.log(response);
+          response.console.log("成功");
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
   },
   created() {
+    this.GetAll();
     this.fetchData();
   },
 };

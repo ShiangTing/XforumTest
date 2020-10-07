@@ -5,15 +5,15 @@ using System.Threading.Tasks;
 
 namespace XforumTest.DTO
 {
-    public class PostDto
+    public class PostListDto
     {
-        public string ForumId { get; set; }
+        public Guid? ForumId { get; set; }
         public Guid? PostId { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
         //public string Img { get; set; }
         public DateTime? CreatedDate { get; set; }
-        public string UserId { get; set; }
-        //public bool State { get; set; }
+        public Guid? UserId { get; set; }
+        public string UserName { get; set; }
     }
 }

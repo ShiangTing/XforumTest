@@ -28,7 +28,6 @@ export default new VueRouter({
           },
         ],
       },
-
     },
     {
       path: "/",
@@ -47,10 +46,9 @@ export default new VueRouter({
               },
             ],
           },
-
         },
         {
-          path: "/:routeName",
+          path: "/Thread/:routeName",
           component: () => import("./views/Thread.vue"),
           meta: {
             breadcrumb: [
@@ -74,10 +72,9 @@ export default new VueRouter({
           //     // },
           //   ],
           // },
-        }
+        },
       ],
     },
-
   ],
 });
 

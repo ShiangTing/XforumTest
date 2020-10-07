@@ -14,6 +14,7 @@ namespace XforumTest.Services
     {
         private static MyDBContext db = new MyDBContext();
         GeneralRepository<Posts> posts = new GeneralRepository<Posts>(db);
+        GeneralRepository<ForumMembers> users = new GeneralRepository<ForumMembers>(db);
         public void Create(PostDto model)
         {
             try
@@ -50,9 +51,29 @@ namespace XforumTest.Services
             throw new NotImplementedException();
         }
 
-        public void GetAll()
+        /// <summary>
+        /// 取得所有的發文
+        /// </summary>
+        public IQueryable<PostListDto> GetAll()
         {
-            throw new NotImplementedException();
+
+            var pList = from p in posts.GetAll()
+                        join u in users.GetAll()
+                        on p.UserId equals u.UserId
+                        select new PostListDto()
+                        {
+                            ForumId = p.ForumId,
+                            PostId = p.PostId,
+                            Title = p.Title,
+                            Description = p.Description,
+                            CreatedDate = p.CreatedDate,
+                            UserId = p.UserId,
+                            UserName = u.Name
+                        };
+            return pList;
+
+
+
         }
 
         public void GetSingle()

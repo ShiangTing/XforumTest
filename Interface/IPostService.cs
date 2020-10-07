@@ -11,7 +11,7 @@ namespace XforumTest.Interface
         void Create(PostDto po);
         void Delete();
         void Edit();
-        void GetAll();
+        IQueryable<PostListDto> GetAll();
         void GetSingle();
     }
 }

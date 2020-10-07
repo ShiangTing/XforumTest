@@ -24,14 +24,14 @@
               clickMode="push"
             >
             </vue-particles>
-            <div v-if="threadDetail.img && threadDetail.name">
+            <!-- <div v-if="threadDetail.img && threadDetail.name">
               <b-card-img
                 :src="require(`@/assets/img/${threadDetail.img}`)"
                 width="50"
                 height="350"
               ></b-card-img>
               <h2 style="color: wheat">{{ threadDetail.name }}</h2>
-            </div>
+            </div> -->
             <p style="border-bottom: 1px solid gray; padding: 10px 0">
               全部 / 追蹤
             </p>
@@ -61,7 +61,7 @@
     </b-container>
 
     <!-- <div v-else>
-   
+
     </div> -->
 
     <!-- <img
@@ -76,6 +76,7 @@
 <script>
 import InfiniteLoading from "vue-infinite-loading";
 import Sidebar from "../components/Home/Sidbar";
+import axios from "axios";
 export default {
   components: {
     InfiniteLoading,
@@ -85,7 +86,7 @@ export default {
     return {
       titles: [],
       page: 1,
-      threadDetail: { name: "", img: "" },
+      // threadDetail: { name: "", img: "" },
       articles: [
         {
           userName: "Amy",
@@ -190,6 +191,18 @@ export default {
       // const response = await axios.get(this.url);
       this.titles = this.articles;
     },
+    getThreadData() {
+      const url = process.env.VUE_APP_API + "/api/Forum/GetSingle";
+      axios
+        .get(url)
+        .then((response) => {
+          console.log(response);
+          console.log("成功");
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
     infiniteScroll($state) {
       setTimeout(() => {
         this.page++;
@@ -219,15 +232,16 @@ export default {
 
   created() {
     this.fetchData();
-    this.$bus.$on("specialEvent", (event) => {
-      // alert(event.event.img);
-      this.threadDetail.name = event.name;
-      this.threadDetail.img = event.img;
-      // this.threadDetail.routeName = event.routeName;
-    });
+    this.getThreadData();
+    // this.$bus.$on("specialEvent", (event) => {
+    //   // alert(event.event.img);
+    //   this.threadDetail.name = event.name;
+    //   this.threadDetail.img = event.img;
+    //   // this.threadDetail.routeName = event.routeName;
+    // });
   },
   beforeDestroy: function() {
-    this.$bus.$off("specialEvent");
+    // this.$bus.$off("specialEvent");
   },
   computed: {},
 };

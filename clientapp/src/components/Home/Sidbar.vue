@@ -3,10 +3,10 @@
     <b-list-group-item
       v-for="(thread, index) in threads"
       :key="index"
-      @click="doSomethingSpecial(thread)"
+      @click="goToThread(thread.routeName)"
     >
       <font-awesome-icon :icon="thread.iconName" size="lg" />
-      <router-link :to="`/${thread.routeName}`">{{ thread.name }}</router-link>
+      {{ thread.name }}
     </b-list-group-item>
   </b-list-group>
 </template>
@@ -60,21 +60,23 @@ export default {
     showAlert(msg) {
       console.log(msg);
     },
-
-    doSomethingSpecial(event) {
-      setTimeout(() => {
-        console.log(event);
-        // emit the event and pass with it an object of "event data".
-        this.$bus.$emit(
-          "specialEvent",
-          event
-          // routeName: event.routeName,
-        );
-      }, 100);
+    goToThread(name) {
+      const vm = this;
+      vm.$router.push(`/Thread/${name}`);
     },
+    // doSomethingSpecial(event) {
+    //   setTimeout(() => {
+    //     console.log(event);
+    //     // emit the event and pass with it an object of "event data".
+    //     this.$bus.$emit(
+    //       "specialEvent",
+    //       event
+    //       // routeName: event.routeName,
+    //     );
+    //   }, 100);
+    // },
   },
 };
 </script>
 
-<style>
-</style>
+<style></style>

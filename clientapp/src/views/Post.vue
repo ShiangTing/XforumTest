@@ -61,11 +61,13 @@ export default {
   data() {
     return {
       replyObj: {
-        forumName: "",
-        postTitle: "",
-        description: "",
-        createdDate: "",
-        moderatorId: "",
+        ForumId: "",
+        PostId: null,
+        Title: "",
+        Description: "",
+        CreatedDate: "",
+        UserId: "",
+        State: false,
       },
       listData: [
         "心情閒聊區",
@@ -101,18 +103,19 @@ export default {
     onEditorFocus() {}, // 獲得焦點事件
     onEditorChange() {}, // 內容改變事件
     saveHtml: function() {
-      this.replyObj.forumName = this.select;
-      this.replyObj.postTitle = this.titleContent;
-      this.replyObj.description = this.content;
-      this.replyObj.createdDate = new Date();
-      this.replyObj.moderatorId = "";
+      this.replyObj.ForumId = "e356a9a0-5f15-4c75-a2dc-19011a823fb3";
+
+      this.replyObj.Title = this.titleContent;
+      this.replyObj.Description = this.content;
+      this.replyObj.CreatedDate = new Date();
+      this.replyObj.UserId = "0e42d4e5-2cbb-47dc-b7e9-25c1bac99ef5";
+      this.replyObj.State = true;
+      // let json = JSON.stringify(this.replyObj);
+      console.log(process.env.VUE_APP_API + "/api/Post/Create");
       // let json = JSON.stringify(this.replyObj);
       // console.log(json);
       axios
-        .post(
-          "​https://localhost:5001/api​/RMessage​/CreateMessage",
-          this.replyObj
-        )
+        .post(process.env.VUE_APP_API + "/api/Post/Create", this.replyObj)
         .then((response) => {
           console.log(response);
           console.log("成功");

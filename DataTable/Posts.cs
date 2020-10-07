@@ -10,7 +10,7 @@ namespace XforumTest.DataTable
             ReposiveMessages = new HashSet<ReposiveMessages>();
         }
 
-        public Guid PostId { get; set; }
+        public Guid? PostId { get; set; }
         public Guid? ForumId { get; set; }
         public Guid? UserId { get; set; }
         public string Title { get; set; }
