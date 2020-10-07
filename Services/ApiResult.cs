@@ -17,10 +17,7 @@ namespace XforumTest.Services
             Result = result;
 
         }
-        //public class ApiResult(int status,string err, Object result)
-        //{
-        //    Stat
-        //}
+
         public int Status { get; set; }
         public string ErrorMsg { get; set; }
         public Object Result { get; set; }
