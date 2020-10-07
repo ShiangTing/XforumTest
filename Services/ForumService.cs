@@ -93,7 +93,8 @@ namespace XforumTest.Services
                          select new ForumGetAllDTO
                          {
                              ForumName = fm.ForumName,
-                             ForumId = fm.ForumId
+                             ForumId = fm.ForumId,
+                             RouteName = fm.RouteName
                          };
 
             //forums.GetAll();

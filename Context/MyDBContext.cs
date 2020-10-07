@@ -173,6 +173,10 @@ namespace XforumTest.Context
 
                 entity.Property(e => e.Img).HasMaxLength(50);
 
+                entity.Property(e => e.RouteName)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
                 entity.HasOne(d => d.Moderator)
                     .WithMany(p => p.Forums)
                     .HasForeignKey(d => d.ModeratorId)
