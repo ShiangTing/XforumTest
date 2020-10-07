@@ -111,7 +111,7 @@ namespace XforumTest.ApiController
         }
 
         /// <summary>
-        /// 上傳單張圖片的base64 string
+        /// 上傳單張圖片的base64 string 會回傳imgur網址
         /// </summary>
         /// <param name="dataURL"></param>
         /// <returns></returns>
