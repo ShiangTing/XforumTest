@@ -7,6 +7,6 @@ namespace XforumTest.Interface
 {
     public interface IImgService
     {
-
+        void UploadImage();
     }
 }

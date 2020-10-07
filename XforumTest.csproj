@@ -1,10 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
 	<PropertyGroup>
 		<TargetFramework>netcoreapp3.1</TargetFramework>
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="Imgur.API" Version="5.0.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication" Version="2.2.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.8" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.8">
@@ -23,12 +24,13 @@
 		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.7.1" />
 	</ItemGroup>
 
-	<ItemGroup>
-		<Folder Include="Context\" />
-	</ItemGroup>
+	
 
-	<ItemGroup>
-		<None Include="XforumTest.sln" />
-	</ItemGroup>
-
+  <ItemGroup>
+    <Folder Include="Context\" />
+  </ItemGroup>
+  <PropertyGroup>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);1591</NoWarn>
+  </PropertyGroup>
 </Project>

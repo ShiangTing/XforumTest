@@ -16,6 +16,7 @@ namespace XforumTest.DataTable
         public Guid? ModeratorId { get; set; }
         public string Description { get; set; }
         public string ForumName { get; set; }
+        public string RouteName { get; set; }
 
         public virtual ForumMembers Moderator { get; set; }
         public virtual ICollection<Posts> Posts { get; set; }

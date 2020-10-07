@@ -27,19 +27,22 @@ namespace XforumTest.Services
             try
             {
                 var repository = new GeneralRepository<ReposiveMessages>(context);
-
+                var postRepo = new GeneralRepository<Posts>(context);
+          
                 ReposiveMessages messages = new ReposiveMessages()
-                {
-                    MessageId = Guid.NewGuid(),
-                    Context = dto.Context,
-                    LikeNumber = dto.LikeNumber,
-                    DisLikeNumber = dto.DisLikeNumber,
-                    CreatedDate = DateTime.Now,
-                    PostId = dto.PostId
-                };
+                    {
+                        MessageId = Guid.NewGuid(),
+                        Context = dto.Context,
+                        LikeNumber = dto.LikeNumber,
+                        DisLikeNumber = dto.DisLikeNumber,
+                        CreatedDate = DateTime.Now,
+                        PostId = dto.PostId
+                    };
 
+                    repository.Create(messages);
+                    repository.SaveContext();
 
-                repository.SaveContext();
+             
 
             }
 
@@ -58,9 +61,15 @@ namespace XforumTest.Services
 
                 var repository = new GeneralRepository<ReposiveMessages>(context);
                 var deletMessage = repository.GetFirst(x => x.MessageId==id);
+                if (deletMessage != null)
+                {
+                    repository.Delete(deletMessage);
+                    repository.SaveContext();
+                }
+                else
+                {
 
-                repository.Delete(deletMessage);
-                repository.SaveContext();
+                }
 
             }
 
@@ -70,29 +79,42 @@ namespace XforumTest.Services
             }
         }
 
+
+
         public async Task<List<RMessageDTO>> GetAllbyPostId(Guid postId)
         {
             var repository = new GeneralRepository<ReposiveMessages>(context);
-            var memberRepository = new GeneralRepository<ForumMembers>(context);
-            var mDto = new RMessageDTO();
+            var postRepo = new GeneralRepository<ForumMembers>(context);
+            var pRepo = new GeneralRepository<Posts>(context);
+            var post = pRepo.GetAll().Where(x=>x.PostId==postId);
 
-            var mRepo = from m in repository.GetAll()
-                        join u in memberRepository.GetAll()
-                        on m.UserId equals u.UserId
-                        where m.MessageId == postId
-                        select new RMessageDTO
-                        {
-                            MessageId = m.MessageId,
-                            LikeNumber = m.LikeNumber,
-                            DisLikeNumber = m.DisLikeNumber,
-                            PostId = m.PostId,
-                            CreatedDate = m.CreatedDate,
-                            Context = m.Context,
-                            UserId = (Guid)m.UserId
-                        };
+            
+         //   if (post != null)
+          //  {
+                var mRepo = from m in repository.GetAll()
+                            where m.PostId == postId
+                            join p in postRepo.GetAll()
+                            on m.UserId equals p.UserId
+                            select new RMessageDTO
+                            {
+                                MessageId = m.MessageId,
+                                LikeNumber = m.LikeNumber,
+                                DisLikeNumber = m.DisLikeNumber,
+                                PostId = m.PostId,
+                                CreatedDate = m.CreatedDate,
+                                Context = m.Context,
+                                UserId = (Guid)m.UserId,
+                                UserName = p.Name
+                            };
+                return await mRepo.ToListAsync();
+        //    }
 
 
-            return await mRepo.ToListAsync();
+           // else
+           // {
+              //  return null;
+        //    }
+           
         }
 
 

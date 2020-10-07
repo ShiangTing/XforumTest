@@ -9,6 +9,7 @@ namespace XforumTest.DTO
     {
         public string ForumName { get; set; }
         public Guid? ForumId { get; set; }
+        public string RouteName { get; set; }
     }
 
     public class ForumCreate

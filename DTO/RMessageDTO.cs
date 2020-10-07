@@ -13,6 +13,8 @@ namespace XforumTest.DTO
         public string Context { get; set; }
         public int? LikeNumber { get; set; }
         public int? DisLikeNumber { get; set; }
+
+        public string UserName { get; set; }
         public DateTime? CreatedDate { get; set; }
 
         public Guid UserId { get; set; }
