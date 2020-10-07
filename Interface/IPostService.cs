@@ -2,18 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using XforumTest.DTO;
 
 namespace XforumTest.Interface
 {
     public interface IPostService
     {
-        void Create();
-        void Find();
+        void Create(PostDto po);
         void Delete();
         void Edit();
-        void GetAll();
-        void GetSingleByFourm();
-        void GetLike();
-        void GetDislike();
+        IQueryable<PostListDto> GetAll();
+        void GetSingle();
     }
 }
