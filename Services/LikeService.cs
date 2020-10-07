@@ -7,7 +7,6 @@ using XforumTest.DataTable;
 using XforumTest.DTO;
 using XforumTest.Interface;
 using XforumTest.Repository;
-using XforumTest.ViewModels;
 
 namespace XforumTest.Services
 {
