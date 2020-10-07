@@ -17,8 +17,8 @@ namespace XforumTest.Services
         GeneralRepository<ForumMembers> users = new GeneralRepository<ForumMembers>(db);
         public void Create(PostDto model)
         {
-            //try
-            //{
+            try
+            {
                 var po = new Posts
                 {
                     PostId = Guid.NewGuid(),
@@ -33,11 +33,11 @@ namespace XforumTest.Services
                 posts.Create(po);
                 posts.SaveContext();
 
-            //}
-            //catch(Exception ex)
-            //{
+            }
+            catch (Exception ex)
+            {
 
-            //}
+            }
 
         }
 
@@ -60,7 +60,7 @@ namespace XforumTest.Services
             var pList = from p in posts.GetAll()
                         join u in users.GetAll()
                         on p.UserId equals u.UserId
-                        select new PostListDto()
+                        select new PostListDto
                         {
                             ForumId = p.ForumId,
                             PostId = p.PostId,
@@ -68,7 +68,8 @@ namespace XforumTest.Services
                             Description = p.Description,
                             CreatedDate = p.CreatedDate,
                             UserId = p.UserId,
-                            UserName = u.Name
+                            UserName = u.Name,
+                            State = p.State
                         };
             return pList;
 

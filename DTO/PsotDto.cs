@@ -14,6 +14,6 @@ namespace XforumTest.DTO
         //public string Img { get; set; }
         public DateTime? CreatedDate { get; set; }
         public string UserId { get; set; }
-        //public bool State { get; set; }
+        public bool State { get; set; }
     }
 }

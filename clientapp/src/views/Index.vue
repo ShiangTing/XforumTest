@@ -38,7 +38,8 @@
                 <span class="pl-4">{{ article.userName }}</span>
                 <h5 class="py-3">{{ article.threadName }}</h5>
                 <h5>{{ article.title }}</h5>
-                <p class="ellipsis">{{ article.content }}</p>
+                <div :id="'article' + index"></div>
+                <p>{{ article.createdDate }}</p>
               </div>
             </div>
             <!-- </div> -->
@@ -81,101 +82,20 @@ export default {
 
       detective: detectiveImg,
 
-      articles: [
-        {
-          userName: "Amy",
-          threadName: "推理懸疑區",
-          title: "標題1",
-          content:
-            "Lorem ipsum dolor sit amet consectetur, adipisicing elit.Minus odit excepturi dicta blanditiis obcaecati dolores assumenda. Fugiat, unde quidem magnam quis, tempore sitmolestiae at esse, perferendis provident excepturi mollitia?",
-        },
-        {
-          userName: "Eric",
-
-          threadName: "心情閒聊區",
-          title: "標題2",
-          content:
-            "Lorem ipsum dolor sit amet consectetur, adipisicing elit.Minus odit excepturi dicta blanditiis obcaecati dolores assumenda. Fugiat, unde quidem magnam quis, tempore sitmolestiae at esse, perferendis provident excepturi mollitia?",
-        },
-        {
-          userName: "John",
-          threadName: "推理懸疑區",
-          title: "標題3",
-          content:
-            "Lorem ipsum dolor sit amet consectetur, adipisicing elit.Minus odit excepturi dicta blanditiis obcaecati dolores assumenda. Fugiat, unde quidem magnam quis, tempore sitmolestiae at esse, perferendis provident excepturi mollitia?",
-        },
-        {
-          userName: "Allen",
-          threadName: "心情閒聊區",
-          title: "標題4",
-          content:
-            "Lorem ipsum dolor sit amet consectetur, adipisicing elit.Minus odit excepturi dicta blanditiis obcaecati dolores assumenda. Fugiat, unde quidem magnam quis, tempore sitmolestiae at esse, perferendis provident excepturi mollitia?",
-        },
-        {
-          userName: "Allen",
-          threadName: "心情閒聊區",
-          title: "標題5",
-          content:
-            "Lorem ipsum dolor sit amet consectetur, adipisicing elit.Minus odit excepturi dicta blanditiis obcaecati dolores assumenda. Fugiat, unde quidem magnam quis, tempore sitmolestiae at esse, perferendis provident excepturi mollitia?",
-        },
-        {
-          userName: "Allen",
-          threadName: "心情閒聊區",
-          title: "標題6",
-          content:
-            "Lorem ipsum dolor sit amet consectetur, adipisicing elit.Minus odit excepturi dicta blanditiis obcaecati dolores assumenda. Fugiat, unde quidem magnam quis, tempore sitmolestiae at esse, perferendis provident excepturi mollitia?",
-        },
-        {
-          userName: "Allen",
-          threadName: "心情閒聊區",
-          title: "標題7",
-          content:
-            "Lorem ipsum dolor sit amet consectetur, adipisicing elit.Minus odit excepturi dicta blanditiis obcaecati dolores assumenda. Fugiat, unde quidem magnam quis, tempore sitmolestiae at esse, perferendis provident excepturi mollitia?",
-        },
-        {
-          userName: "Allen",
-          threadName: "心情閒聊區",
-          title: "標題8",
-          content:
-            "Lorem ipsum dolor sit amet consectetur, adipisicing elit.Minus odit excepturi dicta blanditiis obcaecati dolores assumenda. Fugiat, unde quidem magnam quis, tempore sitmolestiae at esse, perferendis provident excepturi mollitia?",
-        },
-        {
-          userName: "Allen",
-          threadName: "心情閒聊區",
-          title: "標題8",
-          content:
-            "Lorem ipsum dolor sit amet consectetur, adipisicing elit.Minus odit excepturi dicta blanditiis obcaecati dolores assumenda. Fugiat, unde quidem magnam quis, tempore sitmolestiae at esse, perferendis provident excepturi mollitia?",
-        },
-        {
-          userName: "Allen",
-          threadName: "心情閒聊區",
-          title: "標題9",
-          content:
-            "Lorem ipsum dolor sit amet consectetur, adipisicing elit.Minus odit excepturi dicta blanditiis obcaecati dolores assumenda. Fugiat, unde quidem magnam quis, tempore sitmolestiae at esse, perferendis provident excepturi mollitia?",
-        },
-        {
-          userName: "Allen",
-          threadName: "心情閒聊區",
-          title: "標題10",
-          content:
-            "Lorem ipsum dolor sit amet consectetur, adipisicing elit.Minus odit excepturi dicta blanditiis obcaecati dolores assumenda. Fugiat, unde quidem magnam quis, tempore sitmolestiae at esse, perferendis provident excepturi mollitia?",
-        },
-        {
-          userName: "Allen",
-          threadName: "心情閒聊區",
-          title: "標題11",
-          content:
-            "Lorem ipsum dolor sit amet consectetur, adipisicing elit.Minus odit excepturi dicta blanditiis obcaecati dolores assumenda. Fugiat, unde quidem magnam quis, tempore sitmolestiae at esse, perferendis provident excepturi mollitia?",
-        },
-        {
-          userName: "Allen",
-          threadName: "心情閒聊區",
-          title: "標題12",
-          content:
-            "Lorem ipsum dolor sit amet consectetur, adipisicing elit.Minus odit excepturi dicta blanditiis obcaecati dolores assumenda. Fugiat, unde quidem magnam quis, tempore sitmolestiae at esse, perferendis provident excepturi mollitia?",
-        },
-      ],
+      articles: [],
     };
+  },
+  watch: {
+    articles: function() {
+      if (this.articles.length > 0) {
+        // this.articles.forEach((item, index) => {
+        //   console.log("article" + index);
+        //   let temp = document.getElementById("article" + index);
+        //   console.log(temp);
+        //   temp.innerHTML = item.description;
+        // });
+      }
+    },
   },
   methods: {
     //  async fetchData() {
@@ -213,12 +133,25 @@ export default {
     },
 
     GetAll() {
-      const url = process.env.VUE_APP_API + "/api/Forum/GetAll";
+      const url = process.env.VUE_APP_API + "/api/Post/GetAllPosts";
       axios
         .get(url)
         .then((response) => {
           console.log(response);
-          response.console.log("成功");
+          console.log("成功");
+
+          response.data.forEach((item) => {
+            console.log(item);
+            this.articles.push(item);
+          });
+          this.$nextTick(() => {
+            this.articles.forEach((item, index) => {
+              console.log("article" + index);
+              let temp = document.getElementById("article" + index);
+              console.log(temp);
+              temp.innerHTML = item.description;
+            });
+          });
         })
         .catch((err) => {
           console.log(err);
