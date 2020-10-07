@@ -12,6 +12,8 @@
 </template>
 
 <script>
+
+// import axios from "axios";
 export default {
   data() {
     return {
@@ -76,6 +78,37 @@ export default {
     //   }, 100);
     // },
   },
+
+  // mounted(){
+
+  //     const url = process.env.VUE_APP_API + "/api/Forum/GetAll";
+  //     axios
+  //       .get(url)
+  //       .then((response) => {
+  //         console.log(response);
+  //         console.log("成功");
+
+  //         response.data.forEach((item) => {
+          
+  //           this.threads.name.push(item);
+  //         });
+  //         // this.$nextTick(() => {
+  //         //   this.articles.forEach((item, index) => {
+  //         //     console.log("article" + index);
+  //         //     let temp = document.getElementById("article" + index);
+  //         //     console.log(temp);
+  //         //     temp.innerHTML = item.description;
+  //         //   });
+  //         // });
+  //       })
+  //       .catch((err) => {
+  //         console.log(err);
+  //       });
+  //   },
+
+
+
+  
 };
 </script>
 

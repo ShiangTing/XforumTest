@@ -103,6 +103,7 @@ export default {
     onEditorFocus() {}, // 獲得焦點事件
     onEditorChange() {}, // 內容改變事件
     saveHtml: function() {
+      let vm =this;
       this.replyObj.ForumId = "e356a9a0-5f15-4c75-a2dc-19011a823fb3";
 
       this.replyObj.Title = this.titleContent;
@@ -119,6 +120,7 @@ export default {
         .then((response) => {
           console.log(response);
           console.log("成功");
+          vm.$router.push("/");
         })
         .catch((err) => {
           console.log(err);
