@@ -17,7 +17,7 @@ namespace XforumTest.ApiController
     {
 
         /// <summary>
-        /// 圖片上傳測試格式1
+        /// 圖片上傳測試格式1(base64資料與 postid)
         /// </summary>
         /// <param name="bas464StringList"></param>
         /// <param name="id"></param>
@@ -63,7 +63,7 @@ namespace XforumTest.ApiController
         }
 
         /// <summary>
-        /// 圖片上傳測試格式2
+        /// 圖片上傳測試格式2(files與 postid)
         /// </summary>
         /// <param name="files"></param>
         /// <param name="id"></param>
