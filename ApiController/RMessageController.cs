@@ -90,7 +90,7 @@ namespace XforumTest.ApiController
         {
             if (!ModelState.IsValid)
             {
-                var service = new LikeService2();
+                var service = new LikeService();
                 service.PostLikeAndDisLike(Dto);
                 return Ok("create msg");
             }

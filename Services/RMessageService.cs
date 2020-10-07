@@ -28,10 +28,7 @@ namespace XforumTest.Services
             {
                 var repository = new GeneralRepository<ReposiveMessages>(context);
                 var postRepo = new GeneralRepository<Posts>(context);
-                //  if (postRepo.GetAll().FirstOrDefault(x => x.PostId == dto.PostId) != null)
-                //  {
-            
-
+          
                 ReposiveMessages messages = new ReposiveMessages()
                     {
                         MessageId = Guid.NewGuid(),
@@ -44,7 +41,7 @@ namespace XforumTest.Services
 
                     repository.Create(messages);
                     repository.SaveContext();
-               // }
+
              
 
             }
@@ -87,24 +84,37 @@ namespace XforumTest.Services
         public async Task<List<RMessageDTO>> GetAllbyPostId(Guid postId)
         {
             var repository = new GeneralRepository<ReposiveMessages>(context);
-            //var memberRepository = new GeneralRepository<ForumMembers>(context);
-            //var mDto = new RMessageDTO();
-            //if (repository.getall().getfirst(x=>x.messageId==postid)!=null)
-            var mRepo = from m in repository.GetAll()
-                        where m.MessageId == postId
-                        select new RMessageDTO
-                        {
-                            MessageId = m.MessageId,
-                            LikeNumber = m.LikeNumber,
-                            DisLikeNumber = m.DisLikeNumber,
-                            PostId = m.PostId,
-                            CreatedDate = m.CreatedDate,
-                            Context = m.Context,
-                            UserId = (Guid)m.UserId
-                        };
+            var postRepo = new GeneralRepository<ForumMembers>(context);
+            var pRepo = new GeneralRepository<Posts>(context);
+            var post = pRepo.GetAll().Where(x=>x.PostId==postId);
+
+            
+         //   if (post != null)
+          //  {
+                var mRepo = from m in repository.GetAll()
+                            where m.PostId == postId
+                            join p in postRepo.GetAll()
+                            on m.UserId equals p.UserId
+                            select new RMessageDTO
+                            {
+                                MessageId = m.MessageId,
+                                LikeNumber = m.LikeNumber,
+                                DisLikeNumber = m.DisLikeNumber,
+                                PostId = m.PostId,
+                                CreatedDate = m.CreatedDate,
+                                Context = m.Context,
+                                UserId = (Guid)m.UserId,
+                                UserName = p.Name
+                            };
+                return await mRepo.ToListAsync();
+        //    }
 
 
-            return await mRepo.ToListAsync();
+           // else
+           // {
+              //  return null;
+        //    }
+           
         }
 
 

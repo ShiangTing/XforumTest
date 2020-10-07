@@ -68,7 +68,7 @@ namespace XforumTest.ApiController
         /// <param name="files"></param>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpPost]
+        [HttpPut]
         public async Task<IActionResult> Upload(List<IFormFile> files, Guid id)
         {
             var service = new ImgService();
