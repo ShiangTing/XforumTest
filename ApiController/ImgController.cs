@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -8,6 +9,7 @@ using Imgur.API.Endpoints;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using XforumTest.Services;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace XforumTest.ApiController
 {
@@ -16,51 +18,46 @@ namespace XforumTest.ApiController
     public class ImgController : ControllerBase
     {
 
-        /// <summary>
-        /// 圖片上傳測試格式1(base64資料與 postid)
-        /// </summary>
-        /// <param name="bas464StringList"></param>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        [HttpPost]
-        public async Task<IActionResult> Upload(string[] bas464StringList,Guid id)
-        {
-            var guid = Guid.NewGuid();
-            var service = new ImgService();
-            if (bas464StringList != null)
-            {
 
-                var imgList = new List<string>();//controllerbase
-                foreach(var bytes in bas464StringList)
-                {
-                    byte[] a = Convert.FromBase64String(bytes);
-                    string b = System.Text.Encoding.UTF8.GetString(a);
-                    imgList.Add(b);
-                }
-                
-                //Imgurapi
-                var apiClient = new ApiClient("0a9f2fb7434821b", "60f9a494f1607de3b90582298fc88c8e29560199");
-                var httpClient = new HttpClient();
+        //[HttpPost]
+        //public async Task<IActionResult> Upload(string[] bas464StringList)
+        //{
+        //    var guid = Guid.NewGuid();
+        //    var service = new ImgService();
+        //    if (bas464StringList != null)
+        //    {
 
-                var imageEndpoint = new ImageEndpoint(apiClient, httpClient);
+        //        var imgList = new List<string>();//controllerbase
+        //        foreach (var bytes in bas464StringList)
+        //        {
+        //            byte[] a = Convert.FromBase64String(bytes);
+        //            string b = System.Text.Encoding.UTF8.GetString(a);
+        //            imgList.Add(b);
+        //        }
 
-                var testList = new List<string>();
-                foreach (var file in imgList)
-                {
-                    var imageUpload = await imageEndpoint.UploadImageAsync(file);
-                    testList.Add(imageUpload.Link);
-                  
-                }
-                var stringTest = String.Join(",", testList);
-                service.UploadImage(id, stringTest);
+        //        //Imgurapi
+        //        var apiClient = new ApiClient("0a9f2fb7434821b", "60f9a494f1607de3b90582298fc88c8e29560199");
+        //        var httpClient = new HttpClient();
+
+        //        var imageEndpoint = new ImageEndpoint(apiClient, httpClient);
+
+        //        var testList = new List<string>();
+        //        foreach (var file in imgList)
+        //        {
+        //            var imageUpload = await imageEndpoint.UploadImageAsync(file);
+        //            testList.Add(imageUpload.Link);
+        //            return testList;
+        //        }
+        //        // var stringTest = String.Join(",", testList);
+        //        //  service.UploadImage(id, stringTest);
 
 
 
-            }
+        //    }
 
 
-            return Content("Uploadimg");
-        }
+        //    return Content("Uploadimg");
+        //}
 
         /// <summary>
         /// 圖片上傳測試格式2(files與 postid)
@@ -78,21 +75,21 @@ namespace XforumTest.ApiController
 
                 // var File = HttpContext.Current.Request.Files[0];
                 var imgList = new List<string>();//controllerbase
-                foreach(var bytes in files)
+                foreach (var bytes in files)
                 {
                     byte[] a = Convert.FromBase64String(bytes.FileName);
                     string b = System.Text.Encoding.UTF8.GetString(a);
                     imgList.Add(b);
                 }
-                
+
                 //Imgurapi
                 var apiClient = new ApiClient("0a9f2fb7434821b", "60f9a494f1607de3b90582298fc88c8e29560199");
                 var httpClient = new HttpClient();
 
                 var imageEndpoint = new ImageEndpoint(apiClient, httpClient);
 
-                
-               
+
+
                 var testList = new List<string>();
                 foreach (var file in imgList)
                 {
@@ -111,6 +108,43 @@ namespace XforumTest.ApiController
 
 
             return Content("Uploadimg");
+        }
+
+        /// <summary>
+        /// 上傳單張圖片的base64 string
+        /// </summary>
+        /// <param name="dataURL"></param>
+        /// <returns></returns>
+
+        [HttpPost]
+         public async Task<string> UploadImg([FromBody]string dataURL)
+        {
+
+            if (dataURL != null)
+            {
+                //convert base64 to byte[]
+                byte[] imageBytes = Convert.FromBase64String(dataURL);
+
+                //convert  byte[] to imgStream
+               // var imgStream = System.Text.Encoding.UTF8.GetString(imageBytes);
+                var imgStream = new MemoryStream(imageBytes);
+
+                //Imgurapi
+                var apiClient = new ApiClient("0a9f2fb7434821b", "60f9a494f1607de3b90582298fc88c8e29560199");
+                var httpClient = new HttpClient();
+                var imageEndpoint = new ImageEndpoint(apiClient, httpClient);
+                var imageUpload = await imageEndpoint.UploadImageAsync(imgStream);
+
+
+                return imageUpload.Link;
+
+
+            }
+
+            else
+            {
+                return "dataURL= null";
+            }
         }
     }
 }
