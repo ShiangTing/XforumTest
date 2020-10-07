@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-//using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -34,7 +34,7 @@ namespace XforumTest
             services.AddControllersWithViews();
             services.AddCors(options =>
             {
-                // CorsPolicy ¬O¦Û­qªº Policy ¦WºÙ
+                // CorsPolicy ï¿½Oï¿½Û­qï¿½ï¿½ Policy ï¿½Wï¿½ï¿½
                 options.AddPolicy("CorsPolicy", policy =>
                 {
                     policy.WithOrigins("http://localhost:8080")
@@ -82,7 +82,7 @@ namespace XforumTest
             app.UseHttpsRedirection();
             app.UseCors("CorsPolicy");
             app.UseStaticFiles();
-            //¨Ï¥ÎÀRºAHtmlPage
+            //ï¿½Ï¥ï¿½ï¿½Rï¿½AHtmlPage
             app.UseStaticFiles(new StaticFileOptions
             {
                 FileProvider = new PhysicalFileProvider(
@@ -104,7 +104,7 @@ namespace XforumTest
                .AllowAnyHeader());
             app.UseAuthentication();
             app.UseAuthorization();
-            //¨Ï¥ÎJWT Middleware
+            //ï¿½Ï¥ï¿½JWT Middleware
             app.UseMiddleware<JwtMiddleware>();
             app.UseEndpoints(endpoints =>
             {
