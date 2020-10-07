@@ -5,56 +5,20 @@
       :key="index"
       @click="goToThread(thread.routeName)"
     >
-      <font-awesome-icon :icon="thread.iconName" size="lg" />
-      {{ thread.name }}
+      <!-- <font-awesome-icon :icon="thread.iconName" size="lg" /> -->
+      <span class="text-primary" style="cursor:pointer">
+        {{ thread.forumName }}</span
+      >
     </b-list-group-item>
   </b-list-group>
 </template>
 
 <script>
-
-// import axios from "axios";
+import axios from "axios";
 export default {
   data() {
     return {
-      threads: [
-        {
-          iconName: "coffee",
-          img: "talkking.jpg",
-          name: "心情閒聊區",
-          routeName: "SecretGarden",
-        },
-        {
-          img: "angry.jpg",
-          iconName: "angry",
-          name: "新書怒灌區",
-          routeName: "Talk",
-        },
-        {
-          img: "detective.png",
-          iconName: "ghost",
-          name: "推理懸疑區",
-          routeName: "Detective",
-        },
-        {
-          img: "adventure.jpg",
-          iconName: "book-dead",
-          name: "奇幻冒險區",
-          routeName: "Adventure",
-        },
-        {
-          img: "biography.jpg",
-          iconName: "user-graduate",
-          name: "人物傳記區",
-          routeName: "Biography",
-        },
-        {
-          img: "programming.jpg",
-          iconName: "user-graduate",
-          name: "程式討論區",
-          routeName: "Programming",
-        },
-      ],
+      threads: [],
     };
   },
   beforeRouteUpdate() {},
@@ -79,36 +43,21 @@ export default {
     // },
   },
 
-  // mounted(){
-
-  //     const url = process.env.VUE_APP_API + "/api/Forum/GetAll";
-  //     axios
-  //       .get(url)
-  //       .then((response) => {
-  //         console.log(response);
-  //         console.log("成功");
-
-  //         response.data.forEach((item) => {
-          
-  //           this.threads.name.push(item);
-  //         });
-  //         // this.$nextTick(() => {
-  //         //   this.articles.forEach((item, index) => {
-  //         //     console.log("article" + index);
-  //         //     let temp = document.getElementById("article" + index);
-  //         //     console.log(temp);
-  //         //     temp.innerHTML = item.description;
-  //         //   });
-  //         // });
-  //       })
-  //       .catch((err) => {
-  //         console.log(err);
-  //       });
-  //   },
-
-
-
-  
+  mounted() {
+    const url = process.env.VUE_APP_API + "/api/Forum/GetAll";
+    axios
+      .get(url)
+      .then((response) => {
+        console.log(response.data);
+        console.log("成功");
+        response.data.forEach((item) => {
+          this.threads.push(item);
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  },
 };
 </script>
 

@@ -34,7 +34,7 @@
 
         <p class="my-4">內文:</p>
 
-        <div class="edit_container">
+        <!-- <div class="edit_container">
           <quill-editor
             v-model="content"
             ref="myQuillEditor"
@@ -45,7 +45,9 @@
           >
           </quill-editor>
           <button class="mt-3" v-on:click="saveHtml">儲存</button>
-        </div>
+        </div> -->
+        <button @click="saveContent"></button>
+        <vue-editor v-model="content"></vue-editor>
       </b-col>
       <b-col></b-col>
     </b-row>
@@ -55,9 +57,18 @@
 <script>
 import Navbar from "../components/common/Navbar";
 import axios from "axios";
+
+import { VueEditor } from "vue2-editor";
+
+// Advanced Use - Hook into Quill's API for Custom Functionality
+import { VueEditor } from "vue2-editor";
+
+// import { quillRedefine } from "../../node_modules/vue-quill-editor-upload";
+
 export default {
-  components: { Navbar },
+  components: { Navbar, VueEditor },
   name: "App",
+
   data() {
     return {
       replyObj: {
@@ -69,6 +80,8 @@ export default {
         UserId: "",
         State: false,
       },
+
+      Base64Img: {},
       listData: [
         "心情閒聊區",
         "新書怒灌區",
@@ -79,9 +92,9 @@ export default {
       ],
       select: "心情閒聊區",
       titleContent: "",
-      message: "我是寫在helloworld.vue的,訊息",
-      content: `<p>hello world</p>`,
-      editorOption: {},
+      // message: "我是寫在helloworld.vue的,訊息",
+      content: "<h1>Some initial content</h1>",
+      // editorOption: {},
     };
   },
   computed: {
@@ -102,10 +115,9 @@ export default {
     onEditorBlur() {}, // 失去焦點事件
     onEditorFocus() {}, // 獲得焦點事件
     onEditorChange() {}, // 內容改變事件
-    saveHtml: function() {
-      let vm =this;
+    saveContent: function() {
+      let vm = this;
       this.replyObj.ForumId = "e356a9a0-5f15-4c75-a2dc-19011a823fb3";
-
       this.replyObj.Title = this.titleContent;
       this.replyObj.Description = this.content;
       this.replyObj.CreatedDate = new Date();
@@ -126,6 +138,42 @@ export default {
           console.log(err);
         });
     },
+    // saveToServer(result) {
+    //   this.Base64Img = result;
+    //   axios
+    //     .post(process.env.VUE_APP_API + "/api/Img", this.Base64Img)
+    //     .then((reponse) => {
+    //       console.log(reponse);
+    //     })
+    //     .catch((err) => {
+    //       console.log(err);
+    //     });
+    //   //    function saveToServer(file, editor) {
+    //   //     $.ajax({
+    //   //         url: '/api/File/UploadImage',
+    //   //         type: 'POST',
+    //   //         data: {
+    //   //             Base64: file
+    //   //         },
+    //   //         async: true,
+    //   //         success: function (response) {
+    //   //             //console.log(response);
+    //   //             insertToEditor(response.body.imageUri, editor);
+    //   //         }
+    //   //     });
+    //   // }
+    // },
+  },
+
+  mounted() {
+    // let OnloadimgBtn = document.querySelector(".ql-image");
+    // OnloadimgBtn.addEventListener("click", function() {
+    //   var reader = new FileReader();
+    //   reader.onloadend = function() {
+    //     saveToServer(reader.result);
+    //   };
+    //   // reader.readAsDataURL(file);
+    // });
   },
 };
 </script>
