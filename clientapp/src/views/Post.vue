@@ -62,11 +62,12 @@ export default {
     return {
       replyObj: {
         ForumId: "",
-        PostId: "",
+        PostId: null,
         Title: "",
         Description: "",
         CreatedDate: "",
         UserId: "",
+        State: false,
       },
       listData: [
         "心情閒聊區",
@@ -103,11 +104,12 @@ export default {
     onEditorChange() {}, // 內容改變事件
     saveHtml: function() {
       this.replyObj.ForumId = "e356a9a0-5f15-4c75-a2dc-19011a823fb3";
-      this.replyObj.PostId = "";
+
       this.replyObj.Title = this.titleContent;
       this.replyObj.Description = this.content;
-      this.replyObj.CreatedDate = "";
+      this.replyObj.CreatedDate = new Date();
       this.replyObj.UserId = "0e42d4e5-2cbb-47dc-b7e9-25c1bac99ef5";
+      this.replyObj.State = true;
       // let json = JSON.stringify(this.replyObj);
       console.log(process.env.VUE_APP_API + "/api/Post/Create");
       // let json = JSON.stringify(this.replyObj);

@@ -8,7 +8,7 @@ namespace XforumTest.DTO
     public class PostDto
     {
         public string ForumId { get; set; }
-        public Guid PostId { get; set; }
+        public Guid? PostId { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
         //public string Img { get; set; }
