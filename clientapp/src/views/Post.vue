@@ -55,9 +55,12 @@
 <script>
 import Navbar from "../components/common/Navbar";
 import axios from "axios";
+// import { quillRedefine } from "../../node_modules/vue-quill-editor-upload";
+
 export default {
   components: { Navbar },
   name: "App",
+
   data() {
     return {
       replyObj: {
@@ -103,7 +106,7 @@ export default {
     onEditorFocus() {}, // 獲得焦點事件
     onEditorChange() {}, // 內容改變事件
     saveHtml: function() {
-      let vm =this;
+      let vm = this;
       this.replyObj.ForumId = "e356a9a0-5f15-4c75-a2dc-19011a823fb3";
 
       this.replyObj.Title = this.titleContent;
@@ -127,6 +130,7 @@ export default {
         });
     },
   },
+  created() {},
 };
 </script>
 
