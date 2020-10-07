@@ -16,8 +16,8 @@ namespace XforumTest.Services
         GeneralRepository<Posts> posts = new GeneralRepository<Posts>(db);
         public void Create(PostDto model)
         {
-            //try
-            //{
+            try
+            {
                 var po = new Posts
                 {
                     PostId = Guid.NewGuid(),
@@ -32,11 +32,11 @@ namespace XforumTest.Services
                 posts.Create(po);
                 posts.SaveContext();
 
-            //}
-            //catch(Exception ex)
-            //{
+            }
+            catch (Exception ex)
+            {
 
-            //}
+            }
 
         }
 
