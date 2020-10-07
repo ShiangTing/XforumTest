@@ -54,7 +54,7 @@ namespace XforumTest.ApiController
         }
 
         /// <summary>
-        /// 取得所有版資料
+        /// 取得所有版名字與Id
         /// </summary>
         /// <returns></returns>
         [HttpGet]

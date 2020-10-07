@@ -7,8 +7,8 @@ namespace XforumTest.DTO
 {
     public class ForumGetAllDTO
     {
-        public string UserName { get; set; }
-        public int Age { get; set; }
+        public string ForumName { get; set; }
+        public Guid? ForumId { get; set; }
     }
 
     public class ForumCreate
