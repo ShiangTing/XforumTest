@@ -7,7 +7,7 @@ namespace XforumTest.Services
 {
    
 
-    public class ApiResult
+    public class ApiResult <T> where T :class
     {
 
         public ApiResult(int status,string err,Object result)

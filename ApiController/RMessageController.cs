@@ -8,6 +8,7 @@ using XforumTest.DataTable;
 using XforumTest.DTO;
 using XforumTest.Interface;
 using XforumTest.Services;
+using static XforumTest.Services.ApiResult;
 
 namespace XforumTest.ApiController
 {
@@ -28,11 +29,11 @@ namespace XforumTest.ApiController
                 var service = new RMessageService();
                 service.Create(dto);
 
-                return Ok("create msg");
+                return Ok(); //new ApiResult( 0,"none","none");
             }
             else
             {
-                return BadRequest("model wrong");
+                return BadRequest();    new ApiResult( 1, "a", "a");
             }
         }
 

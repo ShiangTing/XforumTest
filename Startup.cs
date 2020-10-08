@@ -34,7 +34,7 @@ namespace XforumTest
             services.AddControllersWithViews();
             services.AddCors(options =>
             {
-                // CorsPolicy �O�ۭq�� Policy �W��
+                
                 options.AddPolicy("CorsPolicy", policy =>
                 {
                     policy.WithOrigins("http://localhost:8080")
@@ -107,14 +107,16 @@ namespace XforumTest
             }
             app.UseHttpsRedirection();
             app.UseCors("CorsPolicy");
+
             app.UseStaticFiles();
-            //�ϥ��R�AHtmlPage
+
             app.UseStaticFiles(new StaticFileOptions
             {
                 FileProvider = new PhysicalFileProvider(
                     Path.Combine(Directory.GetCurrentDirectory(), "HtmlPages")),
                 RequestPath = "/HtmlPages"
             });
+         //   app.UseExceptionHandler("/api/error");
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();
             // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
@@ -130,7 +132,7 @@ namespace XforumTest
                .AllowAnyHeader());
             app.UseAuthentication();
             app.UseAuthorization();
-            //�ϥ�JWT Middleware
+         
             app.UseMiddleware<JwtMiddleware>();
             app.UseEndpoints(endpoints =>
             {
