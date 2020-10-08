@@ -51,15 +51,22 @@ namespace XforumTest.ApiController
             }
             return Ok();
         }
+    
+        
         /// <summary>
         /// 取得所有的留言資訊
         /// </summary>
-        /// <returns></returns>
+
         [HttpGet]
-        public IQueryable<PostListDto> GetAllPosts()
+        public async Task<ActionResult<IEnumerable<PostListDto>>> GetAllPosts()
         {
-            return post.GetAll();
+           
+                
+                return await post.GetAll();
+        
         }
+
+
 
     }
 }

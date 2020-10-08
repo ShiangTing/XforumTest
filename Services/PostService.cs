@@ -7,6 +7,7 @@ using XforumTest.Interface;
 using XforumTest.DTO;
 using XforumTest.DataTable;
 using XforumTest.Repository;
+using Microsoft.EntityFrameworkCore;
 
 namespace XforumTest.Services
 {
@@ -88,7 +89,7 @@ namespace XforumTest.Services
         /// <summary>
         /// 取得所有的發文
         /// </summary>
-        public IQueryable<PostListDto> GetAll()
+        public async Task<List<PostListDto>> GetAll()
         {
 
             var pList = from p in posts.GetAll()
@@ -105,10 +106,15 @@ namespace XforumTest.Services
                             UserName = u.Name,
                             State = p.State
                         };
-            return pList;
+            return await pList.ToListAsync();
 
 
 
+        }
+
+        IQueryable<PostListDto> IPostService.GetAll()
+        {
+            throw new NotImplementedException();
         }
     }
 }
