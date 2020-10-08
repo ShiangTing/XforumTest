@@ -47,6 +47,7 @@ namespace XforumTest
             services.AddControllers();
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IMessageService, RMessageService>();
             //services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
             //{
             //    options.IncludeErrorDetails = true;

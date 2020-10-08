@@ -17,6 +17,17 @@ namespace XforumTest.ApiController
     [ApiController]
     public class RMessageController : ControllerBase
     {
+        private ApiResult<RMessageDTO> results;
+        
+        private IMessageService _messageService;
+       
+        
+        public RMessageController(IMessageService messageService)
+        {
+            _messageService = messageService;
+        }
+        
+        
         /// <summary>
         /// 留言
         /// </summary>
@@ -28,17 +39,15 @@ namespace XforumTest.ApiController
             var result = new ApiResult<RMessageDTO>();
             if (!ModelState.IsValid)
             {
-                var service = new RMessageService();
-                service.Create(dto);
+               // var service = new RMessageService();
+                _messageService.Create(dto);
 
                 return  result;
             }
             else
             {
-                result.Status="1111";
-                result.Success=false;
-                result.ErrorMsg = "dto is null";
-                return result;
+      
+                return new ApiResult<RMessageDTO>("dto");
             }
         }
 
@@ -56,17 +65,15 @@ namespace XforumTest.ApiController
 
             if (postId != null)
             {
-                var service = new RMessageService();
-                result.Data = await service.GetAllbyPostId(postId);
+              //  var service = new RMessageService();
+                result.Data = await _messageService.GetAllbyPostId(postId);
                 return result;
 
             }
             else
             {
-                result.Status = "1111";
-                result.Success = false;
-                result.ErrorMsg = "dto is null";
-                return result;
+   
+                return new ApiResult<List<RMessageDTO>>("postId"); 
             }
         }
 
@@ -77,20 +84,22 @@ namespace XforumTest.ApiController
         /// <param name="mId"></param>
         /// <returns></returns>
         [HttpDelete]
-        //public ApiResult<RMessageDTO> DeleteMessages(Guid mId)
-        //{
-        //    if (mId != null)
-        //    {
-        //        var service = new RMessageService();
-        //        service.Delete(mId);
-        //        return new ApiResult<RMessageDTO>(mId);
-        //    }
-        //    else
-        //    {
-        //        return new ApiResult<RMessageDTO>("Id is null");
-        //    }
-           
-        //}
+        public ApiResult<RMessageDTO> DeleteMessages(Guid mId)
+        {
+            var result = new ApiResult<RMessageDTO>();
+            if (mId != null)
+            {
+                // var service = new RMessageService();
+                _messageService.Delete(mId);
+                return result;
+            }
+            else
+            {
+             
+                return new ApiResult<RMessageDTO>("Id");
+            }
+
+        }
 
 
         /// <summary>
@@ -99,20 +108,22 @@ namespace XforumTest.ApiController
         /// <param name="Dto"></param>
         /// <returns></returns>
         [HttpPut]
-        public IActionResult PostLikeAndDisLike(MessageLikeDto Dto)
+        public ApiResult<RMessageDTO> PostLikeAndDisLike(MessageLikeDto Dto)
         {
+            var result = new ApiResult<RMessageDTO>();
+
             if (!ModelState.IsValid)
             {
                 var service = new LikeService();
                 service.PostLikeAndDisLike(Dto);
-                return Ok("create msg");
+                return result;
             }
             else
             {
-                return BadRequest("Dto wrong");
+                return new ApiResult<RMessageDTO>("Dto");
             }
-           
+
         }
-    
+
     }
 }

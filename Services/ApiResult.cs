@@ -11,7 +11,7 @@ namespace XforumTest.Services
         /// <summary>
         /// 是否成功
         /// </summary>
-        public bool Success { get; set; } 
+        public bool Issuccessful { get; set; } 
 
 
         /// <summary>
@@ -28,26 +28,18 @@ namespace XforumTest.Services
 
         public ApiResult()
         {
-            Success = true;
+            Issuccessful = true;
             Status = "0000";
             ErrorMsg = "no error";
         }
-    
+        
+        public ApiResult(string error)
+        {
+            Issuccessful = false;
+            Status = "0001";
+            ErrorMsg = $"{error} is null" ;
+        }
 
-        //public class ApiError : ApiResult<object>
-        //{
-        //    /// <summary>
-        //    /// 建立失敗結果
-        //    /// </summary>
-        //    /// <param name="code"></param>
-        //    /// <param name="message"></param>
-        //    public ApiError(string code, string message)
-        //    {
-        //        Status = code;
-        //        Succ = false;
 
-        //        ErrorMsg = message;
-        //    }
-        //}
     }
 }

@@ -90,13 +90,23 @@ namespace XforumTest.Services
 
 
 
-            var ms = repository.GetAll().Where(x => x.PostId == postId);
+            var ms = repository.GetAll().Where(x => x.PostId == postId)
+                     .Select(x=>new RMessageDTO() {
+                        MessageId = x.MessageId,
+                        LikeNumber = x.LikeNumber,
+                        DisLikeNumber = x.DisLikeNumber,
+                         PostId = x.PostId,
+                         CreatedDate = x.CreatedDate,
+                         Context = x.Context,
+                         UserId = (Guid)x.UserId,
+                        
+                     });
 
-         //   if (post != null)
-         //  {
-            var mRepo = from m in repository.GetAll()
+     
+                var mRepo = from m in repository.GetAll()
                             where m.PostId == postId
-                            from p in postRepo.GetAll()
+                            join p in postRepo.GetAll()
+                            on m.UserId equals p.UserId
                             select new RMessageDTO
                             {
                                 MessageId = m.MessageId,
@@ -109,13 +119,7 @@ namespace XforumTest.Services
                                 UserName = p.Name
                             };
                 return await mRepo.ToListAsync();
-        //    }
 
-
-           // else
-           // {
-              //  return null;
-        //    }
            
         }
 
