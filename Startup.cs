@@ -44,8 +44,9 @@ namespace XforumTest
                           .AllowCredentials();
                 });
             });
-          
+
             services.AddControllers();
+            //  services.AddControllers().AddNewtonsoftJson();
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
 
             services.AddScoped<IUserService, UserService>();
