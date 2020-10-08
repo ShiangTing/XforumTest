@@ -20,12 +20,18 @@ namespace XforumTest.Services
         //GeneralRepository<Forums> forums = new GeneralRepository<Forums>(db);
         //GeneralRepository<ForumMembers> forummembers = new GeneralRepository<ForumMembers>(db);
 
+        public ForumService()
+        {
+            db = new MyDBContext();
+        }
         public void Create(ForumCreate create)
         {
-            GeneralRepository<Forums> forums = new GeneralRepository<Forums>(db);
-            GeneralRepository<ForumMembers> forummembers = new GeneralRepository<ForumMembers>(db);
+           
             try
             {
+
+                GeneralRepository<Forums> forums = new GeneralRepository<Forums>(db);
+                GeneralRepository<ForumMembers> forummembers = new GeneralRepository<ForumMembers>(db);
                 var createforum = new Forums
                 {
                     ForumId = Guid.NewGuid(),

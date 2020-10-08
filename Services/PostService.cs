@@ -17,12 +17,18 @@ namespace XforumTest.Services
         //private static MyDBContext db = new MyDBContext();
         //GeneralRepository<Posts> posts = new GeneralRepository<Posts>(db);
         //GeneralRepository<ForumMembers> users = new GeneralRepository<ForumMembers>(db);
+
+        public PostService()
+        {
+            db = new MyDBContext();
+        }
         public void Create(PostDto model)
         {
-            GeneralRepository<Posts> posts = new GeneralRepository<Posts>(db);
-            GeneralRepository<ForumMembers> users = new GeneralRepository<ForumMembers>(db);
+          
             try
             {
+                GeneralRepository<Posts> posts = new GeneralRepository<Posts>(db);
+                GeneralRepository<ForumMembers> users = new GeneralRepository<ForumMembers>(db);
                 var po = new Posts
                 {
                     PostId = Guid.NewGuid(),
