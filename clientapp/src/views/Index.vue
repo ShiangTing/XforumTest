@@ -67,8 +67,7 @@
 import detectiveImg from "../assets/img/detective.png";
 import InfiniteLoading from "vue-infinite-loading";
 import SideBar from "../components/Home/Sidbar";
-import axios from "axios";
-// import axios from "axios";
+import axios from "axios"
 // const api = "http://hn.algolia.com/api/v1/items/:id";
 export default {
   components: {

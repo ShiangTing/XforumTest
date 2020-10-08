@@ -12,6 +12,7 @@ namespace XforumTest.DTO
         public string ForumName { get; set; }
         public Guid? ForumId { get; set; }
         public string RouteName { get; set; }
+        public string Description { get; set; }
     }
     public class ForumGetAllDTO: BaseFourmDto
     {
@@ -25,6 +26,7 @@ namespace XforumTest.DTO
         public string Img { get; set; }
         public Guid? ModeratorId { get; set; }
         public string Description { get; set; }
-   
+        public string ForumName { get; set; }
+        public bool? State { get; set; }
     }
 }

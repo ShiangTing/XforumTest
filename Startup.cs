@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -43,26 +44,29 @@ namespace XforumTest
                           .AllowCredentials();
                 });
             });
-          
+
             services.AddControllers();
+            //  services.AddControllers().AddNewtonsoftJson();
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
+
             services.AddScoped<IUserService, UserService>();
-            services.AddScoped<IMessageService, RMessageService>();
-            //services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
-            //{
-            //    options.IncludeErrorDetails = true;
-            //    options.TokenValidationParameters = new TokenValidationParameters
-            //    {
-            //        NameClaimType = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier",
-            //        RoleClaimType = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role",
-            //        ValidateIssuer = true,
-            //        ValidIssuer = Configuration.GetValue<string>("JwtSettings:Issuer"),
-            //        ValidateAudience = false,
-            //        ValidateLifetime = true,
-            //        ValidateIssuerSigningKey = false,
-            //        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration.GetValue<string>("JwtSettings:SignKey")))
-            //    };
-            //});
+            services.AddTransient<IJwtHelperService, JwtHelperService>();
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+            {
+                options.IncludeErrorDetails = true;
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    NameClaimType = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier",
+                    RoleClaimType = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role",
+                    ValidateIssuer = true,
+                    ValidIssuer = Configuration.GetValue<string>("JwtSettings:Issuer"),
+                    ValidateAudience = false,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = false,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration.GetValue<string>("JwtSettings:SignKey")))
+                };
+            });
 
             services.AddSwaggerGen(c =>
             {

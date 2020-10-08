@@ -12,8 +12,7 @@ namespace XforumTest.Interface
     {
         //創建論壇
         void Create(ForumCreate create);
-        void Find();
-        void Delete();
+        void Delete(string id);
 
         //編輯修改論壇資料
         void Edit(ForumCreate json);
