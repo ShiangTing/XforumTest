@@ -50,21 +50,25 @@ namespace XforumTest.ApiController
         /// <returns></returns>
 
         [HttpGet("{postId}")]
-        //public async Task<ApiResult<List<RMessageDTO>>> GetAllMessages(Guid postId)
-        //{
+        public async Task<ApiResult<List<RMessageDTO>>> GetAllMessages(Guid postId)
+        {
+            var result = new ApiResult<List<RMessageDTO>>();
 
-        //    if (postId!=null)
-        //    {
-        //        var service = new RMessageService();
-        //        //?????????
-        //        return await new ApiResult<List<RMessageDTO>>(service.GetAllbyPostId(postId));
-                    
-        //    }
-        //    else
-        //    {
-        //        return new ApiResult<List<RMessageDTO>>("Id is null");
-        //    }
-        //}
+            if (postId != null)
+            {
+                var service = new RMessageService();
+                result.Data = await service.GetAllbyPostId(postId);
+                return result;
+
+            }
+            else
+            {
+                result.Status = "1111";
+                result.Success = false;
+                result.ErrorMsg = "dto is null";
+                return result;
+            }
+        }
 
 
         /// <summary>

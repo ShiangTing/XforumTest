@@ -88,13 +88,15 @@ namespace XforumTest.Services
             var pRepo = new GeneralRepository<Posts>(context);
             var post = pRepo.GetAll().Where(x=>x.PostId==postId);
 
-            
+
+
+            var ms = repository.GetAll().Where(x => x.PostId == postId);
+
          //   if (post != null)
-          //  {
-                var mRepo = from m in repository.GetAll()
+         //  {
+            var mRepo = from m in repository.GetAll()
                             where m.PostId == postId
-                            join p in postRepo.GetAll()
-                            on m.UserId equals p.UserId
+                            from p in postRepo.GetAll()
                             select new RMessageDTO
                             {
                                 MessageId = m.MessageId,
