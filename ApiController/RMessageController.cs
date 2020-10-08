@@ -19,7 +19,7 @@ namespace XforumTest.ApiController
     {
         private ApiResult<RMessageDTO> results;
         
-        private IMessageService _messageService;
+        private readonly IMessageService _messageService;
        
         
         public RMessageController(IMessageService messageService)
@@ -108,9 +108,9 @@ namespace XforumTest.ApiController
         /// <param name="Dto"></param>
         /// <returns></returns>
         [HttpPut]
-        public ApiResult<RMessageDTO> PostLikeAndDisLike(MessageLikeDto Dto)
+        public ApiResult<MessageLikeDto> PostLikeAndDisLike(MessageLikeDto Dto)
         {
-            var result = new ApiResult<RMessageDTO>();
+            var result = new ApiResult<MessageLikeDto>();
 
             if (!ModelState.IsValid)
             {
@@ -120,7 +120,7 @@ namespace XforumTest.ApiController
             }
             else
             {
-                return new ApiResult<RMessageDTO>("Dto");
+                return new ApiResult<MessageLikeDto>("Dto");
             }
 
         }
