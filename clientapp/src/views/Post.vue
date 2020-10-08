@@ -46,8 +46,14 @@
           </quill-editor>
           <button class="mt-3" v-on:click="saveHtml">儲存</button>
         </div> -->
-        <button @click="saveContent"></button>
-        <vue-editor v-model="content"></vue-editor>
+
+        <vue-editor
+          id="editor"
+          useCustomImageHandler
+          @image-added="handleImageAdded"
+          v-model="editorContent"
+        ></vue-editor>
+        <button @click="saveContent">發文</button>
       </b-col>
       <b-col></b-col>
     </b-row>
@@ -58,11 +64,9 @@
 import Navbar from "../components/common/Navbar";
 import axios from "axios";
 
-import { VueEditor } from "vue2-editor";
-
 // Advanced Use - Hook into Quill's API for Custom Functionality
 import { VueEditor } from "vue2-editor";
-
+import Qs from "qs";
 // import { quillRedefine } from "../../node_modules/vue-quill-editor-upload";
 
 export default {
@@ -92,30 +96,57 @@ export default {
       ],
       select: "心情閒聊區",
       titleContent: "",
-      // message: "我是寫在helloworld.vue的,訊息",
-      content: "<h1>Some initial content</h1>",
-      // editorOption: {},
+      editorContent: "",
     };
   },
-  computed: {
-    editor() {
-      return this.$refs.myQuillEditor.quill;
-    },
-  },
   methods: {
-    updated() {
-      this.$refs.select.selectpicker("refresh");
+    handleImageAdded(file, Editor, cursorLocation) {
+      // const CLIENT_ID = "993793b1d8d3e2e";
+      var formData = new FormData();
+      formData.append("image", file);
+      console.log("以下是formData的值");
+      for (var value of formData.values()) {
+        console.log(value);
+      }
+
+      let base64Obj = { base64String: file.name };
+      console.log(base64Obj);
+      // console.log(typeof);
+      let url = process.env.VUE_APP_API + "/api/Img";
+
+      axios({
+        url: url,
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        data: Qs.stringify(base64Obj),
+        // headers: {
+        //   Authorization: "Client-ID " + CLIENT_ID,
+        // },
+
+        // data: formData,
+        // headers: { "Content-Type": "multipart/form-data" },
+      })
+        .then((result) => {
+          console.log(result);
+          console.log("upload success");
+          let url = result.data.data.link;
+          console.log(url);
+          Editor.insertEmbed(cursorLocation, "image", url);
+        })
+        .catch((err) => {
+          console.log(err);
+          console.log("upload fail");
+        });
     },
-    getSelectedItem() {
-      console.log(this.selected);
-    },
-    // onEditorReady(editor) {
-    //   // 準備編輯器
-    // },
-    onEditorBlur() {}, // 失去焦點事件
-    onEditorFocus() {}, // 獲得焦點事件
-    onEditorChange() {}, // 內容改變事件
-    saveContent: function() {
+    // // onEditorReady(editor) {
+    // //   // 準備編輯器
+    // // },
+    // onEditorBlur() {}, // 失去焦點事件
+    // onEditorFocus() {}, // 獲得焦點事件
+    // onEditorChange() {}, // 內容改變事件
+    saveContent: function () {
       let vm = this;
       this.replyObj.ForumId = "e356a9a0-5f15-4c75-a2dc-19011a823fb3";
       this.replyObj.Title = this.titleContent;
@@ -123,10 +154,6 @@ export default {
       this.replyObj.CreatedDate = new Date();
       this.replyObj.UserId = "0e42d4e5-2cbb-47dc-b7e9-25c1bac99ef5";
       this.replyObj.State = true;
-      // let json = JSON.stringify(this.replyObj);
-      console.log(process.env.VUE_APP_API + "/api/Post/Create");
-      // let json = JSON.stringify(this.replyObj);
-      // console.log(json);
       axios
         .post(process.env.VUE_APP_API + "/api/Post/Create", this.replyObj)
         .then((response) => {
@@ -138,61 +165,9 @@ export default {
           console.log(err);
         });
     },
-    // saveToServer(result) {
-    //   this.Base64Img = result;
-    //   axios
-    //     .post(process.env.VUE_APP_API + "/api/Img", this.Base64Img)
-    //     .then((reponse) => {
-    //       console.log(reponse);
-    //     })
-    //     .catch((err) => {
-    //       console.log(err);
-    //     });
-    //   //    function saveToServer(file, editor) {
-    //   //     $.ajax({
-    //   //         url: '/api/File/UploadImage',
-    //   //         type: 'POST',
-    //   //         data: {
-    //   //             Base64: file
-    //   //         },
-    //   //         async: true,
-    //   //         success: function (response) {
-    //   //             //console.log(response);
-    //   //             insertToEditor(response.body.imageUri, editor);
-    //   //         }
-    //   //     });
-    //   // }
-    // },
-  },
-
-  mounted() {
-    // let OnloadimgBtn = document.querySelector(".ql-image");
-    // OnloadimgBtn.addEventListener("click", function() {
-    //   var reader = new FileReader();
-    //   reader.onloadend = function() {
-    //     saveToServer(reader.result);
-    //   };
-    //   // reader.readAsDataURL(file);
-    // });
   },
 };
 </script>
 
 <style>
-#app {
-  font-family: "Avenir", Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-
-.ql-container {
-  overflow-y: auto;
-  height: 15rem !important;
-}
-.ql-editor {
-  min-height: 25rem;
-}
 </style>

@@ -6,7 +6,7 @@
       @click="goToThread(thread.routeName)"
     >
       <!-- <font-awesome-icon :icon="thread.iconName" size="lg" /> -->
-      <span class="text-primary" style="cursor:pointer">
+      <span class="text-primary" style="cursor: pointer">
         {{ thread.forumName }}</span
       >
     </b-list-group-item>
@@ -30,6 +30,22 @@ export default {
       const vm = this;
       vm.$router.push(`/Thread/${name}`);
     },
+
+    getSideBar() {
+      const url = process.env.VUE_APP_API + "/api/Forum/GetAll";
+      axios
+        .get(url)
+        .then((response) => {
+          console.log(response.data);
+          console.log("成功");
+          response.data.forEach((item) => {
+            this.threads.push(item);
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
     // doSomethingSpecial(event) {
     //   setTimeout(() => {
     //     console.log(event);
@@ -43,20 +59,8 @@ export default {
     // },
   },
 
-  mounted() {
-    const url = process.env.VUE_APP_API + "/api/Forum/GetAll";
-    axios
-      .get(url)
-      .then((response) => {
-        console.log(response.data);
-        console.log("成功");
-        response.data.forEach((item) => {
-          this.threads.push(item);
-        });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+  created() {
+    this.getSideBar();
   },
 };
 </script>
