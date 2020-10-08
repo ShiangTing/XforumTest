@@ -31,9 +31,8 @@ namespace XforumTest.Controllers
             HttpContext.Response.Cookies.Append("UserLoginToken", response.Token);
             return Ok(response);
         }
-        //public IActionResult Register([FromBody] )
         [Authorize]
-        [HttpGet]
+        [HttpGet("getall")]
         public IActionResult GetAll()
         {
             return Ok(_userService.GetAll());
