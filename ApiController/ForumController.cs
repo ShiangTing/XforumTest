@@ -41,20 +41,35 @@ namespace XforumTest.ApiController
         {
             var edit = forumservice.GetSingle(id);
             return edit;
-        }
-        //public IQueryable GetSingle()
-        //{
-        //    var edit = forumservice.GetSingle("bfacfa2c-dca9-4efb-8554-daed27024913");
-        //    return edit;
-        //}
-        [HttpPost]
-        public void Edit(ForumCreate json)
-        {
-            forumservice.Edit(json);
-        }
+        }      
 
         /// <summary>
-        /// 取得所有版名字與Id
+        /// 編輯看板資料、回復軟刪除狀態
+        /// </summary>
+        /// <param name="json"></param>
+        [HttpPost]
+        public IActionResult Edit(ForumCreate json)
+        {
+            if (ModelState.IsValid)
+            {
+                forumservice.Edit(json);
+                return Ok();
+            }
+            return Ok();
+        }
+        /// <summary>
+        /// 軟刪除 修改狀態隱藏看板
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public void Delete(string id)
+        {
+            forumservice.Delete(id);
+        }
+
+
+        /// <summary>
+        /// 取得所有 作者、title、routename、date、content
         /// </summary>
         /// <returns></returns>
         [HttpGet]
@@ -62,15 +77,6 @@ namespace XforumTest.ApiController
         {
             var getall = new ForumService().GetAll();
             return getall;
-        }
-        /// <summary>
-        /// 取得板塊文章 作者、title、routename、date、content
-        /// </summary>
-        [HttpGet]
-        public IQueryable GetAllForums()
-        {
-            var forums = "";
-            return forums;
-        }
+        }        
     }
 }

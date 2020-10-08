@@ -29,20 +29,27 @@ namespace XforumTest.ApiController
 
         //軟刪除
         [HttpPost]
-        void Delete()
+        public void Delete(string id)
         {
+            post.Delete(id);
         }
 
         //編輯 留言資訊
         [HttpGet]
-        void GetSingle()
+        public IQueryable GetSingle(string id)
         {
-
+            var singlepost =  post.GetSingle(id);
+            return singlepost;
         }
         [HttpPost]
-        void Edit()
+        public IActionResult Edit(PostListDto json)
         {
-
+            if (ModelState.IsValid)
+            {
+                post.Edit(json);
+                return Ok();
+            }
+            return Ok();
         }
         /// <summary>
         /// 取得所有的留言資訊
@@ -51,9 +58,7 @@ namespace XforumTest.ApiController
         [HttpGet]
         public IQueryable<PostListDto> GetAllPosts()
         {
-            var service = new PostService();
-            return service.GetAll();
-
+            return post.GetAll();
         }
 
     }

@@ -41,6 +41,30 @@ namespace XforumTest.Services
 
         }
 
+        /// <summary>
+        ///取得單一PO文
+        /// </summary>
+        public IQueryable GetSingle(string id)
+        {
+            var single = from p in posts.GetAll()
+                         join u in users.GetAll()
+                         on p.UserId equals u.UserId
+                         where p.PostId.ToString() == id
+                         select new PostListDto
+                         {
+                            ForumId = p.ForumId,
+                            PostId = p.PostId,
+                            Title = p.Title,
+                            Description = p.Description,
+                            CreatedDate = p.CreatedDate,
+                            UserId = p.UserId,
+                            UserName = u.Name,
+                            State = p.State
+                         };
+
+            return single;
+        }
+
         public void Delete(string id)
         {
             var delete = posts.GetAll().FirstOrDefault(p => p.UserId.ToString() == id);
@@ -50,9 +74,15 @@ namespace XforumTest.Services
             
         }
 
-        public void Edit()
+        public void Edit(PostListDto json)
         {
-
+            var edit = posts.GetAll().FirstOrDefault(p => p.PostId == json.PostId);
+            edit.Title = json.Title;
+            edit.Description = json.Description;
+            edit.ForumId = json.ForumId;
+            edit.State = json.State;
+            posts.Update(edit);
+            posts.SaveContext();
         }
 
         /// <summary>
@@ -79,11 +109,6 @@ namespace XforumTest.Services
 
 
 
-        }
-
-        public void GetSingle()
-        {
-            throw new NotImplementedException();
         }
     }
 }
