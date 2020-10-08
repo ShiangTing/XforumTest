@@ -33,24 +33,12 @@
         </b-form>
 
         <p class="my-4">內文:</p>
-
-        <!-- <div class="edit_container">
-          <quill-editor
-            v-model="content"
-            ref="myQuillEditor"
-            :options="editorOption"
-            @blur="onEditorBlur($event)"
-            @focus="onEditorFocus($event)"
-            @change="onEditorChange($event)"
-          >
-          </quill-editor>
-          <button class="mt-3" v-on:click="saveHtml">儲存</button>
-        </div> -->
-
         <vue-editor
           id="editor"
           useCustomImageHandler
           @image-added="handleImageAdded"
+          :customModules="customModulesForEditor"
+          :editorOptions="editorSettings"
           v-model="editorContent"
         ></vue-editor>
         <button @click="saveContent">發文</button>
@@ -66,8 +54,8 @@ import axios from "axios";
 
 // Advanced Use - Hook into Quill's API for Custom Functionality
 import { VueEditor } from "vue2-editor";
-import Qs from "qs";
-// import { quillRedefine } from "../../node_modules/vue-quill-editor-upload";
+import { ImageDrop } from "quill-image-drop-module";
+import ImageResize from "quill-image-resize";
 
 export default {
   components: { Navbar, VueEditor },
@@ -75,6 +63,17 @@ export default {
 
   data() {
     return {
+      customModulesForEditor: [
+        { alias: "imageDrop", module: ImageDrop },
+        { alias: "imageResize", module: ImageResize },
+      ],
+      editorSettings: {
+        modules: {
+          imageDrop: true,
+          imageResize: {},
+        },
+      },
+
       replyObj: {
         ForumId: "",
         PostId: null,
@@ -97,60 +96,45 @@ export default {
       select: "心情閒聊區",
       titleContent: "",
       editorContent: "",
+      customToolbar: [
+        ["bold", "italic", "underline"],
+        [{ list: "ordered" }, { list: "bullet" }],
+        ["image", "code-block"],
+      ],
     };
   },
   methods: {
     handleImageAdded(file, Editor, cursorLocation) {
-      // const CLIENT_ID = "993793b1d8d3e2e";
+      const CLIENT_ID = "3d78cf6e67ed6af";
+
       var formData = new FormData();
       formData.append("image", file);
-      console.log("以下是formData的值");
-      for (var value of formData.values()) {
-        console.log(value);
-      }
-
-      let base64Obj = { base64String: file.name };
-      console.log(base64Obj);
-      // console.log(typeof);
-      let url = process.env.VUE_APP_API + "/api/Img";
-
+      console.log("底下是formdata");
+      console.log(formData);
       axios({
-        url: url,
+        url: "https://api.imgur.com/3/image",
         method: "POST",
         headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
+          Authorization: "Client-ID " + CLIENT_ID,
         },
-        data: Qs.stringify(base64Obj),
-        // headers: {
-        //   Authorization: "Client-ID " + CLIENT_ID,
-        // },
-
-        // data: formData,
-        // headers: { "Content-Type": "multipart/form-data" },
+        data: formData,
       })
         .then((result) => {
           console.log(result);
-          console.log("upload success");
+          console.log("成功");
           let url = result.data.data.link;
           console.log(url);
           Editor.insertEmbed(cursorLocation, "image", url);
         })
         .catch((err) => {
           console.log(err);
-          console.log("upload fail");
         });
     },
-    // // onEditorReady(editor) {
-    // //   // 準備編輯器
-    // // },
-    // onEditorBlur() {}, // 失去焦點事件
-    // onEditorFocus() {}, // 獲得焦點事件
-    // onEditorChange() {}, // 內容改變事件
     saveContent: function () {
       let vm = this;
       this.replyObj.ForumId = "e356a9a0-5f15-4c75-a2dc-19011a823fb3";
       this.replyObj.Title = this.titleContent;
-      this.replyObj.Description = this.content;
+      this.replyObj.Description = this.editorContent;
       this.replyObj.CreatedDate = new Date();
       this.replyObj.UserId = "0e42d4e5-2cbb-47dc-b7e9-25c1bac99ef5";
       this.replyObj.State = true;
