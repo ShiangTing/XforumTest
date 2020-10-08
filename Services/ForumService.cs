@@ -29,7 +29,8 @@ namespace XforumTest.Services
                     Img = create.Img,
                     ModeratorId = create.ModeratorId,
                     Description = create.Description,
-                    ForumName = create.ForumName
+                    ForumName = create.ForumName,
+                    State =true
                 };
                 forums.Create(createforum);
                 forums.SaveContext();
@@ -39,13 +40,22 @@ namespace XforumTest.Services
                 
             }
         }
-
-        public void Delete()
+        /// <summary>
+        /// 使用軟刪除 修改State 為 false
+        /// </summary>
+        /// <param name="id"></param>
+        public void Delete(string id)
         {
-            //使用軟刪除 修改狀態
-            throw new NotImplementedException();
+            var delete = forums.GetAll().FirstOrDefault(f => f.ForumId.ToString() == id);
+            delete.State = false;
+            forums.Update(delete);
+            forums.SaveContext();
         }
-
+        /// <summary>
+        /// 取的單一看板資料
+        /// </summary>
+        /// <param name="forumid"></param>
+        /// <returns></returns>
         public IQueryable GetSingle(string forumid)
         {
 
@@ -56,11 +66,15 @@ namespace XforumTest.Services
                             title = f.ForumName,
                             date = f.CreatedDate,
                             name = f.ModeratorId,
-                            content = f.Description
+                            content = f.Description,
+                            state = f.State
                         };
             return forum;
         }
-
+        /// <summary>
+        /// 編輯看板資料、回復軟刪除狀態
+        /// </summary>
+        /// <param name="json"></param>
         public void Edit(ForumCreate json)
         {
             //var json = JsonConvert.DeserializeObject<ForumCreate>(data);
@@ -69,35 +83,26 @@ namespace XforumTest.Services
             oldforum.ModeratorId = json.ModeratorId;
             oldforum.Description = json.Description;
             oldforum.ForumName = json.ForumName;
+            oldforum.State = json.State;
                            
             forums.Update(oldforum);
             forums.SaveContext();
-        }
-        
-        public void Find()
-        {
-            throw new NotImplementedException();
-        }
-
+        }    
+        /// <summary>
+        /// 取的所有看板
+        /// </summary>
+        /// <returns></returns>
         public IQueryable<ForumGetAllDTO> GetAll()
-        {
-            //var getall = from f in forums.GetAll()
-            //             join fm in forummembers.GetAll()
-            //             on f.ModeratorId equals fm.UserId
-            //             select new ForumGetAllDTO
-            //             {
-            //                 UserName = fm.Name,
-            //                 Age = fm.Age
-            //             };
+        {          
             var getall = from fm in forums.GetAll()
+                         where fm.State == true
                          select new ForumGetAllDTO
                          {
                              ForumName = fm.ForumName,
                              ForumId = fm.ForumId,
-                             RouteName = fm.RouteName
+                             RouteName = fm.RouteName,
+                             Description = fm.Description
                          };
-
-            //forums.GetAll();
             return getall;
         }
     }
