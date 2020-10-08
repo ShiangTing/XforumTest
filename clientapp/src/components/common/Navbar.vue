@@ -28,7 +28,7 @@
             </template>
             <b-dropdown-item href="#">會員中心</b-dropdown-item>
             <b-dropdown-item href="#">註冊</b-dropdown-item>
-            <b-dropdown-item href="#">登入</b-dropdown-item>
+            <b-dropdown-item to="/login">登入</b-dropdown-item>
           </b-nav-item-dropdown>
 
           <!-- Using 'button-content' slot -->
