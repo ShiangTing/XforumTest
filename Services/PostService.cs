@@ -12,11 +12,19 @@ namespace XforumTest.Services
 {
     public class PostService : IPostService
     {
-        private static MyDBContext db = new MyDBContext();
-        GeneralRepository<Posts> posts = new GeneralRepository<Posts>(db);
-        GeneralRepository<ForumMembers> users = new GeneralRepository<ForumMembers>(db);
+        private  MyDBContext db ;
+        //GeneralRepository<Posts> posts = new GeneralRepository<Posts>(db);
+        //GeneralRepository<ForumMembers> users = new GeneralRepository<ForumMembers>(db);
+
+        public PostService()
+        {
+            db = new MyDBContext();
+        }
+
         public void Create(PostDto model)
         {
+            GeneralRepository<Posts> posts = new GeneralRepository<Posts>(db);
+            GeneralRepository<ForumMembers> users = new GeneralRepository<ForumMembers>(db);
             try
             {
                 var po = new Posts
@@ -46,6 +54,8 @@ namespace XforumTest.Services
         /// </summary>
         public IQueryable GetSingle(string id)
         {
+            GeneralRepository<Posts> posts = new GeneralRepository<Posts>(db);
+            GeneralRepository<ForumMembers> users = new GeneralRepository<ForumMembers>(db);
             var single = from p in posts.GetAll()
                          join u in users.GetAll()
                          on p.UserId equals u.UserId
@@ -67,6 +77,8 @@ namespace XforumTest.Services
 
         public void Delete(string id)
         {
+            GeneralRepository<Posts> posts = new GeneralRepository<Posts>(db);
+            GeneralRepository<ForumMembers> users = new GeneralRepository<ForumMembers>(db);
             var delete = posts.GetAll().FirstOrDefault(p => p.UserId.ToString() == id);
             delete.State = false;
             posts.Update(delete);
@@ -76,6 +88,8 @@ namespace XforumTest.Services
 
         public void Edit(PostListDto json)
         {
+            GeneralRepository<Posts> posts = new GeneralRepository<Posts>(db);
+            GeneralRepository<ForumMembers> users = new GeneralRepository<ForumMembers>(db);
             var edit = posts.GetAll().FirstOrDefault(p => p.PostId == json.PostId);
             edit.Title = json.Title;
             edit.Description = json.Description;
@@ -90,7 +104,8 @@ namespace XforumTest.Services
         /// </summary>
         public IQueryable<PostListDto> GetAll()
         {
-
+            GeneralRepository<Posts> posts = new GeneralRepository<Posts>(db);
+            GeneralRepository<ForumMembers> users = new GeneralRepository<ForumMembers>(db);
             var pList = from p in posts.GetAll()
                         join u in users.GetAll()
                         on p.UserId equals u.UserId
