@@ -8,7 +8,8 @@ using XforumTest.DataTable;
 using XforumTest.DTO;
 using XforumTest.Interface;
 using XforumTest.Services;
-using static XforumTest.Services.ApiResult;
+
+//using static XforumTest.Services.ApiResult;
 
 namespace XforumTest.ApiController
 {
@@ -22,18 +23,22 @@ namespace XforumTest.ApiController
         /// <param name="dto"></param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult CreateMessage(RMessageDTO dto)
+        public ApiResult<RMessageDTO> CreateMessage(RMessageDTO dto)
         {
+            var result = new ApiResult<RMessageDTO>();
             if (!ModelState.IsValid)
             {
                 var service = new RMessageService();
                 service.Create(dto);
 
-                return Ok(); //new ApiResult( 0,"none","none");
+                return  result;
             }
             else
             {
-                return BadRequest();    new ApiResult( 1, "a", "a");
+                result.Status="1111";
+                result.Success=false;
+                result.ErrorMsg = "dto is null";
+                return result;
             }
         }
 
@@ -45,18 +50,21 @@ namespace XforumTest.ApiController
         /// <returns></returns>
 
         [HttpGet("{postId}")]
-        public async Task<ActionResult<List<RMessageDTO>>> GetAllMessages(Guid postId)
-        {
-            if (postId!=null)
-            {
-                var service = new RMessageService();
-                return await service.GetAllbyPostId(postId);
-            }
-            else
-            {
-                return BadRequest("postId is null");
-            }
-        }
+        //public async Task<ApiResult<List<RMessageDTO>>> GetAllMessages(Guid postId)
+        //{
+
+        //    if (postId!=null)
+        //    {
+        //        var service = new RMessageService();
+        //        //?????????
+        //        return await new ApiResult<List<RMessageDTO>>(service.GetAllbyPostId(postId));
+                    
+        //    }
+        //    else
+        //    {
+        //        return new ApiResult<List<RMessageDTO>>("Id is null");
+        //    }
+        //}
 
 
         /// <summary>
@@ -65,20 +73,20 @@ namespace XforumTest.ApiController
         /// <param name="mId"></param>
         /// <returns></returns>
         [HttpDelete]
-        public IActionResult DeleteMessages(Guid mId)
-        {
-            if (mId != null)
-            {
-                var service = new RMessageService();
-                service.Delete(mId);
-                return Ok("delete msg");
-            }
-            else
-            {
-                return BadRequest("Id is null");
-            }
+        //public ApiResult<RMessageDTO> DeleteMessages(Guid mId)
+        //{
+        //    if (mId != null)
+        //    {
+        //        var service = new RMessageService();
+        //        service.Delete(mId);
+        //        return new ApiResult<RMessageDTO>(mId);
+        //    }
+        //    else
+        //    {
+        //        return new ApiResult<RMessageDTO>("Id is null");
+        //    }
            
-        }
+        //}
 
 
         /// <summary>
