@@ -8,6 +8,7 @@ using Imgur.API.Authentication;
 using Imgur.API.Endpoints;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using XforumTest.DTO;
 using XforumTest.Services;
 using static System.Net.Mime.MediaTypeNames;
 
@@ -112,18 +113,19 @@ namespace XforumTest.ApiController
 
         /// <summary>
         /// 上傳單張圖片的base64 string 會回傳imgur網址
+        /// 現在改成FromData 現在是application/x-www-form-urlencoded 
         /// </summary>
-        /// <param name="dataURL"></param>
+        /// <param name="dto"></param>
         /// <returns></returns>
 
         [HttpPost]
-         public async Task<string> UploadImg([FromBody]string dataURL)
+         public async Task<string> UploadImg([FromForm] ImguploadDto dto)
         {
 
-            if (dataURL != null)
+            if (dto != null)
             {
                 //convert base64 to byte[]
-                byte[] imageBytes = Convert.FromBase64String(dataURL);
+                byte[] imageBytes = Convert.FromBase64String(dto.base64String);
 
                 //convert  byte[] to imgStream
                // var imgStream = System.Text.Encoding.UTF8.GetString(imageBytes);
