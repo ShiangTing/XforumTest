@@ -37,7 +37,7 @@ namespace XforumTest.ApiController
         public ApiResult<RMessageDTO> CreateMessage(RMessageDTO dto)
         {
             var result = new ApiResult<RMessageDTO>();
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                // var service = new RMessageService();
                 _messageService.Create(dto);
@@ -112,7 +112,7 @@ namespace XforumTest.ApiController
         {
             var result = new ApiResult<MessageLikeDto>();
 
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 var service = new LikeService();
                 service.PostLikeAndDisLike(Dto);

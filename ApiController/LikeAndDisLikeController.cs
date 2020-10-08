@@ -32,12 +32,12 @@ namespace XforumTest.ApiController
         /// </summary>
         /// <param name="Dto"></param>
         /// <returns></returns>
-        [HttpPut]
-        public ApiResult<MessageLikeDto> MsgLikeAndDisLike(MessageLikeDto Dto)
+        [HttpPost]
+        public ApiResult<MessageLikeDto> MsgLikeAndDisLike([FromBody]MessageLikeDto Dto)
         {
             var result = new ApiResult<MessageLikeDto>();
 
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
               //  var service = new LikeService();
                 _mlikeService.PostLikeAndDisLike(Dto);
@@ -63,7 +63,7 @@ namespace XforumTest.ApiController
         {
             var result = new ApiResult<PostLikeDto>();
 
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 //  var service = new LikeService();
                 _plikeService.PostLikeAndDisLike(Dto);

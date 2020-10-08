@@ -14,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using XforumTest.DTO;
 using XforumTest.Helpers;
 using XforumTest.Interface;
 using XforumTest.Services;
@@ -51,6 +52,9 @@ namespace XforumTest
 
             services.AddScoped<IUserService, UserService>();
             services.AddTransient<IJwtHelperService, JwtHelperService>();
+            services.AddTransient<IMessageService, RMessageService>();
+            services.AddTransient<ILikeService<PostLikeDto>, LikeService>();
+            services.AddTransient<ILikeService<MessageLikeDto>, LikeService>();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
             {
