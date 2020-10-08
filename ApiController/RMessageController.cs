@@ -23,10 +23,17 @@ namespace XforumTest.ApiController
         [HttpPost]
         public IActionResult CreateMessage(RMessageDTO dto)
         {
-            var service = new RMessageService();
-            service.Create(dto);
+            if (!ModelState.IsValid)
+            {
+                var service = new RMessageService();
+                service.Create(dto);
 
-            return Ok("create msg");
+                return Ok("create msg");
+            }
+            else
+            {
+                return BadRequest("model wrong");
+            }
         }
 
 
@@ -36,11 +43,18 @@ namespace XforumTest.ApiController
         /// <param name="postId"></param>
         /// <returns></returns>
 
-        [HttpGet("{id}")]
+        [HttpGet("{postId}")]
         public async Task<ActionResult<List<RMessageDTO>>> GetAllMessages(Guid postId)
         {
-            var service = new RMessageService();
-            return await service.GetAllbyPostId(postId);
+            if (postId!=null)
+            {
+                var service = new RMessageService();
+                return await service.GetAllbyPostId(postId);
+            }
+            else
+            {
+                return BadRequest("postId is null");
+            }
         }
 
 
@@ -52,25 +66,40 @@ namespace XforumTest.ApiController
         [HttpDelete]
         public IActionResult DeleteMessages(Guid mId)
         {
-            var service = new RMessageService();
-            service.Delete(mId);
-            return Ok("delete msg");
+            if (mId != null)
+            {
+                var service = new RMessageService();
+                service.Delete(mId);
+                return Ok("delete msg");
+            }
+            else
+            {
+                return BadRequest("Id is null");
+            }
+           
         }
 
 
         /// <summary>
-        /// 
+        /// 按讚跟按倒讚功能
         /// </summary>
         /// <param name="Dto"></param>
         /// <returns></returns>
-        [HttpPost]
+        [HttpPut]
         public IActionResult PostLikeAndDisLike(MessageLikeDto Dto)
         {
-            var service = new LikeService2();
-            service.PostLikeAndDisLike(Dto);
-
-            return Ok("delete msg");
+            if (!ModelState.IsValid)
+            {
+                var service = new LikeService();
+                service.PostLikeAndDisLike(Dto);
+                return Ok("create msg");
+            }
+            else
+            {
+                return BadRequest("Dto wrong");
+            }
+           
         }
-    //}
-}
+    
+    }
 }
