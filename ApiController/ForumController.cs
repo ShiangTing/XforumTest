@@ -37,16 +37,16 @@ namespace XforumTest.ApiController
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        //public IQueryable Edit(Guid id)
-        //{
-        //    var edit = new ForumService().Edit(id);
-        //    return edit;
-        //}
-        public IQueryable GetSingle()
+        public IQueryable GetSingle(string id)
         {
-            var edit = forumservice.GetSingle("bfacfa2c-dca9-4efb-8554-daed27024913");
+            var edit = forumservice.GetSingle(id);
             return edit;
         }
+        //public IQueryable GetSingle()
+        //{
+        //    var edit = forumservice.GetSingle("bfacfa2c-dca9-4efb-8554-daed27024913");
+        //    return edit;
+        //}
         [HttpPost]
         public void Edit(ForumCreate json)
         {
@@ -62,6 +62,15 @@ namespace XforumTest.ApiController
         {
             var getall = new ForumService().GetAll();
             return getall;
+        }
+        /// <summary>
+        /// 取得板塊文章 作者、title、routename、date、content
+        /// </summary>
+        [HttpGet]
+        public IQueryable GetAllForums()
+        {
+            var forums = "";
+            return forums;
         }
     }
 }

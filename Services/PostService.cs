@@ -41,14 +41,18 @@ namespace XforumTest.Services
 
         }
 
-        public void Delete()
+        public void Delete(string id)
         {
-            throw new NotImplementedException();
+            var delete = posts.GetAll().FirstOrDefault(p => p.UserId.ToString() == id);
+            delete.State = false;
+            posts.Update(delete);
+            posts.SaveContext();
+            
         }
 
         public void Edit()
         {
-            throw new NotImplementedException();
+
         }
 
         /// <summary>
