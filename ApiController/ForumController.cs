@@ -73,10 +73,10 @@ namespace XforumTest.ApiController
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public IQueryable<ForumGetAllDTO> GetAll()
+        public IEnumerable<ForumGetAllDTO> GetAll()
         {
             var getall = new ForumService().GetAll();
-            return getall;
+            return  getall;
         }        
     }
 }

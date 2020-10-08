@@ -58,11 +58,11 @@ namespace XforumTest.ApiController
         /// </summary>
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<PostListDto>>> GetAllPosts()
+        public ActionResult<IEnumerable<PostListDto>> GetAllPosts()
         {
            
                 
-                return await post.GetAll();
+                return  post.GetAll();
         
         }
 
