@@ -20,7 +20,9 @@ import "quill/dist/quill.core.css"; // import styles
 import "quill/dist/quill.snow.css"; // for snow theme
 import "quill/dist/quill.bubble.css"; // for bubble theme
 
+import axios from 'axios';
 
+Vue.prototype.$axios = axios
 Vue.component('font-awesome-icon', FontAwesomeIcon); //使用kebab-case
 library.add(
   faShoppingCart,

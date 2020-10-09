@@ -2,7 +2,7 @@
   <div>
     <b-container fluid>
       <b-row>
-        <b-col> <SideBar class="sidebar"/></b-col>
+        <b-col> <Sidebar class="sidebar" /></b-col>
         <b-col cols="8">
           <div>
             <!-- 這裡是index區域的貼文 -->
@@ -66,13 +66,14 @@
 <script>
 import detectiveImg from "../assets/img/detective.png";
 import InfiniteLoading from "vue-infinite-loading";
-import SideBar from "../components/Home/Sidbar";
-import axios from "axios"
+// import axios from "axios";
 // const api = "http://hn.algolia.com/api/v1/items/:id";
+
 export default {
   components: {
     InfiniteLoading,
-    SideBar,
+    // SideBar,
+    Sidebar: () => import("@/components/Home/Sidbar"),
   },
   data() {
     return {
@@ -83,18 +84,6 @@ export default {
 
       articles: [],
     };
-  },
-  watch: {
-    articles: function() {
-      if (this.articles.length > 0) {
-        // this.articles.forEach((item, index) => {
-        //   console.log("article" + index);
-        //   let temp = document.getElementById("article" + index);
-        //   console.log(temp);
-        //   temp.innerHTML = item.description;
-        // });
-      }
-    },
   },
   methods: {
     //  async fetchData() {
@@ -130,10 +119,9 @@ export default {
         //   });
       }, 500);
     },
-
     GetAll() {
       const url = process.env.VUE_APP_API + "/api/Post/GetAllPosts";
-      axios
+      this.$axios
         .get(url)
         .then((response) => {
           console.log(response);
@@ -156,10 +144,43 @@ export default {
           console.log(err);
         });
     },
+    // GetArticleAndSideBar() {
+    //   let vm = this;
+
+    //   axios.all([vm.getSideBar(), vm.GetAll()]).then(
+    //     axios.spread((SidebarResponse, ArticleResponse) => {
+    //       SidebarResponse.data.forEach((item) => {
+    //         console.log(item);
+    //       });
+    //       ArticleResponse.data.forEach((item) => {
+    //         console.log(item);
+    //         vm.articles.push(item);
+    //       });
+    //       vm.$nextTick(() => {
+    //         vm.articles.forEach((item, index) => {
+    //           console.log("article" + index);
+    //           let temp = document.getElementById("article" + index);
+    //           console.log(temp);
+    //           temp.innerHTML = item.description;
+    //         });
+    //       });
+    //     })
+    //   );
+    // },
+    // GetAll() {
+    //   const url = process.env.VUE_APP_API + "/api/Post/GetAllPosts";
+    //   return axios.get(url);
+    //   //  this.first_request: 'first request began'
+    // },
+    // getSideBar() {
+    //   const url = process.env.VUE_APP_API + "/api/Forum/GetAll";
+    //   return axios.get(url);
+    // },
   },
-  created() {
-    this.GetAll();
-    this.fetchData();
+  async created() {
+    // await this.GetArticleAndSideBar();
+    await this.GetAll();
+    await this.fetchData();
   },
 };
 </script>

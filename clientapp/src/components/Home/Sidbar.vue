@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import axios from "axios";
+// import axios from "axios";
 export default {
   data() {
     return {
@@ -33,7 +33,7 @@ export default {
 
     getSideBar() {
       const url = process.env.VUE_APP_API + "/api/Forum/GetAll";
-      axios
+      this.$axios
         .get(url)
         .then((response) => {
           console.log(response.data);
@@ -59,8 +59,8 @@ export default {
     // },
   },
 
-  created() {
-    this.getSideBar();
+  async created() {
+    await this.getSideBar();
   },
 };
 </script>
