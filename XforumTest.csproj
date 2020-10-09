@@ -30,6 +30,12 @@
   <ItemGroup>
     <Folder Include="Context\" />
   </ItemGroup>
+
+	
+
+  <ItemGroup>
+    <None Include="XforumTest.sln" />
+  </ItemGroup>
   <PropertyGroup>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);1591</NoWarn>

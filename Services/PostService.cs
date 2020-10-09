@@ -7,18 +7,28 @@ using XforumTest.Interface;
 using XforumTest.DTO;
 using XforumTest.DataTable;
 using XforumTest.Repository;
+using Microsoft.EntityFrameworkCore;
 
 namespace XforumTest.Services
 {
     public class PostService : IPostService
     {
-        private static MyDBContext db = new MyDBContext();
-        GeneralRepository<Posts> posts = new GeneralRepository<Posts>(db);
-        GeneralRepository<ForumMembers> users = new GeneralRepository<ForumMembers>(db);
+        private MyDBContext db;
+        //private static MyDBContext db = new MyDBContext();
+        //GeneralRepository<Posts> posts = new GeneralRepository<Posts>(db);
+        //GeneralRepository<ForumMembers> users = new GeneralRepository<ForumMembers>(db);
+
+        public PostService()
+        {
+            db = new MyDBContext();
+        }
         public void Create(PostDto model)
         {
+          
             try
             {
+                GeneralRepository<Posts> posts = new GeneralRepository<Posts>(db);
+                GeneralRepository<ForumMembers> users = new GeneralRepository<ForumMembers>(db);
                 var po = new Posts
                 {
                     PostId = Guid.NewGuid(),
@@ -46,6 +56,8 @@ namespace XforumTest.Services
         /// </summary>
         public IQueryable GetSingle(string id)
         {
+            GeneralRepository<Posts> posts = new GeneralRepository<Posts>(db);
+            GeneralRepository<ForumMembers> users = new GeneralRepository<ForumMembers>(db);
             var single = from p in posts.GetAll()
                          join u in users.GetAll()
                          on p.UserId equals u.UserId
@@ -67,6 +79,8 @@ namespace XforumTest.Services
 
         public void Delete(string id)
         {
+            GeneralRepository<Posts> posts = new GeneralRepository<Posts>(db);
+            GeneralRepository<ForumMembers> users = new GeneralRepository<ForumMembers>(db);
             var delete = posts.GetAll().FirstOrDefault(p => p.UserId.ToString() == id);
             delete.State = false;
             posts.Update(delete);
@@ -76,6 +90,8 @@ namespace XforumTest.Services
 
         public void Edit(PostListDto json)
         {
+            GeneralRepository<Posts> posts = new GeneralRepository<Posts>(db);
+            GeneralRepository<ForumMembers> users = new GeneralRepository<ForumMembers>(db);
             var edit = posts.GetAll().FirstOrDefault(p => p.PostId == json.PostId);
             edit.Title = json.Title;
             edit.Description = json.Description;
@@ -88,9 +104,10 @@ namespace XforumTest.Services
         /// <summary>
         /// 取得所有的發文
         /// </summary>
-        public IQueryable<PostListDto> GetAll()
+        public List<PostListDto> GetAll()
         {
-
+            GeneralRepository<Posts> posts = new GeneralRepository<Posts>(db);
+            GeneralRepository<ForumMembers> users = new GeneralRepository<ForumMembers>(db);
             var pList = from p in posts.GetAll()
                         join u in users.GetAll()
                         on p.UserId equals u.UserId
@@ -105,10 +122,15 @@ namespace XforumTest.Services
                             UserName = u.Name,
                             State = p.State
                         };
-            return pList;
+            return  pList.ToList();
 
 
 
+        }
+
+        IQueryable<PostListDto> IPostService.GetAll()
+        {
+            throw new NotImplementedException();
         }
     }
 }

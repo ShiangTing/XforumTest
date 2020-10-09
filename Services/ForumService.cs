@@ -9,19 +9,29 @@ using XforumTest.Repository;
 using XforumTest.DTO;
 using Newtonsoft.Json;
 using System.Text.Json;
+using Microsoft.EntityFrameworkCore;
 
 namespace XforumTest.Services
 {
     public class ForumService : IForumService
     {
-        static MyDBContext db = new MyDBContext();
-        GeneralRepository<Forums> forums = new GeneralRepository<Forums>(db);
-        GeneralRepository<ForumMembers> forummembers = new GeneralRepository<ForumMembers>(db);
+        private MyDBContext db;
+        //static MyDBContext db = new MyDBContext();
+        //GeneralRepository<Forums> forums = new GeneralRepository<Forums>(db);
+        //GeneralRepository<ForumMembers> forummembers = new GeneralRepository<ForumMembers>(db);
 
+        public ForumService()
+        {
+            db = new MyDBContext();
+        }
         public void Create(ForumCreate create)
         {
+           
             try
             {
+
+                GeneralRepository<Forums> forums = new GeneralRepository<Forums>(db);
+                GeneralRepository<ForumMembers> forummembers = new GeneralRepository<ForumMembers>(db);
                 var createforum = new Forums
                 {
                     ForumId = Guid.NewGuid(),
@@ -46,6 +56,8 @@ namespace XforumTest.Services
         /// <param name="id"></param>
         public void Delete(string id)
         {
+            GeneralRepository<Forums> forums = new GeneralRepository<Forums>(db);
+            GeneralRepository<ForumMembers> forummembers = new GeneralRepository<ForumMembers>(db);
             var delete = forums.GetAll().FirstOrDefault(f => f.ForumId.ToString() == id);
             delete.State = false;
             forums.Update(delete);
@@ -58,7 +70,8 @@ namespace XforumTest.Services
         /// <returns></returns>
         public IQueryable GetSingle(string forumid)
         {
-
+            GeneralRepository<Forums> forums = new GeneralRepository<Forums>(db);
+            GeneralRepository<ForumMembers> forummembers = new GeneralRepository<ForumMembers>(db);
             var forum = from f in forums.GetAll()
                         where f.ForumId.ToString() == forumid
                         select new
@@ -77,6 +90,8 @@ namespace XforumTest.Services
         /// <param name="json"></param>
         public void Edit(ForumCreate json)
         {
+            GeneralRepository<Forums> forums = new GeneralRepository<Forums>(db);
+            GeneralRepository<ForumMembers> forummembers = new GeneralRepository<ForumMembers>(db);
             //var json = JsonConvert.DeserializeObject<ForumCreate>(data);
             var oldforum = forums.GetAll().FirstOrDefault(f => f.ModeratorId == json.ModeratorId);
             oldforum.Img = json.Img;
@@ -92,8 +107,10 @@ namespace XforumTest.Services
         /// 取的所有看板
         /// </summary>
         /// <returns></returns>
-        public IQueryable<ForumGetAllDTO> GetAll()
-        {          
+        public IList<ForumGetAllDTO> GetAll()
+        {
+            GeneralRepository<Forums> forums = new GeneralRepository<Forums>(db);
+            GeneralRepository<ForumMembers> forummembers = new GeneralRepository<ForumMembers>(db);
             var getall = from fm in forums.GetAll()
                          where fm.State == true
                          select new ForumGetAllDTO
@@ -103,7 +120,12 @@ namespace XforumTest.Services
                              RouteName = fm.RouteName,
                              Description = fm.Description
                          };
-            return getall;
+            return  getall.ToList();
+        }
+
+        IQueryable<ForumGetAllDTO> IForumService.GetAll()
+        {
+            throw new NotImplementedException();
         }
     }
 }
