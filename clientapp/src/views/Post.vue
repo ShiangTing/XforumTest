@@ -12,15 +12,12 @@
             >選擇看板:</label
           >
 
-          <select
-            class="selectpicker"
-            ref="select"
-            v-model="selectThread.select"
-          >
+          <select @change="getOptionIdx($event, $event.target.selectedIndex)">
+            <option disabled selected>請選擇看板</option>
             <option
               v-for="(item, idx) in selectThread.threadName"
               :key="idx"
-              :data-id="selectThread.threadId[idx]"
+              :id="selectThread.threadId[idx]"
             >
               {{ item }}
             </option>
@@ -98,11 +95,18 @@ export default {
         threadId: [],
         select: "",
       },
-
+      selectPlaceHolder: "請選擇看板",
       titleContent: "",
     };
   },
   methods: {
+    getOptionIdx: function (event, selectedIndex) {
+      console.log(event, selectedIndex);
+      console.log(event.target.querySelectorAll("option")[selectedIndex].id);
+      this.selectThread.select = event.target.querySelectorAll("option")[
+        selectedIndex
+      ].id;
+    },
     //connect imgur api to upload img , from base64 to img
     handleImageAdded(file, Editor, cursorLocation) {
       const CLIENT_ID = "3d78cf6e67ed6af";
@@ -148,7 +152,7 @@ export default {
     },
     saveContent: function () {
       let vm = this;
-      this.postData.ForumId = "e356a9a0-5f15-4c75-a2dc-19011a823fb3";
+      this.postData.ForumId = this.selectThread.select;
       this.postData.Title = this.titleContent;
       this.postData.Description = this.editorContent;
       this.postData.CreatedDate = new Date();
