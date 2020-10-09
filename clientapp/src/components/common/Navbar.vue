@@ -24,16 +24,16 @@
           <b-nav-item-dropdown class="mx-5 my-2">
             <!-- Using 'button-content' slot -->
             <template v-slot:button-content>
-              <em>Login</em>
+              <font-awesome-icon icon="user" size="lg"/>
             </template>
             <b-dropdown-item href="#">會員中心</b-dropdown-item>
-            <b-dropdown-item href="#">註冊</b-dropdown-item>
-            <b-dropdown-item to="/login">登入</b-dropdown-item>
+            <b-dropdown-item href="#" v-if="!isLogin">註冊</b-dropdown-item>
+            <b-dropdown-item to="/login" v-if="!isLogin">登入</b-dropdown-item>
+            <b-dropdown-item v-else @click.prevent="logout">登出</b-dropdown-item>
           </b-nav-item-dropdown>
-
+          <b-nav-item href="jacascript:;" class="mx-5 my-2">{{name}}</b-nav-item>
           <!-- Using 'button-content' slot -->
           <b-nav-item class="sidebarGroup"><SideBar /></b-nav-item>
-          <b-nav-item href="#" class="mx-5 my-2">訪客</b-nav-item>
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
@@ -46,6 +46,38 @@ export default {
   components: {
     SideBar,
   },
+  data(){
+    return {
+      name: "訪客",
+      isLogin: false
+    }
+  },
+  methods:{
+    logout(){
+      let vm = this;
+      vm.$store.dispatch("clearAuth");
+      window.localStorage.clear();
+      vm.$router.go(0);
+    }
+  },
+  created(){
+    let vm = this;
+    let auth = vm.$store.state.tokenModule;
+    let isAuth =  auth.isAuthorize;
+    let token = auth.token;
+    let url = process.env.VUE_APP_API+"/api/JwtHelper/username"
+    console.log(auth);
+    if(isAuth){
+      vm.isLogin = true
+      vm.$axios({
+        url: url,
+        method: "GET",
+        headers: {"Authorization": `Bearer ${token}` }
+      }).then(res => {
+        vm.name = res.data
+      })
+    }
+  }
 };
 </script>
 

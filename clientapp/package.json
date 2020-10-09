@@ -18,6 +18,7 @@
     "quill-image-drop-module": "^1.0.3",
     "quill-image-resize": "^3.0.9",
     "sass-loader": "^10.0.2",
+    "secure-ls": "^1.2.6",
     "url-loader": "^4.1.0",
     "vue": "^2.6.11",
     "vue-axios": "^3.0.1",
