@@ -46,9 +46,15 @@ export default {
   methods: {
     login () {
       let vm = this;
-      let url = process.env.VUE_APP_API + "/api/Users/authenticate"
+      let url = process.env.VUE_APP_API + "/api/JwtHelper/signin"
 			axios.post(url,vm.loginData).then(res => {
-				console.log(res);
+        console.log(res);
+        if(res.status == 200){
+          window.sessionStorage.setItem("token", res.data.token);
+          let { token, isAuthorize} = { token: res.data.token , isAuthorize: true };
+          vm.$store.dispatch("setAuth",{ token, isAuthorize})
+          vm.$router.push("/home");
+        }
 			})
     }
   }
