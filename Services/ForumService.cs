@@ -71,7 +71,7 @@ namespace XforumTest.Services
             GeneralRepository<Forums> forums = new GeneralRepository<Forums>(db);
             GeneralRepository<ForumMembers> forummembers = new GeneralRepository<ForumMembers>(db);
             var forum = from f in forums.GetAll()
-                        where f.ForumId.ToString() == forumid
+                        where f.ForumId == Guid.Parse(forumid)
                         select new
                         {
                             title = f.ForumName,
