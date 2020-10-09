@@ -14,7 +14,8 @@
               </div>
               <div class="form-group">
                 <label for="password">密碼</label>
-                <input type="password" class="form-control" id="password" placeholder="輸入密碼" v-model="loginData.password">
+                <input type="password" class="form-control" id="password" placeholder="輸入密碼"
+                  v-model="loginData.password">
               </div>
               <div class="form-group form-check text-center">
                 <input type="checkbox" class="form-check-input" id="Remember">
@@ -32,7 +33,6 @@
 
 <script>
 import Navbar from "../components/common/Navbar"
-import axios from "axios"
 export default {
   components: { Navbar },
   data () {
@@ -46,10 +46,15 @@ export default {
   methods: {
     login () {
       let vm = this;
-      let url = process.env.VUE_APP_API + "/api/Users/authenticate"
-			axios.post(url,vm.loginData).then(res => {
-				console.log(res);
-			})
+      let url = process.env.VUE_APP_API + "/api/JwtHelper/signin"
+      vm.$axios.post(url, vm.loginData).then(res => {
+        console.log(res);
+        if (res.status == 200) {
+          let { token, isAuthorize } = { token: res.data.token, isAuthorize: true };
+          vm.$store.dispatch("setAuth", { token, isAuthorize })
+          vm.$router.push("/home");
+        }
+      }).catch(err => console.log(err))
     }
   }
 }

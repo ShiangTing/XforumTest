@@ -19,6 +19,7 @@ import VueQuillEditor from "vue-quill-editor";
 import "quill/dist/quill.core.css"; // import styles
 import "quill/dist/quill.snow.css"; // for snow theme
 import "quill/dist/quill.bubble.css"; // for bubble theme
+import store from './store'
 
 import axios from 'axios';
 
@@ -41,8 +42,6 @@ Vue.use(VueQuillEditor);
 new Vue({
   el: '#app',
   router: Router,
-  render: (h) => h(App),
+  store,
+  render: (h) => h(App)
 });
-// router.beforeEach((to, from, next) => {
-
-// })
