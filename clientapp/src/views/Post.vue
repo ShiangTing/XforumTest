@@ -12,15 +12,19 @@
             >選擇看板:</label
           >
 
-          <select class="selectpicker" ref="select" v-model="select">
-            <option v-for="(l, idx) in listData" :key="idx">{{ l }}</option>
+          <select
+            class="selectpicker"
+            ref="select"
+            v-model="selectThread.select"
+          >
+            <option
+              v-for="(item, idx) in selectThread.threadName"
+              :key="idx"
+              :data-id="selectThread.threadId[idx]"
+            >
+              {{ item }}
+            </option>
           </select>
-          <!-- <b-form-select
-            v-on:change="getSelectedItem"
-            id="inline-form-custom-select-pref"
-            class="mb-2 mr-sm-2 mb-sm-0"
-            :options="options"
-          ></b-form-select> -->
         </b-form>
         <b-form inline class="mt-3">
           <label class="mr-3">標題:</label>
@@ -50,7 +54,6 @@
 
 <script>
 import Navbar from "../components/common/Navbar";
-import axios from "axios";
 
 // Advanced Use - Hook into Quill's API for Custom Functionality
 import { VueEditor } from "vue2-editor";
@@ -63,6 +66,7 @@ export default {
 
   data() {
     return {
+      //editor section
       customModulesForEditor: [
         { alias: "imageDrop", module: ImageDrop },
         { alias: "imageResize", module: ImageResize },
@@ -73,8 +77,14 @@ export default {
           imageResize: {},
         },
       },
-
-      replyObj: {
+      editorContent: "",
+      customToolbar: [
+        ["bold", "italic", "underline"],
+        [{ list: "ordered" }, { list: "bullet" }],
+        ["image", "code-block"],
+      ],
+      //
+      postData: {
         ForumId: "",
         PostId: null,
         Title: "",
@@ -83,35 +93,24 @@ export default {
         UserId: "",
         State: false,
       },
+      selectThread: {
+        threadName: [],
+        threadId: [],
+        select: "",
+      },
 
-      Base64Img: {},
-      listData: [
-        "心情閒聊區",
-        "新書怒灌區",
-        "推理懸疑區",
-        "奇幻冒險區",
-        "人物傳記區",
-        "程式討論區",
-      ],
-      select: "心情閒聊區",
       titleContent: "",
-      editorContent: "",
-      customToolbar: [
-        ["bold", "italic", "underline"],
-        [{ list: "ordered" }, { list: "bullet" }],
-        ["image", "code-block"],
-      ],
     };
   },
   methods: {
+    //connect imgur api to upload img , from base64 to img
     handleImageAdded(file, Editor, cursorLocation) {
       const CLIENT_ID = "3d78cf6e67ed6af";
-
       var formData = new FormData();
       formData.append("image", file);
       console.log("底下是formdata");
       console.log(formData);
-      axios({
+      this.$axios({
         url: "https://api.imgur.com/3/image",
         method: "POST",
         headers: {
@@ -130,16 +129,33 @@ export default {
           console.log(err);
         });
     },
+    getThreadName: function () {
+      const url = process.env.VUE_APP_API + "/api/Forum/GetAll";
+      this.$axios
+        .get(url)
+        .then((response) => {
+          console.log(response.data);
+          console.log("成功");
+          response.data.forEach((item) => {
+            this.selectThread.threadName.push(item.forumName);
+            this.selectThread.threadId.push(item.forumId);
+          });
+          this.selectThread.select = response.data[0].forumName;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
     saveContent: function () {
       let vm = this;
-      this.replyObj.ForumId = "e356a9a0-5f15-4c75-a2dc-19011a823fb3";
-      this.replyObj.Title = this.titleContent;
-      this.replyObj.Description = this.editorContent;
-      this.replyObj.CreatedDate = new Date();
-      this.replyObj.UserId = "0e42d4e5-2cbb-47dc-b7e9-25c1bac99ef5";
-      this.replyObj.State = true;
-      axios
-        .post(process.env.VUE_APP_API + "/api/Post/Create", this.replyObj)
+      this.postData.ForumId = "e356a9a0-5f15-4c75-a2dc-19011a823fb3";
+      this.postData.Title = this.titleContent;
+      this.postData.Description = this.editorContent;
+      this.postData.CreatedDate = new Date();
+      this.postData.UserId = "0e42d4e5-2cbb-47dc-b7e9-25c1bac99ef5";
+      this.postData.State = true;
+      this.$axios
+        .post(process.env.VUE_APP_API + "/api/Post/Create", this.postData)
         .then((response) => {
           console.log(response);
           console.log("成功");
@@ -149,6 +165,9 @@ export default {
           console.log(err);
         });
     },
+  },
+  async created() {
+    await this.getThreadName();
   },
 };
 </script>

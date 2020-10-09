@@ -38,7 +38,8 @@
                 <span class="pl-4">{{ article.userName }}</span>
                 <h5 class="py-3">{{ article.threadName }}</h5>
                 <h5>{{ article.title }}</h5>
-                <div :id="'article' + index"></div>
+                <div v-html="article.description"></div>
+                <!-- <div :id="'article' + index"></div> -->
                 <p>{{ article.createdDate }}</p>
               </div>
             </div>
@@ -126,19 +127,18 @@ export default {
         .then((response) => {
           console.log(response);
           console.log("成功");
-
           response.data.forEach((item) => {
             console.log(item);
             this.articles.push(item);
           });
-          this.$nextTick(() => {
-            this.articles.forEach((item, index) => {
-              console.log("article" + index);
-              let temp = document.getElementById("article" + index);
-              console.log(temp);
-              temp.innerHTML = item.description;
-            });
-          });
+          // this.$nextTick(() => {
+          //   this.articles.forEach((item, index) => {
+          //     console.log("article" + index);
+          //     let temp = document.getElementById("article" + index);
+          //     console.log(temp);
+          //     temp.innerHTML = item.description;
+          //   });
+          // });
         })
         .catch((err) => {
           console.log(err);
