@@ -9,6 +9,7 @@ using XforumTest.Repository;
 using XforumTest.DTO;
 using Newtonsoft.Json;
 using System.Text.Json;
+using Microsoft.EntityFrameworkCore;
 
 namespace XforumTest.Services
 {
@@ -117,7 +118,12 @@ namespace XforumTest.Services
                              RouteName = fm.RouteName,
                              Description = fm.Description
                          };
-            return getall;
+            return  getall.ToList();
+        }
+
+        IQueryable<ForumGetAllDTO> IForumService.GetAll()
+        {
+            throw new NotImplementedException();
         }
     }
 }

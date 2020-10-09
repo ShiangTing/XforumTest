@@ -7,6 +7,7 @@ using XforumTest.Interface;
 using XforumTest.DTO;
 using XforumTest.DataTable;
 using XforumTest.Repository;
+using Microsoft.EntityFrameworkCore;
 
 namespace XforumTest.Services
 {
@@ -27,6 +28,8 @@ namespace XforumTest.Services
             GeneralRepository<ForumMembers> users = new GeneralRepository<ForumMembers>(db);
             try
             {
+                GeneralRepository<Posts> posts = new GeneralRepository<Posts>(db);
+                GeneralRepository<ForumMembers> users = new GeneralRepository<ForumMembers>(db);
                 var po = new Posts
                 {
                     PostId = Guid.NewGuid(),
@@ -102,7 +105,7 @@ namespace XforumTest.Services
         /// <summary>
         /// 取得所有的發文
         /// </summary>
-        public IQueryable<PostListDto> GetAll()
+        public List<PostListDto> GetAll()
         {
             GeneralRepository<Posts> posts = new GeneralRepository<Posts>(db);
             GeneralRepository<ForumMembers> users = new GeneralRepository<ForumMembers>(db);
@@ -120,10 +123,15 @@ namespace XforumTest.Services
                             UserName = u.Name,
                             State = p.State
                         };
-            return pList;
+            return  pList.ToList();
 
 
 
+        }
+
+        IQueryable<PostListDto> IPostService.GetAll()
+        {
+            throw new NotImplementedException();
         }
     }
 }
