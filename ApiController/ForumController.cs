@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using XforumTest.DTO;
+using XforumTest.Interface;
 using XforumTest.Services;
 
 namespace XforumTest.ApiController
@@ -14,7 +15,12 @@ namespace XforumTest.ApiController
     [ApiController]
     public class ForumController : ControllerBase
     {
-        private static ForumService forumservice = new ForumService();
+        //private static ForumService forumservice = new ForumService();
+        private IForumService _forumservice;
+        public ForumController(IForumService Service) 
+        {
+            _forumservice = Service;
+        }
         /// <summary>
         /// Create新版資料
         /// </summary>
@@ -26,7 +32,7 @@ namespace XforumTest.ApiController
 
             if (ModelState.IsValid)
             {
-                forumservice.Create(create);
+                _forumservice.Create(create);
                 return Ok();
             }
             return Ok();
@@ -39,7 +45,7 @@ namespace XforumTest.ApiController
         [HttpGet]
         public IQueryable GetSingle(string id)
         {
-            var edit = forumservice.GetSingle(id);
+            var edit = _forumservice.GetSingle(id);
             return edit;
         }      
 
@@ -52,7 +58,7 @@ namespace XforumTest.ApiController
         {
             if (ModelState.IsValid)
             {
-                forumservice.Edit(json);
+                _forumservice.Edit(json);
                 return Ok();
             }
             return Ok();
@@ -64,7 +70,7 @@ namespace XforumTest.ApiController
         [HttpPost]
         public void Delete(string id)
         {
-            forumservice.Delete(id);
+            _forumservice.Delete(id);
         }
 
 
@@ -73,10 +79,10 @@ namespace XforumTest.ApiController
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public IEnumerable<ForumGetAllDTO> GetAll()
+        public IList<ForumGetAllDTO> GetAll()
         {
-            var getall = new ForumService().GetAll();
-            return  getall;
+            //var getall = new ForumService().GetAll();
+            return  _forumservice.GetAll();
         }        
     }
 }

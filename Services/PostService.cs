@@ -8,13 +8,13 @@ using XforumTest.DTO;
 using XforumTest.DataTable;
 using XforumTest.Repository;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
 
 namespace XforumTest.Services
 {
     public class PostService : IPostService
     {
-        private MyDBContext db;
-        //private static MyDBContext db = new MyDBContext();
+        private  MyDBContext db ;
         //GeneralRepository<Posts> posts = new GeneralRepository<Posts>(db);
         //GeneralRepository<ForumMembers> users = new GeneralRepository<ForumMembers>(db);
 
@@ -22,9 +22,10 @@ namespace XforumTest.Services
         {
             db = new MyDBContext();
         }
+
         public void Create(PostDto model)
         {
-          
+      
             try
             {
                 GeneralRepository<Posts> posts = new GeneralRepository<Posts>(db);
@@ -46,7 +47,7 @@ namespace XforumTest.Services
             }
             catch (Exception ex)
             {
-
+                Debug.WriteLine(ex.Message);
             }
 
         }
@@ -104,7 +105,7 @@ namespace XforumTest.Services
         /// <summary>
         /// 取得所有的發文
         /// </summary>
-        public List<PostListDto> GetAll()
+        public IQueryable<PostListDto> GetAll()
         {
             GeneralRepository<Posts> posts = new GeneralRepository<Posts>(db);
             GeneralRepository<ForumMembers> users = new GeneralRepository<ForumMembers>(db);
@@ -122,15 +123,12 @@ namespace XforumTest.Services
                             UserName = u.Name,
                             State = p.State
                         };
-            return  pList.ToList();
-
-
-
+            return  pList;
         }
 
-        IQueryable<PostListDto> IPostService.GetAll()
-        {
-            throw new NotImplementedException();
-        }
+        //IQueryable<PostListDto> IPostService.GetAll()
+        //{
+        //    throw new NotImplementedException();
+        //}
     }
 }

@@ -34,6 +34,8 @@ namespace XforumTest.Helpers
             _posts = new GeneralRepository<Posts>(_db);
             _titles = new GeneralRepository<Titles>(_db);
         }
+
+        //產生jwtToken
         public string GenerateToken(string userName, int expireMinutes = 30)
         {
             var issuer = _configuration.GetValue<string>("JwtSettings:Issuer");
@@ -61,6 +63,8 @@ namespace XforumTest.Helpers
             var serializeToken = tokenHandler.WriteToken(securityToken);
             return serializeToken;
         }
+
+        //驗證會員登入
         public AuthenticateResponse ValidateUser(AuthenticateRequest login)
         {
             var user = _members.GetAll().Select(x => new User
@@ -74,6 +78,7 @@ namespace XforumTest.Helpers
             if (user == null) return null;
             return new AuthenticateResponse(user, GenerateToken(user.Username, 30));
         }
+
         public IEnumerable<ForumMembers> GetMembers()
         {
             return _members.GetAll();

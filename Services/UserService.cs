@@ -2,6 +2,7 @@
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
@@ -9,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using XforumTest.Context;
 using XforumTest.DataTable;
+using XforumTest.DTO;
 using XforumTest.Entities;
 using XforumTest.Helpers;
 using XforumTest.Interface;
@@ -20,48 +22,96 @@ namespace XforumTest.Services
     public class UserService : IUserService
     {
         GeneralRepository<ForumMembers> _members;
-        MyDBContext _context;
+        private MyDBContext context;
 
-        private readonly AppSettings _appSettings;
-        public UserService(IOptions<AppSettings> appsettings)
+        public UserService()
         {
-            _context = new MyDBContext();
-            _members = new GeneralRepository<ForumMembers>(_context);
-            _appSettings = appsettings.Value;
+           
+            context = new MyDBContext();
+            _members = new GeneralRepository<ForumMembers>(context);
         }
-        public AuthenticateResponse Authenticate(AuthenticateRequest model)
+
+        public IEnumerable<MemberDto> GetAll()
         {
-            var user = _members.GetAll().Select(x => new User()
-            {
-                //Id = Convert.ToInt32(x.UserId),
-                Username = x.Name,
-                Password = x.Password,
-            }).SingleOrDefault(x => x.Username == model.Username && x.Password == model.Password);
-            //var user = _users.SingleOrDefault(x => x.Username == model.Username && x.Password == model.Password);
-            if (user == null) { return null; }
-            var token = generateToken(user);
-            return new AuthenticateResponse(user, token);
+
+            return _members.GetAll()
+                .Select(x=>new MemberDto() 
+                {
+                    UserId = x.UserId,
+                    Password = x.Password,
+                    Email = x.Email,
+                    Name = x.Name,
+                    Phone = x.Phone,
+                    RoleId = x.RoleId,
+                    Gender = x.Gender,
+                    Points = (decimal)x.Points,
+                    Age = (int)x.Age,
+                    EmailConformed = x.EmailConformed,
+                    TitleId = x.TitleId
+
+
+                });
         }
-        private string generateToken(User user)
+        public MemberDto GetById(Guid id)
         {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
-            var tokenDescriptor = new SecurityTokenDescriptor
+            throw new NotImplementedException();
+        }
+
+        public void Create(CreateMemberDto dto)
+        {
+            try {
+            var user = new ForumMembers()
             {
-                Subject = new ClaimsIdentity(new[] { new Claim("id", user.Id.ToString()) }),
-                Expires = DateTime.UtcNow.AddMinutes(30),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                UserId = Guid.NewGuid(),
+                Password = dto.Password,
+                Email = dto.Email,
+                Name = dto.Name,
+                Gender = dto.Gender,
             };
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            return tokenHandler.WriteToken(token);
+            _members.Create(user);
+            _members.SaveContext();
+            }
+            catch(Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
         }
-        public IEnumerable<ForumMembers> GetAll()
+
+
+        /// <summary>
+        /// 取得單一會員資料(目前還不拿稱號)
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+
+        public MemberDto GetSingleMember(Guid id)
         {
-            return _members.GetAll();
+           var titleRepo = new GeneralRepository<Titles>(context);
+            var member = from m in _members.GetAll()
+                         join t in titleRepo.GetAll()
+                         on m.TitleId equals t.TitleId
+                         select new MemberDto()
+                         {
+                             UserId = m.UserId,
+                             Password = m.Password,
+                             Email = m.Email,
+                             Name = m.Name,
+                             Phone = m.Phone,
+                             RoleId = m.RoleId,
+                             Gender = m.Gender,
+                             Points = (decimal)m.Points,
+                             Age = (int)m.Age,
+                             EmailConformed = m.EmailConformed,
+                             TitleId = null,
+
+                         };
+
+            return member.FirstOrDefault(x=>x.UserId==id);
         }
-        public ForumMembers GetById(Guid id)
+
+        public void Edit(MemberDto dto)
         {
-            return _members.GetFirst(x => x.UserId == id);
+            throw new NotImplementedException();
         }
     }
 }
