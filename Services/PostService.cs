@@ -105,7 +105,7 @@ namespace XforumTest.Services
         /// <summary>
         /// 取得所有的發文
         /// </summary>
-        public List<PostListDto> GetAll()
+        public IQueryable<PostListDto> GetAll()
         {
             GeneralRepository<Posts> posts = new GeneralRepository<Posts>(db);
             GeneralRepository<ForumMembers> users = new GeneralRepository<ForumMembers>(db);
@@ -123,15 +123,12 @@ namespace XforumTest.Services
                             UserName = u.Name,
                             State = p.State
                         };
-            return  pList.ToList();
-
-
-
+            return  pList;
         }
 
-        IQueryable<PostListDto> IPostService.GetAll()
-        {
-            throw new NotImplementedException();
-        }
+        //IQueryable<PostListDto> IPostService.GetAll()
+        //{
+        //    throw new NotImplementedException();
+        //}
     }
 }

@@ -121,9 +121,9 @@ namespace XforumTest.Services
             return  getall;
         }
 
-        IQueryable<ForumGetAllDTO> IForumService.GetAll()
-        {
-            throw new NotImplementedException();
-        }
+        //IQueryable<ForumGetAllDTO> IForumService.GetAll()
+        //{
+        //    throw new NotImplementedException();
+        //}
     }
 }
