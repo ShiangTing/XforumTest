@@ -18,6 +18,11 @@ export default new VueRouter({
       name: 'login',
     },
     {
+      path: '/Register',
+      component: () => import('./views/Register.vue'),
+      name: 'register',
+    },
+    {
       path: '/post',
       component: () => import('./views/Post.vue'),
       name: 'post',

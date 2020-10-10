@@ -12,6 +12,7 @@ import {
   faBookDead,
   faUserGraduate,
   faGhost,
+  faPen
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import VueQuillEditor from "vue-quill-editor";
@@ -32,7 +33,8 @@ library.add(
   faUser,
   faBookDead,
   faUserGraduate,
-  faGhost
+  faGhost,
+  faPen
 );
 
 Vue.prototype.$bus = new Vue();
