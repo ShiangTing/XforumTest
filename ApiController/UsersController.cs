@@ -10,6 +10,7 @@ using XforumTest.Models;
 
 namespace XforumTest.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
@@ -28,10 +29,9 @@ namespace XforumTest.Controllers
             {
                 return BadRequest(new { message = "Username or password is incorrect!" });
             }
-            HttpContext.Response.Cookies.Append("UserLoginToken", response.Token);
+            //HttpContext.Response.Cookies.Append("UserLoginToken", response.Token);
             return Ok(response);
         }
-        [Authorize]
         [HttpGet("getall")]
         public IActionResult GetAll()
         {
