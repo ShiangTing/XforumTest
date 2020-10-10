@@ -8,6 +8,7 @@ using XforumTest.DTO;
 using XforumTest.DataTable;
 using XforumTest.Repository;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
 
 namespace XforumTest.Services
 {
@@ -24,8 +25,7 @@ namespace XforumTest.Services
 
         public void Create(PostDto model)
         {
-            GeneralRepository<Posts> posts = new GeneralRepository<Posts>(db);
-            GeneralRepository<ForumMembers> users = new GeneralRepository<ForumMembers>(db);
+      
             try
             {
                 GeneralRepository<Posts> posts = new GeneralRepository<Posts>(db);
@@ -47,7 +47,7 @@ namespace XforumTest.Services
             }
             catch (Exception ex)
             {
-
+                Debug.WriteLine(ex.Message);
             }
 
         }

@@ -24,6 +24,10 @@ namespace XforumTest.ApiController
         {
             _jwt = jwt;
         }
+        
+        
+        
+        
         [AllowAnonymous]
         [HttpPost("signin")]
         public IActionResult SignIn([FromBody]AuthenticateRequest login)
@@ -36,6 +40,16 @@ namespace XforumTest.ApiController
             //HttpContext.Response.Cookies.Append("UserToken", check.Token);
             return Ok(check);
         }
+
+
+
+        [HttpGet("username")]
+        public IActionResult GetUserName()
+        {
+            return Ok(User.Identity.Name);
+        }
+
+
         [HttpGet("claim")]
         public IActionResult GetClaims()
         {
@@ -46,11 +60,7 @@ namespace XforumTest.ApiController
         {
             return Ok(User.Claims.FirstOrDefault(p => p.Type == "jti").Value);
         }
-        [HttpGet("username")]
-        public IActionResult GetUserName()
-        {
-            return Ok(User.Identity.Name);
-        }
+      
         [HttpGet("getmembers")]
         public IActionResult GetMembers()
         {

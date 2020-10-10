@@ -17,7 +17,7 @@ namespace XforumTest.ApiController
     [ApiController]
     public class RMessageController : ControllerBase
     {
-        private ApiResult<RMessageDTO> results;
+        //private ApiResult<RMessageDTO> results;
         
         private readonly IMessageService _messageService;
        

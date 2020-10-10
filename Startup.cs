@@ -55,7 +55,7 @@ namespace XforumTest
             services.AddTransient<IMessageService, RMessageService>();
             services.AddTransient<ILikeService<PostLikeDto>, LikeService>();
             services.AddTransient<ILikeService<MessageLikeDto>, LikeService>();
-
+            services.AddControllers().AddNewtonsoftJson();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
             {
                 options.IncludeErrorDetails = true;

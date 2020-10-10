@@ -25,8 +25,8 @@ namespace XforumTest.DTO
         public DateTime? CreatedDate { get; set; }
         public string Img { get; set; }
         public Guid? ModeratorId { get; set; }
-        public string Description { get; set; }
-        public string ForumName { get; set; }
+        new public string Description { get; set; }
+        new public string ForumName { get; set; }
         public bool? State { get; set; }
     }
 }

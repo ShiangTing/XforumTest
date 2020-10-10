@@ -118,7 +118,7 @@ namespace XforumTest.Services
                              RouteName = fm.RouteName,
                              Description = fm.Description
                          };
-            return  getall.ToList();
+            return  getall;
         }
 
         IQueryable<ForumGetAllDTO> IForumService.GetAll()
