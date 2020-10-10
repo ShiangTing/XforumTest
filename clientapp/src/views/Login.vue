@@ -6,6 +6,9 @@
         <div class="card p-5" style="width: 35rem;">
           <div class="card-body">
             <h1 class="login-title">登入</h1>
+            <div class="alert alert-danger" role="alert" v-if="error.isError">
+              {{error.message}}
+            </div>
             <form>
               <div class="form-group">
                 <label for="account">帳號</label>
@@ -14,11 +17,12 @@
               </div>
               <div class="form-group">
                 <label for="password">密碼</label>
-                <input type="password" class="form-control" id="password" placeholder="輸入密碼" v-model="loginData.password">
+                <input type="password" class="form-control" id="password" placeholder="輸入密碼"
+                  v-model="loginData.password">
               </div>
-              <div class="form-group form-check text-center">
-                <input type="checkbox" class="form-check-input" id="Remember">
-                <label class="form-check-label" for="Remember">記住我</label>
+              <div class="custom-control custom-switch text-center my-3">
+                <input type="checkbox" class="custom-control-input" id="remember">
+                <label class="custom-control-label" for="remember">記住我</label>
               </div>
               <input type="button" class="w-100 btn btn-primary" v-on:click="login" value="登入">
             </form>
@@ -32,7 +36,6 @@
 
 <script>
 import Navbar from "../components/common/Navbar"
-import axios from "axios"
 export default {
   components: { Navbar },
   data () {
@@ -40,16 +43,28 @@ export default {
       loginData: {
         username: "",
         password: ""
+      },
+      error: {
+        isError: false,
+        message: ""
       }
     };
   },
   methods: {
     login () {
       let vm = this;
-      let url = process.env.VUE_APP_API + "/api/Users/authenticate"
-			axios.post(url,vm.loginData).then(res => {
-				console.log(res);
-			})
+      let url = process.env.VUE_APP_API + "/api/JwtHelper/signin"
+      vm.$axios.post(url, vm.loginData).then(res => {
+        console.log(res);
+        if (res.status == 200) {
+          let { token, isAuthorize } = { token: res.data.token, isAuthorize: true };
+          vm.$store.dispatch("setAuth", { token, isAuthorize })
+          vm.$router.push("/home");
+        }
+      }).catch(err => {
+        vm.error.isError = true
+        vm.error.message = err.response.data.message;
+      })
     }
   }
 }
