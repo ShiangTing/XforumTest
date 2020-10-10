@@ -5,12 +5,14 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using XforumTest.DTO;
 using XforumTest.Interface;
 using XforumTest.Models;
+using XforumTest.Services;
 
 namespace XforumTest.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class UsersController : ControllerBase
     {
@@ -19,23 +21,27 @@ namespace XforumTest.Controllers
         {
             _userService = userService;
         }
-        [AllowAnonymous]
-        [HttpPost("authenticate")]
-        public IActionResult Authenicate([FromBody]AuthenticateRequest model)
+        
+
+
+        /// <summary>
+        /// 註冊會員功能 輸入model
+        /// </summary>
+        [HttpPost]
+        public ApiResult<CreateMemberDto> Register([FromBody] CreateMemberDto dto)
         {
-            var response = _userService.Authenticate(model);
-            if(response == null)
+            var result = new ApiResult<CreateMemberDto>();
+
+            if (ModelState.IsValid)
             {
-                return BadRequest(new { message = "Username or password is incorrect!" });
+                
+                _userService.Create(dto);
+                return result;
             }
-            HttpContext.Response.Cookies.Append("UserLoginToken", response.Token);
-            return Ok(response);
-        }
-        [Authorize]
-        [HttpGet("getall")]
-        public IActionResult GetAll()
-        {
-            return Ok(_userService.GetAll());
+            else
+            {
+                return new ApiResult<CreateMemberDto>("Dto");
+            }
         }
     }
 }

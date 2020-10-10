@@ -14,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using XforumTest.DTO;
 using XforumTest.Helpers;
 using XforumTest.Interface;
 using XforumTest.Services;
@@ -35,7 +36,7 @@ namespace XforumTest
             services.AddControllersWithViews();
             services.AddCors(options =>
             {
-                // CorsPolicy �O�ۭq�� Policy �W��
+                
                 options.AddPolicy("CorsPolicy", policy =>
                 {
                     policy.WithOrigins("http://localhost:8080")
@@ -51,7 +52,10 @@ namespace XforumTest
 
             services.AddScoped<IUserService, UserService>();
             services.AddTransient<IJwtHelperService, JwtHelperService>();
-
+            services.AddTransient<IMessageService, RMessageService>();
+            services.AddTransient<ILikeService<PostLikeDto>, LikeService>();
+            services.AddTransient<ILikeService<MessageLikeDto>, LikeService>();
+            services.AddControllers().AddNewtonsoftJson();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
             {
                 options.IncludeErrorDetails = true;
@@ -112,14 +116,16 @@ namespace XforumTest
             }
             app.UseHttpsRedirection();
             app.UseCors("CorsPolicy");
+
             app.UseStaticFiles();
-            //�ϥ��R�AHtmlPage
+
             app.UseStaticFiles(new StaticFileOptions
             {
                 FileProvider = new PhysicalFileProvider(
                     Path.Combine(Directory.GetCurrentDirectory(), "HtmlPages")),
                 RequestPath = "/HtmlPages"
             });
+         //   app.UseExceptionHandler("/api/error");
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();
             // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
@@ -135,7 +141,7 @@ namespace XforumTest
                .AllowAnyHeader());
             app.UseAuthentication();
             app.UseAuthorization();
-            //�ϥ�JWT Middleware
+         
             app.UseMiddleware<JwtMiddleware>();
             app.UseEndpoints(endpoints =>
             {

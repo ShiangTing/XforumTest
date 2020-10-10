@@ -5,28 +5,41 @@ using System.Threading.Tasks;
 
 namespace XforumTest.Services
 {
-   
-
-    public class ApiResult
+    public class ApiResult<T> 
     {
 
-        public ApiResult(int status,string err,Object result)
-        {
-            Status = status;
-            ErrorMsg = err;
-            Result = result;
+        /// <summary>
+        /// 是否成功
+        /// </summary>
+        public bool Issuccessful { get; set; } 
 
+
+        /// <summary>
+        /// 成功為0000
+        /// </summary>
+        public string Status { get; set; } 
+
+        /// <summary>
+        /// 錯誤訊息
+        /// </summary>
+        public string ErrorMsg { get; set; } 
+
+        public T Data { get; set; }
+
+        public ApiResult()
+        {
+            Issuccessful = true;
+            Status = "0000";
+            ErrorMsg = "no error";
+        }
+        
+        public ApiResult(string error)
+        {
+            Issuccessful = false;
+            Status = "0001";
+            ErrorMsg = $"{error} is null" ;
         }
 
-        public int Status { get; set; }
-        public string ErrorMsg { get; set; }
-        public Object Result { get; set; }
 
-        public static class APIStatus
-        {
-            public static int Success = 0;
-            public static int Error = 1;
-        }
     }
- 
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using XforumTest.Context;
@@ -48,7 +49,7 @@ namespace XforumTest.Services
 
             catch(Exception ex)
             {
-
+                Debug.WriteLine(ex.Message);
             }
              
 
@@ -73,9 +74,9 @@ namespace XforumTest.Services
 
             }
 
-            catch
+            catch(Exception ex)
             {
-
+                Debug.WriteLine(ex.Message);
             }
         }
 
@@ -86,11 +87,22 @@ namespace XforumTest.Services
             var repository = new GeneralRepository<ReposiveMessages>(context);
             var postRepo = new GeneralRepository<ForumMembers>(context);
             var pRepo = new GeneralRepository<Posts>(context);
-            var post = pRepo.GetAll().Where(x=>x.PostId==postId);
+           
 
-            
-         //   if (post != null)
-          //  {
+
+            //var ms = repository.GetAll().Where(x => x.PostId == postId)
+            //         .Select(x=>new RMessageDTO() {
+            //            MessageId = x.MessageId,
+            //            LikeNumber = x.LikeNumber,
+            //            DisLikeNumber = x.DisLikeNumber,
+            //             PostId = x.PostId,
+            //             CreatedDate = x.CreatedDate,
+            //             Context = x.Context,
+            //             UserId = (Guid)x.UserId,
+                        
+            //         });
+
+     
                 var mRepo = from m in repository.GetAll()
                             where m.PostId == postId
                             join p in postRepo.GetAll()
@@ -107,40 +119,11 @@ namespace XforumTest.Services
                                 UserName = p.Name
                             };
                 return await mRepo.ToListAsync();
-        //    }
 
-
-           // else
-           // {
-              //  return null;
-        //    }
            
         }
 
 
-        //public  async  Task<List<RMessageDTO>> GetAllPostbyId(Guid postId)
-        //{
-        //    var repository = new GeneralRepository<ReposiveMessages>(context);
-        //    var memberRepository = new GeneralRepository<ForumMembers>(context);
-        //    var mDto = new RMessageDTO();
-
-        //    var mRepo = from m in repository.GetAll()
-        //                //join u in memberRepository.GetAll()
-        //                //on m.
-        //                where m.MessageId == postId
-        //                select new RMessageDTO
-        //                {
-        //                    MessageId = m.MessageId,
-        //                    LikeNumber = m.LikeNumber,
-        //                    DisLikeNumber = m.DisLikeNumber,
-        //                    PostId = m.PostId,
-        //                    CreatedDate = m.CreatedDate,
-        //                    Context = m.Context,
-        //                };
-
-
-        //    return await mRepo.ToListAsync();
-        //}
 
         public void GetSingle()
         {

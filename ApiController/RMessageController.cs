@@ -9,30 +9,45 @@ using XforumTest.DTO;
 using XforumTest.Interface;
 using XforumTest.Services;
 
+//using static XforumTest.Services.ApiResult;
+
 namespace XforumTest.ApiController
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
     public class RMessageController : ControllerBase
     {
+        //private ApiResult<RMessageDTO> results;
+        
+        private readonly IMessageService _messageService;
+       
+        
+        public RMessageController(IMessageService messageService)
+        {
+            _messageService = messageService;
+        }
+        
+        
         /// <summary>
         /// 留言
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult CreateMessage(RMessageDTO dto)
+        public ApiResult<RMessageDTO> CreateMessage(RMessageDTO dto)
         {
-            if (!ModelState.IsValid)
+            var result = new ApiResult<RMessageDTO>();
+            if (ModelState.IsValid)
             {
-                var service = new RMessageService();
-                service.Create(dto);
+               // var service = new RMessageService();
+                _messageService.Create(dto);
 
-                return Ok("create msg");
+                return  result;
             }
             else
             {
-                return BadRequest("model wrong");
+      
+                return new ApiResult<RMessageDTO>("dto");
             }
         }
 
@@ -44,16 +59,21 @@ namespace XforumTest.ApiController
         /// <returns></returns>
 
         [HttpGet("{postId}")]
-        public async Task<ActionResult<List<RMessageDTO>>> GetAllMessages(Guid postId)
+        public async Task<ApiResult<List<RMessageDTO>>> GetAllMessages(Guid postId)
         {
-            if (postId!=null)
+            var result = new ApiResult<List<RMessageDTO>>();
+
+            if (postId != null)
             {
-                var service = new RMessageService();
-                return await service.GetAllbyPostId(postId);
+              //  var service = new RMessageService();
+                result.Data = await _messageService.GetAllbyPostId(postId);
+                return result;
+
             }
             else
             {
-                return BadRequest("postId is null");
+   
+                return new ApiResult<List<RMessageDTO>>("postId"); 
             }
         }
 
@@ -64,19 +84,21 @@ namespace XforumTest.ApiController
         /// <param name="mId"></param>
         /// <returns></returns>
         [HttpDelete]
-        public IActionResult DeleteMessages(Guid mId)
+        public ApiResult<RMessageDTO> DeleteMessages(Guid mId)
         {
+            var result = new ApiResult<RMessageDTO>();
             if (mId != null)
             {
-                var service = new RMessageService();
-                service.Delete(mId);
-                return Ok("delete msg");
+                // var service = new RMessageService();
+                _messageService.Delete(mId);
+                return result;
             }
             else
             {
-                return BadRequest("Id is null");
+             
+                return new ApiResult<RMessageDTO>("Id");
             }
-           
+
         }
 
 
@@ -86,20 +108,22 @@ namespace XforumTest.ApiController
         /// <param name="Dto"></param>
         /// <returns></returns>
         [HttpPut]
-        public IActionResult PostLikeAndDisLike(MessageLikeDto Dto)
+        public ApiResult<MessageLikeDto> PostLikeAndDisLike(MessageLikeDto Dto)
         {
-            if (!ModelState.IsValid)
+            var result = new ApiResult<MessageLikeDto>();
+
+            if (ModelState.IsValid)
             {
                 var service = new LikeService();
                 service.PostLikeAndDisLike(Dto);
-                return Ok("create msg");
+                return result;
             }
             else
             {
-                return BadRequest("Dto wrong");
+                return new ApiResult<MessageLikeDto>("Dto");
             }
-           
+
         }
-    
+
     }
 }

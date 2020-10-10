@@ -15,10 +15,9 @@ namespace XforumTest.Services
 {
     public class ForumService : IForumService
     {
-        private MyDBContext db;
         //static MyDBContext db = new MyDBContext();
-        //GeneralRepository<Forums> forums = new GeneralRepository<Forums>(db);
-        //GeneralRepository<ForumMembers> forummembers = new GeneralRepository<ForumMembers>(db);
+
+        private MyDBContext db;
 
         public ForumService()
         {
@@ -26,10 +25,9 @@ namespace XforumTest.Services
         }
         public void Create(ForumCreate create)
         {
-           
+    
             try
             {
-
                 GeneralRepository<Forums> forums = new GeneralRepository<Forums>(db);
                 GeneralRepository<ForumMembers> forummembers = new GeneralRepository<ForumMembers>(db);
                 var createforum = new Forums
@@ -107,7 +105,7 @@ namespace XforumTest.Services
         /// 取的所有看板
         /// </summary>
         /// <returns></returns>
-        public IList<ForumGetAllDTO> GetAll()
+        public IQueryable<ForumGetAllDTO> GetAll()
         {
             GeneralRepository<Forums> forums = new GeneralRepository<Forums>(db);
             GeneralRepository<ForumMembers> forummembers = new GeneralRepository<ForumMembers>(db);
@@ -120,7 +118,7 @@ namespace XforumTest.Services
                              RouteName = fm.RouteName,
                              Description = fm.Description
                          };
-            return  getall.ToList();
+            return  getall;
         }
 
         IQueryable<ForumGetAllDTO> IForumService.GetAll()

@@ -27,6 +27,8 @@ namespace XforumTest.Helpers
             _configuration = configuration;
             _db = new MyDBContext();
         }
+
+        //產生jwtToken
         public string GenerateToken(string userName, int expireMinutes = 30)
         {
             var issuer = _configuration.GetValue<string>("JwtSettings:Issuer");
@@ -51,6 +53,8 @@ namespace XforumTest.Helpers
             var serializeToken = tokenHandler.WriteToken(securityToken);
             return serializeToken;
         }
+
+        //驗證會員登入
         public AuthenticateResponse ValidateUser(AuthenticateRequest login)
         {
             GeneralRepository<ForumMembers> _members = new GeneralRepository<ForumMembers>(_db);
@@ -66,6 +70,7 @@ namespace XforumTest.Helpers
             var resultToken = GenerateToken(user.Username, 30);
             return new AuthenticateResponse(user, resultToken);
         }
+
         public IEnumerable<ForumMembers> GetMembers()
         {
             GeneralRepository<ForumMembers> _members = new GeneralRepository<ForumMembers>(_db);
