@@ -3,6 +3,7 @@ import Router from './router';
 import App from './App.vue';
 import VueParticles from 'vue-particles';
 import BoostrapVue from 'bootstrap-vue';
+import infiniteScroll from 'vue-infinite-scroll'
 import { library } from '@fortawesome/fontawesome-svg-core';
 import {
   faShoppingCart,
@@ -24,6 +25,9 @@ import store from './store'
 
 import axios from 'axios';
 
+
+
+
 Vue.prototype.$axios = axios
 Vue.component('font-awesome-icon', FontAwesomeIcon); //使用kebab-case
 library.add(
@@ -41,6 +45,7 @@ Vue.prototype.$bus = new Vue();
 Vue.use(VueParticles);
 Vue.use(BoostrapVue);
 Vue.use(VueQuillEditor);
+Vue.use(infiniteScroll)
 new Vue({
   el: '#app',
   router: Router,

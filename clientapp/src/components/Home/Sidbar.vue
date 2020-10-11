@@ -23,9 +23,6 @@ export default {
   },
   beforeRouteUpdate() {},
   methods: {
-    showAlert(msg) {
-      console.log(msg);
-    },
     goToThread(name) {
       const vm = this;
       vm.$router.push(`/Thread/${name}`);
@@ -36,8 +33,6 @@ export default {
       this.$axios
         .get(url)
         .then((response) => {
-          console.log(response.data);
-          console.log("成功");
           response.data.forEach((item) => {
             this.threads.push(item);
           });
