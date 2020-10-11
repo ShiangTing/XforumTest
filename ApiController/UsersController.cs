@@ -48,7 +48,7 @@ namespace XforumTest.Controllers
 
         /// <summary>
         ///  取得單一會員資料(目前還不拿稱號)
-        ///  會拿到
+        ///  會拿到.....資料
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
