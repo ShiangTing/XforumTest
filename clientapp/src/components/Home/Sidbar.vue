@@ -6,7 +6,11 @@
       @click="goToThread(thread.routeName)"
     >
       <!-- <font-awesome-icon :icon="thread.iconName" size="lg" /> -->
-      <span class="text-primary" style="cursor: pointer">
+      <span
+        class="text-primary"
+        style="cursor: pointer"
+        :forumid="thread.forumid"
+      >
         {{ thread.forumName }}</span
       >
     </b-list-group-item>

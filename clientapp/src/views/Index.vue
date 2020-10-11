@@ -43,7 +43,7 @@
                 <div style="padding: 30px 20px">
                   <font-awesome-icon icon="user" size="lg" />
                   <span class="pl-4">{{ article.userName }}</span>
-                  <h5 class="py-3">{{ article.threadName }}</h5>
+                  <h5 class="py-3" id="forumName">{{ article.forumName }}</h5>
                   <h5>{{ article.title }}</h5>
                   <div v-html="article.description"></div>
                   <!-- <div :id="'article' + index"></div> -->
@@ -106,7 +106,6 @@ export default {
         .get(url)
         .then((response) => {
           response.data.forEach((item) => {
-            console.log(item);
             this.articles.push(item);
           });
         })
@@ -153,7 +152,7 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .ellipsis {
   max-width: 20%;
   overflow: hidden;
@@ -167,5 +166,11 @@ export default {
   .sidebar {
     display: none;
   }
+}
+
+#forumName {
+  color: wheat;
+  font-weight: 900;
+  font-size: 20px;
 }
 </style>

@@ -85,7 +85,7 @@ export default {
         PostId: null,
         Title: "",
         Description: "",
-        CreatedDate: "",
+        CreatedDate: null,
         UserId: "",
         State: false,
       },
@@ -100,8 +100,8 @@ export default {
   },
   methods: {
     getOptionIdx: function (event, selectedIndex) {
-      console.log(event, selectedIndex);
-      console.log(event.target.querySelectorAll("option")[selectedIndex].id);
+      // console.log(event, selectedIndex);
+      // console.log(event.target.querySelectorAll("option")[selectedIndex].id);
       this.selectThread.select = event.target.querySelectorAll("option")[
         selectedIndex
       ].id;
@@ -122,10 +122,7 @@ export default {
         data: formData,
       })
         .then((result) => {
-          console.log(result);
-          console.log("成功");
           let url = result.data.data.link;
-          console.log(url);
           Editor.insertEmbed(cursorLocation, "image", url);
         })
         .catch((err) => {
@@ -137,8 +134,6 @@ export default {
       this.$axios
         .get(url)
         .then((response) => {
-          console.log(response.data);
-          console.log("成功");
           response.data.forEach((item) => {
             this.selectThread.threadName.push(item.forumName);
             this.selectThread.threadId.push(item.forumId);
@@ -154,14 +149,14 @@ export default {
       this.postData.ForumId = this.selectThread.select;
       this.postData.Title = this.titleContent;
       this.postData.Description = this.editorContent;
-      this.postData.CreatedDate = new Date();
       this.postData.UserId = "0e42d4e5-2cbb-47dc-b7e9-25c1bac99ef5";
       this.postData.State = true;
+      console.log(this.postData);
       this.$axios
         .post(process.env.VUE_APP_API + "/api/Post/Create", this.postData)
         .then((response) => {
-          console.log(response);
-          console.log("成功");
+          console.log(response.data);
+          console.log("成功Po文");
           vm.$router.push("/");
         })
         .catch((err) => {
