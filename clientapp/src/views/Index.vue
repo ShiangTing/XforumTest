@@ -85,6 +85,7 @@ export default {
       articles: [], //全部的資料
     };
   },
+
   methods: {
     loadMoreData: function () {
       if (this.infiniteArticles.length <= this.articles.length) {
@@ -112,6 +113,9 @@ export default {
         .catch((err) => {
           console.log(err);
         });
+    },
+    checkImg() {
+      console.log("已改變資料");
     },
     // GetArticleAndSideBar() {
     //   let vm = this;
@@ -146,6 +150,7 @@ export default {
     //   return axios.get(url);
     // },
   },
+
   async created() {
     await this.GetAll();
   },

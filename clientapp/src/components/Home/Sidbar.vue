@@ -3,6 +3,7 @@
     <b-list-group-item
       v-for="(thread, index) in threads"
       :key="index"
+      :forumId="thread.forumId"
       @click="goToThread(thread.routeName)"
     >
       <!-- <font-awesome-icon :icon="thread.iconName" size="lg" /> -->
@@ -29,6 +30,7 @@ export default {
   methods: {
     goToThread(name) {
       const vm = this;
+
       vm.$router.push(`/Thread/${name}`);
     },
 

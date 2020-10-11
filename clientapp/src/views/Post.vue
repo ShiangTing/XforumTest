@@ -6,7 +6,7 @@
       <b-col> </b-col>
       <b-col cols="8">
         <!-- <h1>selected: {{ select }}</h1> -->
-        <span>會員名稱:</span>
+        <!-- <span>會員名稱:{{ userId }}</span> -->
         <b-form inline class="mt-3">
           <label class="mr-sm-2" for="inline-form-custom-select-pref"
             >選擇看板:</label
@@ -62,7 +62,7 @@ export default {
 
   data() {
     return {
-      //editor section
+      userId: "",
       customModulesForEditor: [
         { alias: "imageDrop", module: ImageDrop },
         { alias: "imageResize", module: ImageResize },
@@ -96,6 +96,7 @@ export default {
       },
       selectPlaceHolder: "請選擇看板",
       titleContent: "",
+      isLogin: "",
     };
   },
   methods: {
@@ -129,6 +130,25 @@ export default {
           console.log(err);
         });
     },
+    getUserId: function () {
+      let vm = this;
+      let auth = vm.$store.state.tokenModule;
+      let isAuth = auth.isAuthorize;
+      let token = auth.token;
+      const url = process.env.VUE_APP_API + "/api/JwtHelper/userid";
+      if (isAuth) {
+        vm.isLogin = true;
+        vm.$axios({
+          url: url,
+          method: "GET",
+          headers: { Authorization: `Bearer ${token}` },
+        })
+          .then((res) => {
+            vm.userId = res.data;
+          })
+          .catch((err) => console.log(err.response));
+      }
+    },
     getThreadName: function () {
       const url = process.env.VUE_APP_API + "/api/Forum/GetAll";
       this.$axios
@@ -149,7 +169,7 @@ export default {
       this.postData.ForumId = this.selectThread.select;
       this.postData.Title = this.titleContent;
       this.postData.Description = this.editorContent;
-      this.postData.UserId = "0e42d4e5-2cbb-47dc-b7e9-25c1bac99ef5";
+      this.postData.UserId = this.userId;
       this.postData.State = true;
       console.log(this.postData);
       this.$axios
@@ -165,6 +185,7 @@ export default {
     },
   },
   async created() {
+    await this.getUserId();
     await this.getThreadName();
   },
 };
