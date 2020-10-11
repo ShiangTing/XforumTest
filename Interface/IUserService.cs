@@ -25,7 +25,9 @@ namespace XforumTest.Interface
 
         //編輯會員資料
         void Edit(MemberDto dto);
-        
+
+        string VerifyEmailAndName(string temp);
+
         //選擇稱號
     }
 }

@@ -50,7 +50,7 @@ namespace XforumTest
             //  services.AddControllers().AddNewtonsoftJson();
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
 
-            services.AddScoped<IUserService, UserService>();
+            services.AddTransient<IUserService, UserService>();
             services.AddTransient<IJwtHelperService, JwtHelperService>();
             services.AddTransient<IMessageService, RMessageService>();
             services.AddTransient<ILikeService<PostLikeDto>, LikeService>();

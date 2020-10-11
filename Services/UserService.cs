@@ -23,6 +23,7 @@ namespace XforumTest.Services
     public class UserService : IUserService
     {
         GeneralRepository<ForumMembers> _members;
+        GeneralRepository<ForumRoles> role;
         private MyDBContext context;
 
         public UserService()
@@ -30,6 +31,7 @@ namespace XforumTest.Services
            
             context = new MyDBContext();
             _members = new GeneralRepository<ForumMembers>(context);
+            role = new GeneralRepository<ForumRoles>(context);
         }
 
         public IEnumerable<MemberDto> GetAll()
@@ -60,15 +62,19 @@ namespace XforumTest.Services
 
         public void Create(CreateMemberDto dto)
         {
+          
             try {
-            var user = new ForumMembers()
-            {
-                UserId = Guid.NewGuid(),
-                Password = dto.Password,
-                Email = dto.Email,
-                Name = dto.Name,
-                Gender = dto.Gender,
-            };
+                var roleId = role.GetFirst(x => x.RoleName == "一般使用者").RoleId;
+                var user = new ForumMembers()
+                {
+                    UserId = Guid.NewGuid(),
+                    Password = dto.Password,
+                    Email = dto.Email,
+                    Name = dto.Name,
+                    Gender = dto.Gender,
+                    //一般使用者guid
+                    RoleId = roleId
+                };
             _members.Create(user);
             _members.SaveContext();
             }
@@ -138,6 +144,23 @@ namespace XforumTest.Services
             }
 
 
+        }
+
+
+        public string VerifyEmailAndName(string temp)
+        {
+            if (_members.GetAll().Any(x=>x.Email== temp))
+            {
+                return "1";
+            }
+            else if(_members.GetAll().Any(x => x.Name == temp))
+            {
+                return "2";
+            }
+            else
+            {
+                return "0";
+            }
         }
     }
 }
