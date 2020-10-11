@@ -5,22 +5,28 @@ using System.Threading.Tasks;
 
 namespace XforumTest.DTO
 {
-    public class ForumGetAllDTO
+
+
+    public class BaseFourmDto
     {
         public string ForumName { get; set; }
         public Guid? ForumId { get; set; }
         public string RouteName { get; set; }
         public string Description { get; set; }
     }
-
-    public class ForumCreate
+    public class ForumGetAllDTO: BaseFourmDto
     {
-        public Guid? ForumId { get; set; }
+ 
+    }
+
+    public class ForumCreate: BaseFourmDto
+    {
+
         public DateTime? CreatedDate { get; set; }
         public string Img { get; set; }
         public Guid? ModeratorId { get; set; }
-        public string Description { get; set; }
-        public string ForumName { get; set; }
+        new public string Description { get; set; }
+        new public string ForumName { get; set; }
         public bool? State { get; set; }
     }
 }

@@ -10,15 +10,10 @@ namespace XforumTest.Interface
 {
     public interface IForumService
     {
-        //創建論壇
         void Create(ForumCreate create);
-        void Delete(string id);
-
-        //編輯修改論壇資料
-        void Edit(ForumCreate json);
-        IQueryable GetSingle(string forumid);  //測試
-        //IQueryable Edit(Guid forumid);
-
         IQueryable<ForumGetAllDTO> GetAll();
+        IQueryable GetSingle(string forumid);   
+        void Delete(string id);
+        void Edit(ForumCreate json);
     }
 }

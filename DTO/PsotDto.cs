@@ -11,7 +11,6 @@ namespace XforumTest.DTO
         public Guid? PostId { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
-        //public string Img { get; set; }
         public DateTime? CreatedDate { get; set; }
         public string UserId { get; set; }
         public bool State { get; set; }
