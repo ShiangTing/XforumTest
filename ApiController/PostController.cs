@@ -68,8 +68,14 @@ namespace XforumTest.ApiController
         {        
                 return  _postservice.GetAll();
         }
-
-
-
+        /// <summary>
+        /// 取個單一看板PO文
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public IQueryable<PostListDto> GetForum(string forumid)
+        {
+            return _postservice.GetForum(forumid);
+        }
     }
 }
