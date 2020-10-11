@@ -27,118 +27,88 @@
             <p style="border-bottom: 1px solid gray; padding: 10px 0">
               全部 / 追蹤
             </p>
-            <!-- <div v-for="article in articles" :key="article.id"> -->
+
             <div
-              style="border-bottom: 1px solid gray; display: flex"
-              v-for="(article, index) in titles"
-              :key="index"
+              class="infinite-scroll"
+              v-infinite-scroll="loadMoreData"
+              infinite-scroll-disabled="busy"
+              infinite-scroll-distance="15"
             >
-              <div style="padding: 30px 20px">
-                <font-awesome-icon icon="user" size="lg" />
-                <span class="pl-4">{{ article.userName }}</span>
-                <h5 class="py-3">{{ article.threadName }}</h5>
-                <h5>{{ article.title }}</h5>
-                <div v-html="article.description"></div>
-                <!-- <div :id="'article' + index"></div> -->
-                <p>{{ article.createdDate }}</p>
+              <div
+                style="border-bottom: 1px solid gray; display: flex"
+                v-for="(article, $index) in infiniteArticles"
+                :key="$index"
+              >
+                <!-- Hacker News item loop -->
+                <div style="padding: 30px 20px">
+                  <font-awesome-icon icon="user" size="lg" />
+                  <span class="pl-4">{{ article.userName }}</span>
+                  <h5 class="py-3">{{ article.threadName }}</h5>
+                  <h5>{{ article.title }}</h5>
+                  <div v-html="article.description"></div>
+                  <!-- <div :id="'article' + index"></div> -->
+                  <p>{{ article.createdDate }}</p>
+                </div>
               </div>
+              <!-- //此處為自訂的loading icon，並設定當只有在兩個陣列長度不相等時才會顯示 -->
+              <div
+                class="d-flex justify-content-center mt-3"
+                v-if="infiniteArticles.length !== articles.length"
+              >
+                <span class="mr-5 text-primary">載入中請稍等哦!!</span>
+                <b-spinner label="Loading..."></b-spinner>
+              </div>
+              <div v-else class="text-center mt-3 text-primary">載入完畢!!</div>
             </div>
-            <!-- </div> -->
-            <infinite-loading
-              v-if="titles.length"
-              spinner="spiral"
-              @infinite="infiniteScroll"
-            ></infinite-loading></div
-        ></b-col>
+          </div>
+        </b-col>
         <b-col></b-col>
       </b-row>
     </b-container>
-
-    <!-- <b-row>
-      <b-col> <SideBar /></b-col>
-      <b-col cols="8">
-
-      </b-col>
-      <b-col> </b-col>
-    </b-row> -->
   </div>
 </template>
 
 <script>
-import detectiveImg from "../assets/img/detective.png";
-import InfiniteLoading from "vue-infinite-loading";
-// import axios from "axios";
-// const api = "http://hn.algolia.com/api/v1/items/:id";
-
 export default {
   components: {
-    InfiniteLoading,
+    // InfiniteLoading,
     // SideBar,
     Sidebar: () => import("@/components/Home/Sidbar"),
   },
   data() {
     return {
-      titles: [],
       page: 1,
-
-      detective: detectiveImg,
-
-      articles: [],
+      list: [],
+      count: 0, //要推入的資料筆數
+      infiniteArticles: [], //inifinite scroll渲染的部分
+      busy: false, //true觸發載入，false停止載入
+      articles: [], //全部的資料
     };
   },
   methods: {
-    //  async fetchData() {
-    //       const response = await axios.get(this.url);
-    //       this.titles = response.data;
-    //     },
-    async fetchData() {
-      // const response = await axios.get(this.url);
-      this.titles = this.articles;
-    },
-    infiniteScroll($state) {
-      setTimeout(() => {
-        this.page++;
-        if (this.articles.length > 10) {
-          this.articles.forEach((item) => this.titles.push(item));
-          $state.loaded();
-        } else {
-          $state.complete();
-        }
-
-        // axios
-        //   .get(this.url)
-        //   .then((response) => {
-        //     if (response.data.length > 1) {
-        //       response.data.forEach((item) => this.titles.push(item));
-        //       $state.loaded();
-        //     } else {
-        //       $state.complete();
-        //     }
-        //   })
-        //   .catch((err) => {
-        //     console.log(err);
-        //   });
-      }, 500);
+    loadMoreData: function () {
+      if (this.infiniteArticles.length <= this.articles.length) {
+        this.busy = true;
+        setTimeout(() => {
+          for (var i = 0, j = 5; i < j; i++) {
+            if (this.count === this.articles.length) {
+              break;
+            }
+            this.infiniteArticles.push(this.articles[this.count++]);
+          }
+          this.busy = false;
+        }, 1000);
+      }
     },
     GetAll() {
       const url = process.env.VUE_APP_API + "/api/Post/GetAllPosts";
       this.$axios
         .get(url)
         .then((response) => {
-          console.log(response);
-          console.log("成功");
           response.data.forEach((item) => {
             console.log(item);
             this.articles.push(item);
           });
-          // this.$nextTick(() => {
-          //   this.articles.forEach((item, index) => {
-          //     console.log("article" + index);
-          //     let temp = document.getElementById("article" + index);
-          //     console.log(temp);
-          //     temp.innerHTML = item.description;
-          //   });
-          // });
         })
         .catch((err) => {
           console.log(err);
@@ -178,9 +148,7 @@ export default {
     // },
   },
   async created() {
-    // await this.GetArticleAndSideBar();
     await this.GetAll();
-    await this.fetchData();
   },
 };
 </script>

@@ -51,7 +51,6 @@
 
 <script>
 import Navbar from "../components/common/Navbar";
-
 // Advanced Use - Hook into Quill's API for Custom Functionality
 import { VueEditor } from "vue2-editor";
 import { ImageDrop } from "quill-image-drop-module";
