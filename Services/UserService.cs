@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
@@ -22,6 +23,7 @@ namespace XforumTest.Services
     public class UserService : IUserService
     {
         GeneralRepository<ForumMembers> _members;
+        GeneralRepository<ForumRoles> role;
         private MyDBContext context;
 
         public UserService()
@@ -29,6 +31,7 @@ namespace XforumTest.Services
            
             context = new MyDBContext();
             _members = new GeneralRepository<ForumMembers>(context);
+            role = new GeneralRepository<ForumRoles>(context);
         }
 
         public IEnumerable<MemberDto> GetAll()
@@ -59,15 +62,19 @@ namespace XforumTest.Services
 
         public void Create(CreateMemberDto dto)
         {
+          
             try {
-            var user = new ForumMembers()
-            {
-                UserId = Guid.NewGuid(),
-                Password = dto.Password,
-                Email = dto.Email,
-                Name = dto.Name,
-                Gender = dto.Gender,
-            };
+                var roleId = role.GetFirst(x => x.RoleName == "一般使用者").RoleId;
+                var user = new ForumMembers()
+                {
+                    UserId = Guid.NewGuid(),
+                    Password = dto.Password,
+                    Email = dto.Email,
+                    Name = dto.Name,
+                    Gender = dto.Gender,
+                    //一般使用者guid
+                    RoleId = roleId
+                };
             _members.Create(user);
             _members.SaveContext();
             }
@@ -84,7 +91,7 @@ namespace XforumTest.Services
         /// <param name="id"></param>
         /// <returns></returns>
 
-        public MemberDto GetSingleMember(Guid id)
+        public MemberDto GetSingle(Guid id)
         {
            var titleRepo = new GeneralRepository<Titles>(context);
             var member = from m in _members.GetAll()
@@ -111,7 +118,49 @@ namespace XforumTest.Services
 
         public void Edit(MemberDto dto)
         {
-            throw new NotImplementedException();
+
+            try
+            {
+                var user = new ForumMembers()
+                {
+                    UserId = (Guid)dto.UserId,
+                    Password = dto.Password,
+                    Email = dto.Email,
+                    Name = dto.Name,
+                    Phone = dto.Phone,
+                    RoleId = dto.RoleId,
+                    Gender = dto.Gender,
+                    Points = (decimal)dto.Points,
+                    Age = (int)dto.Age,
+                    EmailConformed = dto.EmailConformed,
+                    TitleId = dto.TitleId,
+                };
+                _members.Update(user);
+                _members.SaveContext();
+            }
+            catch(Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+
+
+        }
+
+
+        public string VerifyEmailAndName(string temp)
+        {
+            if (_members.GetAll().Any(x=>x.Email== temp))
+            {
+                return "1";
+            }
+            else if(_members.GetAll().Any(x => x.Name == temp))
+            {
+                return "2";
+            }
+            else
+            {
+                return "0";
+            }
         }
     }
 }

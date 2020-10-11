@@ -19,9 +19,10 @@ namespace XforumTest.DataTable
         public Guid? RoleId { get; set; }
         public string Gender { get; set; }
         public decimal? Points { get; set; }
-        public int Age { get; set; }
+        public int? Age { get; set; }
         public byte? EmailConformed { get; set; }
         public Guid? TitleId { get; set; }
+        public string ImgLink { get; set; }
 
         public virtual ForumRoles Role { get; set; }
         public virtual Titles Title { get; set; }

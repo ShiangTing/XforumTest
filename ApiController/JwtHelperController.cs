@@ -48,6 +48,16 @@ namespace XforumTest.ApiController
             return Ok(User.Identity.Name);
         }
         /// <summary>
+        /// Get userID(when authorized)
+        /// </summary>
+        /// <returns></returns>
+        [Authorize]
+        [HttpGet("userid")]
+        public string GetUserId()
+        {
+            return _jwt.GetUserId(User.Identity.Name);
+        }
+        /// <summary>
         /// Get all claims in Jwt Token
         /// </summary>
         /// <returns></returns>
@@ -66,6 +76,16 @@ namespace XforumTest.ApiController
         public IActionResult GetRole()
         {
             return Ok(User.Claims.FirstOrDefault(p => p.Type == "http://schemas.microsoft.com/ws/2008/06/identity/claims/role").Value);
+        }
+        /// <summary>
+        /// Get jwtId in Token
+        /// </summary>
+        /// <returns></returns>
+        [Authorize]
+        [HttpGet("jwtid")]
+        public IActionResult GetUniqueId()
+        {
+            return Ok(User.Claims.FirstOrDefault(p => p.Type == "jti").Value);
         }
         /// <summary>
         /// Get all members, convert to JSON(when authorized)
@@ -87,15 +107,5 @@ namespace XforumTest.ApiController
         {
             return Ok(_jwt.GetPosts());
         }
-        ///// <summary>
-        ///// 取得token中的JWT Id
-        ///// </summary>
-        ///// <returns></returns>
-        //[Authorize]
-        //[HttpGet("jwtid")]
-        //public IActionResult GetUniqueId()
-        //{
-        //    return Ok(User.Claims.FirstOrDefault(p => p.Type == "jti").Value);
-        //}
     }
 }

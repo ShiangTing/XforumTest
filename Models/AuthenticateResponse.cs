@@ -11,7 +11,7 @@ namespace XforumTest.Models
         public int Id { get; set; }
         //public string FirstName { get; set; }
         //public string LastName { get; set; }
-        public string Username { get; set; }
+        public string UserEmail { get; set; }
         public string Token { get; set; }
         public string TitleId { get; set; }
         public string TitleName { get; set; }
@@ -20,7 +20,7 @@ namespace XforumTest.Models
             //FirstName = user.FirstName;
             //LastName = user.LastName;
             Id = user.Id;
-            Username = user.Username;
+            UserEmail = user.Email;
             TitleId = user.TitleId;
             TitleName = user.TitleName;
             Token = token;

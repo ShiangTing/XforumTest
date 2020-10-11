@@ -37,7 +37,7 @@ namespace XforumTest.Services
         {
             Issuccessful = false;
             Status = "0001";
-            ErrorMsg = $"{error} is null" ;
+            ErrorMsg = $"{error}" ;
         }
 
 

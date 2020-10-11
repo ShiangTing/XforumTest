@@ -36,7 +36,7 @@ namespace XforumTest.Context
         {
             if (!optionsBuilder.IsConfigured)
             {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
+//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
                 optionsBuilder.UseSqlServer("Server=azurewebtest.database.windows.net,1433;Database=MyDB;User=azurewebtest;Password=yphrT8Cn;");
             }
         }
@@ -124,6 +124,8 @@ namespace XforumTest.Context
                 entity.Property(e => e.Email).HasMaxLength(50);
 
                 entity.Property(e => e.Gender).HasMaxLength(10);
+
+                entity.Property(e => e.ImgLink).HasMaxLength(50);
 
                 entity.Property(e => e.Name).HasMaxLength(50);
 
