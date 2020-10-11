@@ -14,5 +14,6 @@ namespace XforumTest.Interface
         AuthenticateResponse ValidateUser(AuthenticateRequest login);
         IEnumerable<ForumMembers> GetMembers();
         IEnumerable<Posts> GetPosts();
+        string GetUserId(string userEmail);
     }
 }
