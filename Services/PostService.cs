@@ -30,6 +30,8 @@ namespace XforumTest.Services
             {
                 GeneralRepository<Posts> posts = new GeneralRepository<Posts>(db);
                 GeneralRepository<ForumMembers> users = new GeneralRepository<ForumMembers>(db);
+                // 時區要再調整，先測試用
+                //var localtime = TimeZoneInfo.Local;  自動抓取電腦時區並作調整，但型別不同不能傳入資料庫
                 var po = new Posts
                 {
                     PostId = Guid.NewGuid(),
@@ -37,7 +39,7 @@ namespace XforumTest.Services
                     UserId =new Guid(model.UserId),
                     Title = model.Title,
                     Description = model.Description,
-                    CreatedDate = model.CreatedDate,
+                    CreatedDate = DateTime.UtcNow,
                     Img = null,
                     State = true
                 };
@@ -55,17 +57,20 @@ namespace XforumTest.Services
         /// <summary>
         ///取得單一PO文
         /// </summary>
-        public IQueryable GetSingle(string id)
+        public IQueryable GetSingle(string postid)
         {
             GeneralRepository<Posts> posts = new GeneralRepository<Posts>(db);
             GeneralRepository<ForumMembers> users = new GeneralRepository<ForumMembers>(db);
+            GeneralRepository<Forums> forums = new GeneralRepository<Forums>(db);
             var single = from p in posts.GetAll()
                          join u in users.GetAll()
                          on p.UserId equals u.UserId
-                         where p.PostId.ToString() == id
+                         join f in forums.GetAll()
+                         on p.ForumId equals f.ForumId
+                         where p.PostId.ToString() == postid
                          select new PostListDto
                          {
-                            ForumId = p.ForumId,
+                            ForumName = f.ForumName,
                             PostId = p.PostId,
                             Title = p.Title,
                             Description = p.Description,
@@ -96,7 +101,6 @@ namespace XforumTest.Services
             var edit = posts.GetAll().FirstOrDefault(p => p.PostId == json.PostId);
             edit.Title = json.Title;
             edit.Description = json.Description;
-            edit.ForumId = json.ForumId;
             edit.State = json.State;
             posts.Update(edit);
             posts.SaveContext();
@@ -105,16 +109,19 @@ namespace XforumTest.Services
         /// <summary>
         /// 取得所有的發文
         /// </summary>
-        public List<PostListDto> GetAll()
+        public IQueryable<PostListDto> GetAll()
         {
             GeneralRepository<Posts> posts = new GeneralRepository<Posts>(db);
             GeneralRepository<ForumMembers> users = new GeneralRepository<ForumMembers>(db);
+            GeneralRepository<Forums> forums = new GeneralRepository<Forums>(db);
             var pList = from p in posts.GetAll()
                         join u in users.GetAll()
                         on p.UserId equals u.UserId
+                        join f in forums.GetAll()
+                        on p.ForumId equals f.ForumId
                         select new PostListDto
                         {
-                            ForumId = p.ForumId,
+                            ForumName = f.ForumName,
                             PostId = p.PostId,
                             Title = p.Title,
                             Description = p.Description,
@@ -123,15 +130,33 @@ namespace XforumTest.Services
                             UserName = u.Name,
                             State = p.State
                         };
-            return  pList.ToList();
-
-
-
+            return  pList;
         }
 
-        IQueryable<PostListDto> IPostService.GetAll()
+        public IQueryable<PostListDto> GetForum(string forumid)
         {
-            throw new NotImplementedException();
+            GeneralRepository<Posts> posts = new GeneralRepository<Posts>(db);
+            GeneralRepository<ForumMembers> users = new GeneralRepository<ForumMembers>(db);
+            GeneralRepository<Forums> forums = new GeneralRepository<Forums>(db);
+            var singleforum = from p in posts.GetAll()
+                         join u in users.GetAll()
+                         on p.UserId equals u.UserId
+                         join f in forums.GetAll()
+                         on p.ForumId equals f.ForumId
+                         where p.ForumId.ToString() == forumid
+                         select new PostListDto
+                         {
+                             ForumName = f.ForumName,
+                             PostId = p.PostId,
+                             Title = p.Title,
+                             Description = p.Description,
+                             CreatedDate = p.CreatedDate,
+                             UserId = p.UserId,
+                             UserName = u.Name,
+                             State = p.State
+                         };
+
+            return singleforum;
         }
     }
 }

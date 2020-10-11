@@ -11,15 +11,19 @@ namespace XforumTest.Models
         public int Id { get; set; }
         //public string FirstName { get; set; }
         //public string LastName { get; set; }
-        public string Username { get; set; }
+        public string UserEmail { get; set; }
         public string Token { get; set; }
+        public string TitleId { get; set; }
+        public string TitleName { get; set; }
         public AuthenticateResponse(User user, string token)
         {
-            Id = user.Id;
             //FirstName = user.FirstName;
             //LastName = user.LastName;
+            Id = user.Id;
+            UserEmail = user.Email;
+            TitleId = user.TitleId;
+            TitleName = user.TitleName;
             Token = token;
-            Username = user.Username;
         }
     }
 }

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using XforumTest.Context;
 using XforumTest.DTO;
+using XforumTest.Interface;
 using XforumTest.Services;
 
 namespace XforumTest.ApiController
@@ -14,14 +15,20 @@ namespace XforumTest.ApiController
     [ApiController]
     public class PostController : ControllerBase
     {
-        private static PostService post = new PostService();
+        //private static PostService post = new PostService();
+        private IPostService _postservice;
+        public PostController(IPostService postservice)
+        {
+            _postservice = postservice;
+        }
+
 
         [HttpPost]
         public IActionResult Create(PostDto po)
         {
             if (ModelState.IsValid)
             {
-                post.Create(po);
+                _postservice.Create(po);
                 return Ok();
             }
             return Ok();
@@ -31,22 +38,21 @@ namespace XforumTest.ApiController
         [HttpPost]
         public void Delete(string id)
         {
-            post.Delete(id);
+            _postservice.Delete(id);
         }
 
         //編輯 留言資訊
         [HttpGet]
         public IQueryable GetSingle(string id)
         {
-            var singlepost =  post.GetSingle(id);
-            return singlepost;
+            return _postservice.GetSingle(id);
         }
         [HttpPost]
         public IActionResult Edit(PostListDto json)
         {
             if (ModelState.IsValid)
             {
-                post.Edit(json);
+                _postservice.Edit(json);
                 return Ok();
             }
             return Ok();
@@ -58,15 +64,18 @@ namespace XforumTest.ApiController
         /// </summary>
 
         [HttpGet]
-        public ActionResult<IEnumerable<PostListDto>> GetAllPosts()
-        {
-           
-                
-                return  post.GetAll();
-        
+        public IQueryable<PostListDto> GetAllPosts()
+        {        
+                return  _postservice.GetAll();
         }
-
-
-
+        /// <summary>
+        /// 取個單一看板PO文
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public IQueryable<PostListDto> GetForum(string forumid)
+        {
+            return _postservice.GetForum(forumid);
+        }
     }
 }

@@ -15,6 +15,7 @@ using XforumTest.Repository;
 using XforumTest.DataTable;
 using XforumTest.Context;
 using XforumTest.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace XforumTest.Helpers
 {
@@ -22,22 +23,31 @@ namespace XforumTest.Helpers
     {
         private readonly MyDBContext _db;
         private readonly IConfiguration _configuration;
+        GeneralRepository<ForumMembers> _members;
+        GeneralRepository<Posts> _posts;
+        GeneralRepository<Titles> _titles;
         public JwtHelperService(IConfiguration configuration)
         {
             _configuration = configuration;
             _db = new MyDBContext();
+            _members = new GeneralRepository<ForumMembers>(_db);
+            _posts = new GeneralRepository<Posts>(_db);
+            _titles = new GeneralRepository<Titles>(_db);
         }
 
         //產生jwtToken
-        public string GenerateToken(string userName, int expireMinutes = 30)
+        public string GenerateToken(string userEmail, int expireMinutes = 30)
         {
             var issuer = _configuration.GetValue<string>("JwtSettings:Issuer");
             var signKey = _configuration.GetValue<string>("JwtSettings:SignKey");
             var claims = new List<Claim>();
-            claims.Add(new Claim(JwtRegisteredClaimNames.Sub, userName));
+            claims.Add(new Claim(JwtRegisteredClaimNames.Sub, userEmail));
             claims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
-            claims.Add(new Claim("roles", "Admin"));
-            claims.Add(new Claim("roles", "Users"));
+
+            var TitleId = _members.GetAll().SingleOrDefault(x => x.Email == userEmail).TitleId.GetValueOrDefault().ToString();
+            var TitleName = _titles.GetAll().SingleOrDefault(x => x.TitleId.ToString() == TitleId).TitleName;
+            claims.Add(new Claim("roles", TitleName));
+
             var userClaimsIdentity = new ClaimsIdentity(claims);
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(signKey));
             var signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256Signature);
@@ -57,29 +67,29 @@ namespace XforumTest.Helpers
         //驗證會員登入
         public AuthenticateResponse ValidateUser(AuthenticateRequest login)
         {
-            GeneralRepository<ForumMembers> _members = new GeneralRepository<ForumMembers>(_db);
             var user = _members.GetAll().Select(x => new User
             {
-                Username = x.Name,
-                Password = x.Password
-            }).SingleOrDefault(x => x.Username == login.Username && x.Password == login.Password);
-            if (user == null)
-            {
-                return null;
-            }
-            var resultToken = GenerateToken(user.Username, 30);
-            return new AuthenticateResponse(user, resultToken);
+                Email = x.Email,
+                Password = x.Password,
+                TitleId = x.TitleId.GetValueOrDefault().ToString(),
+                TitleName = _titles.GetAll().FirstOrDefault(y => y.TitleId == x.TitleId).TitleName
+            }).SingleOrDefault(x => x.Email == login.Email && x.Password == login.Password);
+
+            if (user == null) return null;
+            return new AuthenticateResponse(user, GenerateToken(user.Email, 30));
         }
 
         public IEnumerable<ForumMembers> GetMembers()
         {
-            GeneralRepository<ForumMembers> _members = new GeneralRepository<ForumMembers>(_db);
             return _members.GetAll();
         }
         public IEnumerable<Posts> GetPosts()
         {
-            GeneralRepository<Posts> posts = new GeneralRepository<Posts>(_db);
-            return posts.GetAll();
+            return _posts.GetAll();
+        }
+        public string GetUserId(string userEmail)
+        {
+            return _members.GetAll().SingleOrDefault(x => x.Email == userEmail).UserId.ToString();
         }
     }
 }
