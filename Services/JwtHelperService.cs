@@ -36,15 +36,15 @@ namespace XforumTest.Helpers
         }
 
         //產生jwtToken
-        public string GenerateToken(string userName, int expireMinutes = 30)
+        public string GenerateToken(string userEmail, int expireMinutes = 30)
         {
             var issuer = _configuration.GetValue<string>("JwtSettings:Issuer");
             var signKey = _configuration.GetValue<string>("JwtSettings:SignKey");
             var claims = new List<Claim>();
-            claims.Add(new Claim(JwtRegisteredClaimNames.Sub, userName));
+            claims.Add(new Claim(JwtRegisteredClaimNames.Sub, userEmail));
             claims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
 
-            var TitleId = _members.GetAll().SingleOrDefault(x => x.Name == userName).TitleId.GetValueOrDefault().ToString();
+            var TitleId = _members.GetAll().SingleOrDefault(x => x.Email == userEmail).TitleId.GetValueOrDefault().ToString();
             var TitleName = _titles.GetAll().SingleOrDefault(x => x.TitleId.ToString() == TitleId).TitleName;
             claims.Add(new Claim("roles", TitleName));
 
@@ -69,14 +69,14 @@ namespace XforumTest.Helpers
         {
             var user = _members.GetAll().Select(x => new User
             {
-                Username = x.Name,
+                Email = x.Email,
                 Password = x.Password,
                 TitleId = x.TitleId.GetValueOrDefault().ToString(),
                 TitleName = _titles.GetAll().FirstOrDefault(y => y.TitleId == x.TitleId).TitleName
-            }).SingleOrDefault(x => x.Username == login.Username && x.Password == login.Password);
+            }).SingleOrDefault(x => x.Email == login.Email && x.Password == login.Password);
 
             if (user == null) return null;
-            return new AuthenticateResponse(user, GenerateToken(user.Username, 30));
+            return new AuthenticateResponse(user, GenerateToken(user.Email, 30));
         }
 
         public IEnumerable<ForumMembers> GetMembers()
@@ -86,6 +86,10 @@ namespace XforumTest.Helpers
         public IEnumerable<Posts> GetPosts()
         {
             return _posts.GetAll();
+        }
+        public string GetUserId(string userEmail)
+        {
+            return _members.GetAll().SingleOrDefault(x => x.Email == userEmail).UserId.ToString();
         }
     }
 }
