@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
@@ -84,7 +85,7 @@ namespace XforumTest.Services
         /// <param name="id"></param>
         /// <returns></returns>
 
-        public MemberDto GetSingleMember(Guid id)
+        public MemberDto GetSingle(Guid id)
         {
            var titleRepo = new GeneralRepository<Titles>(context);
             var member = from m in _members.GetAll()
@@ -111,7 +112,32 @@ namespace XforumTest.Services
 
         public void Edit(MemberDto dto)
         {
-            throw new NotImplementedException();
+
+            try
+            {
+                var user = new ForumMembers()
+                {
+                    UserId = (Guid)dto.UserId,
+                    Password = dto.Password,
+                    Email = dto.Email,
+                    Name = dto.Name,
+                    Phone = dto.Phone,
+                    RoleId = dto.RoleId,
+                    Gender = dto.Gender,
+                    Points = (decimal)dto.Points,
+                    Age = (int)dto.Age,
+                    EmailConformed = dto.EmailConformed,
+                    TitleId = dto.TitleId,
+                };
+                _members.Update(user);
+                _members.SaveContext();
+            }
+            catch(Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+
+
         }
     }
 }

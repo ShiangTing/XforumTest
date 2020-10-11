@@ -43,5 +43,49 @@ namespace XforumTest.Controllers
                 return new ApiResult<CreateMemberDto>("Dto");
             }
         }
+
+
+
+        /// <summary>
+        ///  取得單一會員資料(目前還不拿稱號)
+        ///  會拿到
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public ApiResult<MemberDto> GetSingleMember(Guid id)
+        {
+            var result = new ApiResult<MemberDto>();
+
+            if (id!=null)
+            {
+
+                _userService.GetSingle(id);
+                //要修改
+                return result;
+            }
+            else
+            {
+                return new ApiResult<MemberDto>("id");
+            }
+        }
+
+
+        [HttpPost]
+        public ApiResult<MemberDto> UpdateMember(MemberDto dto)
+        {
+            var result = new ApiResult<MemberDto>();
+
+            if (ModelState.IsValid)
+            {
+
+                //_userService.GetSingle(id);
+                return result;
+            }
+            else
+            {
+                return new ApiResult<MemberDto>("id");
+            }
+        }
     }
 }

@@ -20,7 +20,7 @@ namespace XforumTest.Interface
 
 
         //拿到單一會員資料
-        MemberDto GetSingleMember(Guid id);
+        MemberDto GetSingle(Guid id);
 
 
         //編輯會員資料
