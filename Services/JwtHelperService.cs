@@ -16,6 +16,7 @@ using XforumTest.DataTable;
 using XforumTest.Context;
 using XforumTest.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace XforumTest.Helpers
 {
@@ -23,20 +24,20 @@ namespace XforumTest.Helpers
     {
         private readonly MyDBContext _db;
         private readonly IConfiguration _configuration;
-        GeneralRepository<ForumMembers> _members;
-        GeneralRepository<Posts> _posts;
-        GeneralRepository<Titles> _titles;
-        public JwtHelperService(IConfiguration configuration)
+        private DbSet<ForumMembers> _members;
+        private DbSet<Posts> _posts;
+        private DbSet<ForumRoles> _ForumRole;
+        public JwtHelperService(IConfiguration configuration, MyDBContext db)
         {
             _configuration = configuration;
-            _db = new MyDBContext();
-            _members = new GeneralRepository<ForumMembers>(_db);
-            _posts = new GeneralRepository<Posts>(_db);
-            _titles = new GeneralRepository<Titles>(_db);
+            _db = db;
+            _members = _db.ForumMembers;
+            _posts = _db.Posts;
+            _ForumRole = _db.ForumRoles;
         }
 
         //產生jwtToken
-        public string GenerateToken(string userEmail, int expireMinutes = 30)
+        public string GenerateToken(string userEmail, int expireMinutes = 60)
         {
             var issuer = _configuration.GetValue<string>("JwtSettings:Issuer");
             var signKey = _configuration.GetValue<string>("JwtSettings:SignKey");
@@ -44,9 +45,9 @@ namespace XforumTest.Helpers
             claims.Add(new Claim(JwtRegisteredClaimNames.Sub, userEmail));
             claims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
 
-            var TitleId = _members.GetAll().SingleOrDefault(x => x.Email == userEmail).TitleId.GetValueOrDefault().ToString();
-            var TitleName = _titles.GetAll().SingleOrDefault(x => x.TitleId.ToString() == TitleId).TitleName;
-            claims.Add(new Claim("roles", TitleName));
+            var RoleId = _members.SingleOrDefault(x => x.Email == userEmail).RoleId.GetValueOrDefault().ToString();
+            var RoleName = _ForumRole.SingleOrDefault(x => x.RoleId.ToString() == RoleId).RoleName;
+            claims.Add(new Claim("roles", RoleName));
 
             var userClaimsIdentity = new ClaimsIdentity(claims);
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(signKey));
@@ -64,32 +65,32 @@ namespace XforumTest.Helpers
             return serializeToken;
         }
 
-        //驗證會員登入
+        //Verify user login
         public AuthenticateResponse ValidateUser(AuthenticateRequest login)
         {
-            var user = _members.GetAll().Select(x => new User
+            var user = _members.Select(x => new User
             {
                 Email = x.Email,
                 Password = x.Password,
-                TitleId = x.TitleId.GetValueOrDefault().ToString(),
-                TitleName = _titles.GetAll().FirstOrDefault(y => y.TitleId == x.TitleId).TitleName
+                RoleId = x.RoleId.GetValueOrDefault().ToString(),
+                ForumRoles = _ForumRole.FirstOrDefault(y => y.RoleId == x.RoleId).RoleName
             }).SingleOrDefault(x => x.Email == login.Email && x.Password == login.Password);
 
             if (user == null) return null;
-            return new AuthenticateResponse(user, GenerateToken(user.Email, 30));
+            return new AuthenticateResponse(user, GenerateToken(user.Email, 60));
         }
 
         public IEnumerable<ForumMembers> GetMembers()
         {
-            return _members.GetAll();
+            return _members;
         }
         public IEnumerable<Posts> GetPosts()
         {
-            return _posts.GetAll();
+            return _posts;
         }
         public string GetUserId(string userEmail)
         {
-            return _members.GetAll().SingleOrDefault(x => x.Email == userEmail).UserId.ToString();
+            return _members.SingleOrDefault(x => x.Email == userEmail).UserId.ToString();
         }
     }
 }

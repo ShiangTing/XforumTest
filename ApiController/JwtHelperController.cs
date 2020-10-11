@@ -91,7 +91,7 @@ namespace XforumTest.ApiController
         /// Get all members, convert to JSON(when authorized)
         /// </summary>
         /// <returns></returns>
-        [Authorize(Roles = "肥宅魔法師")]
+        [Authorize(Roles = "版主")]
         [HttpGet("getmembers")]
         public IActionResult GetMembers()
         {
@@ -101,7 +101,7 @@ namespace XforumTest.ApiController
         /// Get all posts, convert to JSON(when authorized)
         /// </summary>
         /// <returns></returns>
-        [Authorize(Roles = "我怕練太壯")]
+        [Authorize(Roles = "管理者")]
         [HttpGet("getposts")]
         public IActionResult GetPosts()
         {

@@ -9,14 +9,19 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using XforumTest.Context;
+using XforumTest.DataTable;
 using XforumTest.DTO;
 using XforumTest.Helpers;
 using XforumTest.Interface;
+using XforumTest.NewFolder;
+using XforumTest.Repository;
 using XforumTest.Services;
 
 namespace XforumTest
@@ -49,6 +54,13 @@ namespace XforumTest
             services.AddControllers();
             //  services.AddControllers().AddNewtonsoftJson();
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
+
+            //Connecting String
+            services.AddDbContext<MyDBContext>(opt => opt.UseSqlServer(Configuration["MyDBContext"]));
+
+            //services.AddTransient<IRepository<ForumMembers>, GeneralRepository<ForumMembers>>();
+            //services.AddTransient<IRepository<Posts>, GeneralRepository<Posts>>();
+            //services.AddTransient<IRepository<Titles>, GeneralRepository<Titles>>();
 
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IJwtHelperService, JwtHelperService>();
