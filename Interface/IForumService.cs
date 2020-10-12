@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using XforumTest.DTO;
-using XforumTest.NewFolder;
+
 using XforumTest.Services;
 
 namespace XforumTest.Interface

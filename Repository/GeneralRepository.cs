@@ -6,18 +6,22 @@ using System.Threading.Tasks;
 using XforumTest.Context;
 
 using XforumTest.Models;
-using XforumTest.NewFolder;
+using XforumTest.Interface;
 
 namespace XforumTest.Repository
 {
     public class GeneralRepository<T> : IRepository<T> where T : class
     {
-        private static MyDBContext context;
 
-        protected MyDBContext Context
-        {
-            get { return context; }
-        }
+
+        private readonly MyDBContext context;
+      
+        // private static MyDBContext context;
+
+        //protected MyDBContext Context
+        //{
+        //    get { return context; }
+        //}
 
         public GeneralRepository(MyDBContext contexts)
         {
@@ -26,6 +30,7 @@ namespace XforumTest.Repository
                 throw new ArgumentNullException();
             }
             context = contexts;
+           
         }
 
 

@@ -13,10 +13,9 @@ namespace XforumTest.Services
     {
         private MyDBContext context;
 
-
-        public ImgService()
+        public ImgService(MyDBContext contexts)
         {
-            context = new MyDBContext();
+            context = contexts;
         }
         public void UploadImage(Guid ForumId,string link)
         {

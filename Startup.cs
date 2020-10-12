@@ -9,14 +9,17 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using XforumTest.Context;
 using XforumTest.DTO;
 using XforumTest.Helpers;
 using XforumTest.Interface;
+using XforumTest.Repository;
 using XforumTest.Services;
 
 namespace XforumTest
@@ -46,10 +49,15 @@ namespace XforumTest
                 });
             });
 
+            services.AddDbContext<MyDBContext>(options =>
+                         options.UseSqlServer("Server=azurewebtest.database.windows.net,1433;Database=MyDB;User=azurewebtest;Password=yphrT8Cn;"));
+            services.AddMvc();
             services.AddControllers();
-            //  services.AddControllers().AddNewtonsoftJson();
+
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
 
+
+            services.AddTransient<IRepository<MessageLikeDto>, GeneralRepository<MessageLikeDto>>();
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IJwtHelperService, JwtHelperService>();
             services.AddTransient<IMessageService, RMessageService>();

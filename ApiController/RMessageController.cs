@@ -20,11 +20,12 @@ namespace XforumTest.ApiController
         //private ApiResult<RMessageDTO> results;
         
         private readonly IMessageService _messageService;
-       
-        
-        public RMessageController(IMessageService messageService)
+        private readonly ILikeService<MessageLikeDto> _likeService;
+
+        public RMessageController(IMessageService messageService,ILikeService<MessageLikeDto> likeService)
         {
             _messageService = messageService;
+            _likeService = likeService;
         }
         
         
@@ -114,8 +115,8 @@ namespace XforumTest.ApiController
 
             if (ModelState.IsValid)
             {
-                var service = new LikeService();
-                service.PostLikeAndDisLike(Dto);
+                //var service = new LikeService();
+                _likeService.PostLikeAndDisLike(Dto);
                 return result;
             }
             else

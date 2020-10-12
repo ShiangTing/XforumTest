@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 using XforumTest.Context;
 using XforumTest.DataTable;
 using XforumTest.DTO;
@@ -13,12 +10,13 @@ namespace XforumTest.Services
 {
     public class LikeService : ILikeService<MessageLikeDto> ,ILikeService<PostLikeDto>
     {
-        private MyDBContext context;
+        private readonly MyDBContext context;
 
-
-        public LikeService()
+        private IRepository<MessageLikeDto> repository;
+        public LikeService(MyDBContext _context,IRepository<MessageLikeDto> _repository)
         {
-            context = new MyDBContext();
+            context = _context;
+            repository = _repository;
         }
      
 
