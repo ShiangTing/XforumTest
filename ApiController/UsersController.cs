@@ -16,7 +16,7 @@ namespace XforumTest.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private IUserService _userService;
+        private readonly IUserService _userService;
         public UsersController(IUserService userService)
         {
             _userService = userService;
@@ -34,12 +34,12 @@ namespace XforumTest.Controllers
 
             if (ModelState.IsValid)
             {
-                if (_userService.VerifyEmailAndName(dto.Email)=="1")
+                if (_userService.VerifyEmailAndName(dto.Email) == "1")
                 {
-                   // ModelState.AddModelError("Email", "此Email已存在");
+                    // ModelState.AddModelError("Email", "此Email已存在");
                     return new ApiResult<CreateMemberDto>("此Email已存在，請換一組Email");
                 }
-                if(_userService.VerifyEmailAndName(dto.Name) == "2")
+                if (_userService.VerifyEmailAndName(dto.Name) == "2")
                 {
                     return new ApiResult<CreateMemberDto>("此暱稱已存在，請換一組暱稱");
                 }
@@ -64,10 +64,10 @@ namespace XforumTest.Controllers
         {
             var result = new ApiResult<MemberDto>();
 
-            if (id!=null)
+            if (id != null)
             {
 
-               result.Data= _userService.GetSingle(id);
+                result.Data = _userService.GetSingle(id);
                 //要修改
                 return result;
             }

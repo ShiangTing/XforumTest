@@ -26,13 +26,13 @@ namespace XforumTest.Helpers
         private readonly IConfiguration _configuration;
         private readonly IRepository<ForumMembers> _members;
         private readonly IRepository<Posts> _posts;
-        private readonly IRepository<ForumRoles> _ForumRole;
+        private readonly IRepository<ForumRoles> _forumRole;
         public JwtHelperService(IConfiguration configuration, IRepository<ForumMembers> members, IRepository<Posts> posts, IRepository<ForumRoles> ForumRoles)
         {
             _configuration = configuration;
             _members = members;
             _posts = posts;
-            _ForumRole = ForumRoles;
+            _forumRole = ForumRoles;
         }
 
         //產生jwtToken
@@ -45,7 +45,7 @@ namespace XforumTest.Helpers
             claims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
 
             var RoleId = _members.GetAll().SingleOrDefault(x => x.Email == userEmail).RoleId.GetValueOrDefault().ToString();
-            var RoleName = _ForumRole.GetAll().SingleOrDefault(x => x.RoleId.ToString() == RoleId).RoleName;
+            var RoleName = _forumRole.GetAll().SingleOrDefault(x => x.RoleId.ToString() == RoleId).RoleName;
             claims.Add(new Claim("roles", RoleName));
 
             var userClaimsIdentity = new ClaimsIdentity(claims);
@@ -72,7 +72,7 @@ namespace XforumTest.Helpers
                 Email = x.Email,
                 Password = x.Password,
                 RoleId = x.RoleId.GetValueOrDefault().ToString(),
-                ForumRoles = _ForumRole.GetAll().FirstOrDefault(y => y.RoleId == x.RoleId).RoleName
+                ForumRoles = _forumRole.GetAll().FirstOrDefault(y => y.RoleId == x.RoleId).RoleName
             }).SingleOrDefault(x => x.Email == login.Email && x.Password == login.Password);
 
             if (user == null) return null;

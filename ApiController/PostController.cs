@@ -22,11 +22,11 @@ namespace XforumTest.ApiController
         }
 
         [HttpPost]
-        public IActionResult Create(PostDto po)
+        public IActionResult Create(PostCreateDto createpost)
         {
             if (ModelState.IsValid)
             {
-                _postservice.Create(po);
+                _postservice.Create(createpost);
                 return Ok();
             }
             return Ok();
@@ -65,6 +65,7 @@ namespace XforumTest.ApiController
         {        
             return  _postservice.GetAll();
         }
+
         /// <summary>
         /// 取個單一看板PO文
         /// </summary>
