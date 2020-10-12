@@ -10,6 +10,7 @@ using XforumTest.Repository;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using XforumTest.NewFolder;
+using System.Transactions;
 
 namespace XforumTest.Services
 {
@@ -27,30 +28,30 @@ namespace XforumTest.Services
 
         public void Create(PostCreateDto model)
         {
-
-            try
-            {
-                // 時區要再調整，先測試用
-                //var localtime = TimeZoneInfo.Local;  自動抓取電腦時區並作調整，但型別不同不能傳入資料庫
-                var po = new Posts
+            
+                try
                 {
-                    PostId = Guid.NewGuid(),
-                    ForumId = new Guid(model.ForumId),
-                    UserId = new Guid(model.UserId),
-                    Title = model.Title,
-                    Description = model.Description,
-                    CreatedDate = DateTime.UtcNow,
-                    Img = null,
-                    State = true
-                };
-                _posts.Create(po);
-                _posts.SaveContext();
+                    // 時區要再調整，先測試用
+                    //var localtime = TimeZoneInfo.Local;  自動抓取電腦時區並作調整，但型別不同不能傳入資料庫
+                    var po = new Posts
+                    {
+                        PostId = Guid.NewGuid(),
+                        ForumId = new Guid(model.ForumId),
+                        UserId = new Guid(model.UserId),
+                        Title = model.Title,
+                        Description = model.Description,
+                        CreatedDate = DateTime.UtcNow,
+                        Img = null,
+                        State = true
+                    };
+                    _posts.Create(po);
+                    _posts.SaveContext();
 
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.Message);
-            }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                }
 
         }
 

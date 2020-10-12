@@ -15,13 +15,11 @@ namespace XforumTest.Services
 {
     public class RMessageService : IMessageService
     {
-        private readonly MyDBContext _context;
         private readonly IRepository<ReposiveMessages> _messages;
         private readonly IRepository<ForumMembers> _members;
 
-        public RMessageService(MyDBContext context, IRepository<ReposiveMessages> messages, IRepository<Posts> posts, IRepository<ForumMembers> members)
+        public RMessageService(IRepository<ReposiveMessages> messages, IRepository<Posts> posts, IRepository<ForumMembers> members)
         {
-            _context = context;
             _messages = messages;
             _members = members;
         }
