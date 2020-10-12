@@ -12,12 +12,12 @@ namespace XforumTest.Repository
 {
     public class GeneralRepository<T> : IRepository<T> where T : class
     {
-        private static MyDBContext context;
+        private readonly MyDBContext _context;
 
-        protected MyDBContext Context
-        {
-            get { return context; }
-        }
+        //protected MyDBContext Context
+        //{
+        //    get { return context; }
+        //}
 
         public GeneralRepository(MyDBContext contexts)
         {
@@ -25,38 +25,43 @@ namespace XforumTest.Repository
             {
                 throw new ArgumentNullException();
             }
-            context = contexts;
+            _context = contexts;
         }
 
 
         public void Create(T entity)
         {
-            context.Entry(entity).State = EntityState.Added;
+            _context.Entry(entity).State = EntityState.Added;
         }
 
         public void Delete(T entity)
         {
-            context.Entry(entity).State = EntityState.Deleted;
+            _context.Entry(entity).State = EntityState.Deleted;
         }
 
-        public IQueryable<T> GetAll()
+        public IEnumerable<T> GetAll2()
         {
-            return context.Set<T>();
+            return _context.Set<T>().ToList();
         }
 
         public T GetFirst(System.Linq.Expressions.Expression<Func<T, bool>> entity)
         {
-            return context.Set<T>().FirstOrDefault<T>(entity);
+            return _context.Set<T>().FirstOrDefault<T>(entity);
         }
 
         public void SaveContext()
         {
-            context.SaveChanges();
+            _context.SaveChanges();
         }
 
         public void Update(T entity)
         {
-            context.Entry(entity).State = EntityState.Modified;
+            _context.Entry(entity).State = EntityState.Modified;
+        }
+
+        public IQueryable<T> GetAll()
+        {
+            return _context.Set<T>();
         }
     }
 }

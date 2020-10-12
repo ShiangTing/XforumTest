@@ -34,9 +34,9 @@ export default {
       vm.$router.push(`/Thread/${name}`);
     },
 
-    getSideBar() {
+    async getSideBar() {
       const url = process.env.VUE_APP_API + "/api/Forum/GetAll";
-      this.$axios
+      await this.$axios
         .get(url)
         .then((response) => {
           response.data.forEach((item) => {

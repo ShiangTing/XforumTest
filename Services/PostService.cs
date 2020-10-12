@@ -104,10 +104,10 @@ namespace XforumTest.Services
         /// </summary>
         public IEnumerable<PostListDto> GetAll()
         {
-            var pList = from p in _posts.GetAll()
-                        join u in _members.GetAll()
+            var pList = from p in _posts.GetAll2()
+                        join u in _members.GetAll2()
                         on p.UserId equals u.UserId
-                        join f in _forums.GetAll()
+                        join f in _forums.GetAll2()
                         on p.ForumId equals f.ForumId
                         select new PostListDto
                         {
@@ -120,7 +120,7 @@ namespace XforumTest.Services
                             UserName = u.Name,
                             State = p.State
                         };
-            return pList.ToList();
+            return pList;
         }
 
         public IEnumerable<PostListDto> GetForum(string forumid)

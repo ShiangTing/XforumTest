@@ -101,7 +101,7 @@ namespace XforumTest.Services
         /// <returns></returns>
         public IEnumerable<ForumGetAllDTO> GetAll()
         {
-            var getall = from fm in _Forums.GetAll()
+            var getall = from fm in _Forums.GetAll2()
                          where fm.State == true
                          select new ForumGetAllDTO
                          {
@@ -110,7 +110,7 @@ namespace XforumTest.Services
                              RouteName = fm.RouteName,
                              Description = fm.Description
                          };
-            return  getall.ToList();
+            return  getall;
         }
 
         //IQueryable<ForumGetAllDTO> IForumService.GetAll()
