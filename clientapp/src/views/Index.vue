@@ -109,9 +109,9 @@ export default {
         }, 1000);
       }
     },
-    GetAll() {
+    async GetAll() {
       const url = process.env.VUE_APP_API + "/api/Post/GetAllPosts";
-      this.$axios
+      await this.$axios
         .get(url)
         .then((response) => {
           response.data.forEach((item) => {
