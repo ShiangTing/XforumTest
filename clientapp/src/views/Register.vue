@@ -1,18 +1,19 @@
 <template>
   <div>
     <Navbar />
-    <div class="container">
-      <div class="row justify-content-center m-5">
-        <div class="card p-5" style="width: 35rem;">
+    <div class="container px-4 py-5 p-lg-5">
+      <div class="d-flex justify-content-center">
+        <div class="card p-lg-5 p-3 w-100" style="max-width: 35rem;">
           <div class="card-body">
             <h1 class="login-title">註冊</h1>
-            <div class="alert alert-danger" role="alert" v-if="error.isError">
-              {{error.message}}
-            </div>
             <form>
               <div class="form-group">
-                <label for="account">帳號</label>
-                <input type="text" class="form-control" id="account" placeholder="輸入帳號" v-model="registerData.username">
+                <label for="account">暱稱</label>
+                <input type="text" class="form-control" id="account" placeholder="輸入暱稱" v-model="registerData.username">
+              </div>
+              <div class="form-group">
+                <label for="email">帳號</label>
+                <input type="email" class="form-control" id="email" placeholder="輸入信箱" v-model="registerData.email">
               </div>
               <div class="form-group">
                 <label for="password">密碼</label>
@@ -21,29 +22,32 @@
               </div>
               <div class="form-group">
                 <label for="confirmPassword">確認密碼</label>
-                <input type="confirmPassword" class="form-control" id="password" placeholder="確認密碼"
+                <input type="password" class="form-control" id="password" placeholder="確認密碼"
                   v-model="registerData.confirmPassword">
               </div>
               <div class="form-group">
-                <label for="gender">性別</label>
-                <select id="gender" class="form-control" v-model="registerData.gender">
-                  <option value="female">女性</option>
-                  <option value="male">男性</option>
-                </select>
+                <label>性別</label>
+                <div class="d-flex justify-content-center">
+                  <div class="form-check mr-5">
+                    <input class="form-check-input" type="radio" name="gender" id="male" value="male"
+                      v-model="registerData.gender">
+                    <label class="form-check-label" for="male">
+                      男性
+                    </label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="gender" id="female" value="female"
+                      v-model="registerData.gender">
+                    <label class="form-check-label" for="female">
+                      女性
+                    </label>
+                  </div>
+                </div>
               </div>
-              <div class="form-group">
-                <label for="sexualOrientation">性向</label>
-                <select id="sexualOrientation" class="form-control" v-model="registerData.sexualOrientation">
-                  <option value="female">女性</option>
-                  <option value="male">男性</option>
-                  <option value="all">雙性</option>
-                </select>
+              <input type="button" class="w-100 btn btn-primary" v-on:click="register" value="註冊">
+              <div class="alert mt-3" :class="message.isError ? 'alert-danger' : 'alert-success'" role="alert"
+                v-if="message.display" v-html="message.content">
               </div>
-              <div class="form-group">
-                <label for="intro">簡介</label>
-                <textarea class="form-control" id="intro" rows="6" placeholder="簡單介紹你自己吧!!" v-model="registerData.intro"></textarea>
-              </div>
-              <input type="button" class="w-100 btn btn-primary" v-on:click="login" value="註冊">
             </form>
           </div>
         </div>
@@ -60,39 +64,66 @@ export default {
     return {
       registerData: {
         username: "",
+        email: "",
         password: "",
         confirmPassword: "",
         gender: "",
-        sexualOrientation: "",
-        intro: ""
       },
-      error: {
+      message: {
+        display: false,
         isError: false,
-        message: ""
-      }
+        content: ""
+      },
+      timer: null
     };
   },
   methods: {
-    login () {
+    register () {
       let vm = this;
-      let url = process.env.VUE_APP_API + "/api/JwtHelper/signin"
-      vm.$axios.post(url, vm.loginData).then(res => {
+      let url = process.env.VUE_APP_API + "/api/Users/Register"
+      let data = {
+        "name": vm.registerData.username,
+        "Email": vm.registerData.email,
+        "Password": vm.registerData.password,
+        "Gender": vm.registerData.gender
+      }
+      vm.$axios.post(url, data).then(res => {
         console.log(res);
-        if (res.status == 200) {
-          let { token, isAuthorize } = { token: res.data.token, isAuthorize: true };
-          vm.$store.dispatch("setAuth", { token, isAuthorize })
-          vm.$router.push("/home");
+        if (res.data.issuccessful) {
+          vm.message.display = true;
+          vm.message.content = "註冊成功將在5秒後自動跳轉"
+          vm.timer = window.setTimeout(() => {
+            vm.$router.push("/login");
+          }, 5000)
         }
       }).catch(err => {
-        vm.error.isError = true
-        vm.error.message = err.response.data.message;
+        vm.message.display = true
+        vm.message.isError = true
+        let errorData = err.response.data.errors
+        let str = "";
+        str = vm.errorMessage(errorData.Name) + vm.errorMessage(errorData.Email) + vm.errorMessage(errorData.password)
+
+        vm.message.content = str;
       })
+    },
+    errorMessage (item = []) {
+      let str = ""
+      item.forEach(data => {
+        str += `<li>${data}</li>`
+      })
+      return str;
     }
-  }
+  }, beforeDestroy () {
+    let vm = this;
+    window.clearTimeout(vm.timer)
+  },
 }
 </script>
 <style lang="scss" scoped>
   @import "@/Assets/scss/style.scss";
+  .card {
+    box-shadow: 0px 0px 20px 10px rgba(168, 173, 175, 0.3);
+  }
   .login-title {
     text-align: center;
     font-size: 35px;
@@ -106,10 +137,12 @@ export default {
   }
   .form-control {
     height: 45px;
-    padding: 10px 20px;
+    border-radius: 30px;
+    padding: 10px 30px;
     transition: 0.5s;
     &:active,
     &:focus {
+      transform: scale(1.05);
       color: #495057;
       background-color: #fff;
       border-color: #343a40;
@@ -117,8 +150,8 @@ export default {
       box-shadow: 0 0 0 0.2rem rgba(48, 48, 48, 0.3);
     }
   }
-  textarea{
-    height: 300px;
+  select.form-control option {
+    width: 150px;
   }
   .btn {
     height: 45px;
