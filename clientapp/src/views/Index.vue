@@ -45,7 +45,7 @@
                   <span class="pl-4">{{ article.userName }}</span>
                   <h5 class="py-3" id="forumName">{{ article.forumName }}</h5>
                   <h5>{{ article.title }}</h5>
-                  <div v-html="article.description"></div>
+                  <div v-html="computedHtml(article.description)"></div>
                   <!-- <div :id="'article' + index"></div> -->
                   <p>{{ article.createdDate }}</p>
                 </div>
@@ -87,6 +87,12 @@ export default {
   },
 
   methods: {
+    computedHtml(description) {
+      let startP = description.indexOf("<p>");
+      let endP = description.indexOf("</p>");
+      description.slice(startP, endP);
+    },
+
     loadMoreData: function () {
       if (this.infiniteArticles.length <= this.articles.length) {
         this.busy = true;
