@@ -25,7 +25,7 @@ namespace XforumTest.Services
             _forums = forums;
         }
 
-        public void Create(PostDto model)
+        public void Create(PostCreateDto model)
         {
 
             try

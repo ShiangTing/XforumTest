@@ -29,4 +29,11 @@ namespace XforumTest.DTO
         public bool? State { get; set; }
     }
 
+    public class PostCreateDto
+    {
+        public string ForumId { get; set; }
+        public string UserId { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
+    }
 }
