@@ -11,17 +11,11 @@ namespace XforumTest.Interface
 {
     public interface IUserService
     {
-        //AuthenticateResponse Authenticate(AuthenticateRequest model);
-        //IEnumerable<ForumMembers> GetAll();
-        //ForumMembers GetById(Guid id);
-
         //註冊
         void Create(CreateMemberDto dto);
 
-
         //拿到單一會員資料
         MemberDto GetSingle(Guid id);
-
 
         //編輯會員資料
         void Edit(MemberDto dto);

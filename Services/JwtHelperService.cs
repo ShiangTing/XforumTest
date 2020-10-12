@@ -17,23 +17,22 @@ using XforumTest.Context;
 using XforumTest.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using XforumTest.NewFolder;
 
 namespace XforumTest.Helpers
 {
     public class JwtHelperService : IJwtHelperService
     {
-        private readonly MyDBContext _db;
         private readonly IConfiguration _configuration;
-        private DbSet<ForumMembers> _members;
-        private DbSet<Posts> _posts;
-        private DbSet<ForumRoles> _ForumRole;
-        public JwtHelperService(IConfiguration configuration, MyDBContext db)
+        private readonly IRepository<ForumMembers> _members;
+        private readonly IRepository<Posts> _posts;
+        private readonly IRepository<ForumRoles> _ForumRole;
+        public JwtHelperService(IConfiguration configuration, IRepository<ForumMembers> members, IRepository<Posts> posts, IRepository<ForumRoles> ForumRoles)
         {
             _configuration = configuration;
-            _db = db;
-            _members = _db.ForumMembers;
-            _posts = _db.Posts;
-            _ForumRole = _db.ForumRoles;
+            _members = members;
+            _posts = posts;
+            _ForumRole = ForumRoles;
         }
 
         //產生jwtToken
@@ -45,8 +44,8 @@ namespace XforumTest.Helpers
             claims.Add(new Claim(JwtRegisteredClaimNames.Sub, userEmail));
             claims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
 
-            var RoleId = _members.SingleOrDefault(x => x.Email == userEmail).RoleId.GetValueOrDefault().ToString();
-            var RoleName = _ForumRole.SingleOrDefault(x => x.RoleId.ToString() == RoleId).RoleName;
+            var RoleId = _members.GetAll().SingleOrDefault(x => x.Email == userEmail).RoleId.GetValueOrDefault().ToString();
+            var RoleName = _ForumRole.GetAll().SingleOrDefault(x => x.RoleId.ToString() == RoleId).RoleName;
             claims.Add(new Claim("roles", RoleName));
 
             var userClaimsIdentity = new ClaimsIdentity(claims);
@@ -68,12 +67,12 @@ namespace XforumTest.Helpers
         //Verify user login
         public AuthenticateResponse ValidateUser(AuthenticateRequest login)
         {
-            var user = _members.Select(x => new User
+            var user = _members.GetAll().Select(x => new User
             {
                 Email = x.Email,
                 Password = x.Password,
                 RoleId = x.RoleId.GetValueOrDefault().ToString(),
-                ForumRoles = _ForumRole.FirstOrDefault(y => y.RoleId == x.RoleId).RoleName
+                ForumRoles = _ForumRole.GetAll().FirstOrDefault(y => y.RoleId == x.RoleId).RoleName
             }).SingleOrDefault(x => x.Email == login.Email && x.Password == login.Password);
 
             if (user == null) return null;
@@ -82,15 +81,15 @@ namespace XforumTest.Helpers
 
         public IEnumerable<ForumMembers> GetMembers()
         {
-            return _members;
+            return _members.GetAll();
         }
         public IEnumerable<Posts> GetPosts()
         {
-            return _posts;
+            return _posts.GetAll();
         }
         public string GetUserId(string userEmail)
         {
-            return _members.SingleOrDefault(x => x.Email == userEmail).UserId.ToString();
+            return _members.GetAll().SingleOrDefault(x => x.Email == userEmail).UserId.ToString();
         }
     }
 }

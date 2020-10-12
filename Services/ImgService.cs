@@ -1,37 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using XforumTest.Context;
 using XforumTest.DataTable;
 using XforumTest.Interface;
+using XforumTest.NewFolder;
 using XforumTest.Repository;
 
 namespace XforumTest.Services
 {
     public class ImgService : IImgService
     {
-        private MyDBContext context;
+        private readonly IRepository<Forums> _forums;
 
-
-        public ImgService()
+        public ImgService(IRepository<Forums> forums)
         {
-            context = new MyDBContext();
+            _forums = forums;
         }
         public void UploadImage(Guid ForumId,string link)
         {
             try
             {
-                var repository = new GeneralRepository<Forums>(context);
-                var fourm = repository.GetFirst(x => x.ForumId == ForumId);
-
+                var fourm = _forums.GetFirst(x => x.ForumId == ForumId);
                 fourm.Img = link;
-                repository.SaveContext();
-
+                _forums.SaveContext();
             }
             catch(Exception ex)
             {
-
+                Debug.WriteLine(ex.Message);
             }
 
         }

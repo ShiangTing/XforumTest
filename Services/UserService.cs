@@ -16,29 +16,27 @@ using XforumTest.Entities;
 using XforumTest.Helpers;
 using XforumTest.Interface;
 using XforumTest.Models;
+using XforumTest.NewFolder;
 using XforumTest.Repository;
 
 namespace XforumTest.Services
 {
     public class UserService : IUserService
     {
-        GeneralRepository<ForumMembers> _members;
-        GeneralRepository<ForumRoles> role;
-        private MyDBContext context;
-
-        public UserService()
+        private readonly IRepository<ForumMembers> _members;
+        private readonly IRepository<ForumRoles> _roles;
+        private readonly IRepository<Titles> _titles;
+        public UserService(IRepository<ForumMembers> members, IRepository<ForumRoles> roles, IRepository<Titles> titles)
         {
-           
-            context = new MyDBContext();
-            _members = new GeneralRepository<ForumMembers>(context);
-            role = new GeneralRepository<ForumRoles>(context);
+            _members = members;
+            _roles = roles;
+            _titles = titles;
         }
 
         public IEnumerable<MemberDto> GetAll()
         {
-
             return _members.GetAll()
-                .Select(x=>new MemberDto() 
+                .Select(x => new MemberDto()
                 {
                     UserId = x.UserId,
                     Password = x.Password,
@@ -51,8 +49,6 @@ namespace XforumTest.Services
                     Age = (int)x.Age,
                     EmailConformed = x.EmailConformed,
                     TitleId = x.TitleId
-
-
                 });
         }
         public MemberDto GetById(Guid id)
@@ -62,9 +58,9 @@ namespace XforumTest.Services
 
         public void Create(CreateMemberDto dto)
         {
-          
-            try {
-                var roleId = role.GetFirst(x => x.RoleName == "一般使用者").RoleId;
+            try
+            {
+                var roleId = _roles.GetFirst(x => x.RoleName == "一般使用者").RoleId;
                 var user = new ForumMembers()
                 {
                     UserId = Guid.NewGuid(),
@@ -75,15 +71,14 @@ namespace XforumTest.Services
                     //一般使用者guid
                     RoleId = roleId
                 };
-            _members.Create(user);
-            _members.SaveContext();
+                _members.Create(user);
+                _members.SaveContext();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Debug.WriteLine(ex.Message);
             }
         }
-
 
         /// <summary>
         /// 取得單一會員資料(目前還不拿稱號)
@@ -93,9 +88,8 @@ namespace XforumTest.Services
 
         public MemberDto GetSingle(Guid id)
         {
-           var titleRepo = new GeneralRepository<Titles>(context);
             var member = from m in _members.GetAll()
-                         join t in titleRepo.GetAll()
+                         join t in _titles.GetAll()
                          on m.TitleId equals t.TitleId
                          select new MemberDto()
                          {
@@ -110,15 +104,12 @@ namespace XforumTest.Services
                              Age = (int)m.Age,
                              EmailConformed = m.EmailConformed,
                              TitleId = null,
-
                          };
-
-            return member.FirstOrDefault(x=>x.UserId==id);
+            return member.FirstOrDefault(x => x.UserId == id);
         }
 
         public void Edit(MemberDto dto)
         {
-
             try
             {
                 var user = new ForumMembers()
@@ -138,22 +129,19 @@ namespace XforumTest.Services
                 _members.Update(user);
                 _members.SaveContext();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Debug.WriteLine(ex.Message);
             }
-
-
         }
-
 
         public string VerifyEmailAndName(string temp)
         {
-            if (_members.GetAll().Any(x=>x.Email== temp))
+            if (_members.GetAll().Any(x => x.Email == temp))
             {
                 return "1";
             }
-            else if(_members.GetAll().Any(x => x.Name == temp))
+            else if (_members.GetAll().Any(x => x.Name == temp))
             {
                 return "2";
             }

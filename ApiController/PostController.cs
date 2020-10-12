@@ -15,13 +15,11 @@ namespace XforumTest.ApiController
     [ApiController]
     public class PostController : ControllerBase
     {
-        //private static PostService post = new PostService();
         private IPostService _postservice;
         public PostController(IPostService postservice)
         {
             _postservice = postservice;
         }
-
 
         [HttpPost]
         public IActionResult Create(PostDto po)
@@ -47,6 +45,7 @@ namespace XforumTest.ApiController
         {
             return _postservice.GetSingle(id);
         }
+
         [HttpPost]
         public IActionResult Edit(PostListDto json)
         {
@@ -57,16 +56,14 @@ namespace XforumTest.ApiController
             }
             return Ok();
         }
-    
         
         /// <summary>
         /// 取得所有的留言資訊
         /// </summary>
-
         [HttpGet]
         public IQueryable<PostListDto> GetAllPosts()
         {        
-                return  _postservice.GetAll();
+            return  _postservice.GetAll();
         }
         /// <summary>
         /// 取個單一看板PO文

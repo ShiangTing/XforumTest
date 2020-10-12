@@ -14,7 +14,6 @@ namespace XforumTest.ApiController
     [ApiController]
     public class LikeAndDisLikeController : ControllerBase
     {
-
         private readonly ILikeService<MessageLikeDto> _mlikeService;
         private readonly ILikeService<PostLikeDto> _plikeService;
 
@@ -23,9 +22,6 @@ namespace XforumTest.ApiController
             _mlikeService = mlikeService;
             _plikeService = plikeService;
         }
-
-
-
 
         /// <summary>
         /// 對留言按讚跟按倒讚功能
@@ -49,9 +45,6 @@ namespace XforumTest.ApiController
             }
 
         }
-
-
-
 
         /// <summary>
         /// 對發文按讚跟按倒讚功能

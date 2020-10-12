@@ -58,9 +58,12 @@ namespace XforumTest
             //Connecting String
             services.AddDbContext<MyDBContext>(opt => opt.UseSqlServer(Configuration["MyDBContext"]));
 
-            //services.AddTransient<IRepository<ForumMembers>, GeneralRepository<ForumMembers>>();
-            //services.AddTransient<IRepository<Posts>, GeneralRepository<Posts>>();
-            //services.AddTransient<IRepository<Titles>, GeneralRepository<Titles>>();
+            services.AddTransient<IRepository<ForumMembers>, GeneralRepository<ForumMembers>>();
+            services.AddTransient<IRepository<Posts>, GeneralRepository<Posts>>();
+            services.AddTransient<IRepository<ForumRoles>, GeneralRepository<ForumRoles>>();
+            services.AddTransient<IRepository<Forums>, GeneralRepository<Forums>>();
+            services.AddTransient<IRepository<Titles>, GeneralRepository<Titles>>();
+            services.AddTransient<IRepository<ReposiveMessages>, GeneralRepository<ReposiveMessages>>();
 
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IJwtHelperService, JwtHelperService>();

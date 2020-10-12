@@ -22,8 +22,6 @@ namespace XforumTest.Controllers
             _userService = userService;
         }
 
-
-
         /// <summary>
         /// 註冊會員功能 輸入model 若email與暱稱有重複erroMsg會顯示"此Email/暱稱已存在，請換一組Email"
         /// </summary>
@@ -54,15 +52,12 @@ namespace XforumTest.Controllers
             }
         }
 
-
-
         /// <summary>
         ///  取得單一會員資料(目前還不拿稱號)
         ///  測試中
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-
         [Authorize]
         [HttpGet]
         public ApiResult<MemberDto> GetSingleMember(Guid id)
@@ -99,8 +94,5 @@ namespace XforumTest.Controllers
                 return new ApiResult<MemberDto>("id is null");
             }
         }
-
-
-
     }
 }
