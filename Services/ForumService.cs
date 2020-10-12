@@ -64,19 +64,19 @@ namespace XforumTest.Services
         /// </summary>
         /// <param name="forumid"></param>
         /// <returns></returns>
-        public IQueryable GetSingle(string forumid)
+        public ForumGetSingleDto GetSingle(string forumid)
         {
-            var forum = from f in _Forums.GetAll()
+            var forum = from f in _Forums.GetAll().AsEnumerable()
                         where f.ForumId == Guid.Parse(forumid)
-                        select new
+                        select new ForumGetSingleDto
                         {
-                            title = f.ForumName,
-                            date = f.CreatedDate,
-                            name = f.ModeratorId,
-                            content = f.Description,
-                            state = f.State
+                            ForumName = f.ForumName,
+                            Description = f.Description,
+                            ModeratorId = f.ModeratorId,                            
+                            CreatedDate = f.CreatedDate,
+                            State = f.State
                         };
-            return forum;
+            return forum.FirstOrDefault();
         }
         /// <summary>
         /// 編輯看板資料、回復軟刪除狀態
@@ -99,7 +99,7 @@ namespace XforumTest.Services
         /// 取的所有看板
         /// </summary>
         /// <returns></returns>
-        public IQueryable<ForumGetAllDTO> GetAll()
+        public IEnumerable<ForumGetAllDTO> GetAll()
         {
             var getall = from fm in _Forums.GetAll()
                          where fm.State == true
@@ -110,7 +110,7 @@ namespace XforumTest.Services
                              RouteName = fm.RouteName,
                              Description = fm.Description
                          };
-            return  getall;
+            return  getall.ToList();
         }
 
         //IQueryable<ForumGetAllDTO> IForumService.GetAll()

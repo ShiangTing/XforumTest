@@ -25,7 +25,6 @@ namespace XforumTest.Services
             _members = members;
             _forums = forums;
         }
-
         public void Create(PostCreateDto model)
         {
             
@@ -58,12 +57,12 @@ namespace XforumTest.Services
         /// <summary>
         ///取得單一PO文
         /// </summary>
-        public IQueryable GetSingle(string postid)
+        public PostListDto GetSingle(string postid)
         {
-            var single = from p in _posts.GetAll()
-                         join u in _members.GetAll()
+            var single = from p in _posts.GetAll().AsEnumerable()
+                         join u in _members.GetAll().AsEnumerable()
                          on p.UserId equals u.UserId
-                         join f in _forums.GetAll()
+                         join f in _forums.GetAll().AsEnumerable()
                          on p.ForumId equals f.ForumId
                          where p.PostId.ToString() == postid
                          select new PostListDto
@@ -78,7 +77,7 @@ namespace XforumTest.Services
                              State = p.State
                          };
 
-            return single;
+            return single.FirstOrDefault();
         }
 
         public void Delete(string id)
@@ -103,7 +102,7 @@ namespace XforumTest.Services
         /// <summary>
         /// 取得所有的發文
         /// </summary>
-        public IQueryable<PostListDto> GetAll()
+        public IEnumerable<PostListDto> GetAll()
         {
             var pList = from p in _posts.GetAll()
                         join u in _members.GetAll()
@@ -121,10 +120,10 @@ namespace XforumTest.Services
                             UserName = u.Name,
                             State = p.State
                         };
-            return pList;
+            return pList.ToList();
         }
 
-        public IQueryable<PostListDto> GetForum(string forumid)
+        public IEnumerable<PostListDto> GetForum(string forumid)
         {
             var singleforum = from p in _posts.GetAll()
                               join u in _members.GetAll()
@@ -144,7 +143,7 @@ namespace XforumTest.Services
                                   State = p.State
                               };
 
-            return singleforum;
+            return singleforum.ToList();
         }
     }
 }
