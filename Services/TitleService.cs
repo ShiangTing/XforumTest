@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using XforumTest.DataTable;
+using XforumTest.DTO;
 using XforumTest.Interface;
 using XforumTest.NewFolder;
 
@@ -21,11 +23,28 @@ namespace XforumTest.Services
             _usertitle = usertitle;
         }
        
-        public void CreateTitile()
+        public void CreateTitile(TitleCreateDto model)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var create = new Titles
+                {
+                    TitleId = Guid.NewGuid(),
+                    TitleName = model.TitleName,
+                    Price = model.Price
+                };
+                _titles.Create(create);
+                _titles.SaveContext();
+            } 
+            catch(Exception ex)
+            {
+                
+            }
         }
 
+        /// <summary>
+        /// 先不做，如果新增功能就要在欄位增加state
+        /// </summary>
         public void DeleteTitile()
         {
             throw new NotImplementedException();

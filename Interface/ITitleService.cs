@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using XforumTest.DTO;
 
 namespace XforumTest.Interface
 {
     interface ITitleService
     {
-        void CreateTitile();
+        void CreateTitile(TitleCreateDto model);
         void EditTitle();
         void DeleteTitile();
         void GetAllTitles();

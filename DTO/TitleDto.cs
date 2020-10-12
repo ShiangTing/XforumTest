@@ -9,5 +9,12 @@ namespace XforumTest.DTO
     {
         public Guid? TitleId { get; set; }
         public string TitleName { get; set; }
+        public decimal Price { get; set; }
     }
+    public class TitleCreateDto
+    { 
+        public string TitleName { get; set; }
+        public decimal Price { get; set; }
+    }
+    //public class 
 }

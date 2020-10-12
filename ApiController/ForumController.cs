@@ -43,7 +43,7 @@ namespace XforumTest.ApiController
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public IQueryable GetSingle(string id)
+        public ForumGetSingleDto GetSingle(string id)
         {
             var edit = _forumservice.GetSingle(id);
             return edit;
@@ -79,7 +79,7 @@ namespace XforumTest.ApiController
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public IQueryable<ForumGetAllDTO> GetAll()
+        public IEnumerable<ForumGetAllDTO> GetAll()
         {
             //var getall = new ForumService().GetAll();
             return  _forumservice.GetAll();
