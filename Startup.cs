@@ -73,6 +73,7 @@ namespace XforumTest
             services.AddControllers().AddNewtonsoftJson();
             services.AddTransient<IForumService, ForumService>();
             services.AddTransient<IPostService, PostService>();
+            services.AddTransient<ITitleService, TitleService>();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
             {

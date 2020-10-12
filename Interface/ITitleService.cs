@@ -7,5 +7,12 @@ namespace XforumTest.Interface
 {
     interface ITitleService
     {
+        void CreateTitile();
+        void EditTitle();
+        void DeleteTitile();
+        void GetAllTitles();
+        void GetHasTitles();
+        void BuyTitle(string titleid);
+        void ChangeTitle();
     }
 }
