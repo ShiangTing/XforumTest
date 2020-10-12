@@ -117,7 +117,7 @@ export default {
       infiniteArticles: [], //inifinite scroll渲染的部分
       busy: false, //true觸發載入，false停止載入
       articles: [], //全部的資料
-
+      threadId:"",
       /////////////////
 
       // articles: [
@@ -232,8 +232,18 @@ export default {
     },
     getThreadData() {
       const url = process.env.VUE_APP_API + "/api/Post/GetForum";
+
+    this.$bus.$on("threadId", (event) => {
+      // alert(event.event.img);
+      this.threadId = event;
+      console.log("此事件取得id");
+      console.log(event);
+      console.log(this.threadId);
+      // this.threadDetail.routeName = event.routeName;
+    });
+
       this.$axios
-        .get(url)
+        .get(url,this.threadId)
         .then((response) => {
           console.log(response);
           console.log(response.data);

@@ -45,7 +45,7 @@
                   <span class="pl-4">{{ article.userName }}</span>
                   <h5 class="py-3" id="forumName">{{ article.forumName }}</h5>
                   <h5>{{ article.title }}</h5>
-                  <div v-html="computedHtml(article.description)"></div>
+                  <div v-html="article.description"></div>
                   <!-- <div :id="'article' + index"></div> -->
                   <p>{{ article.createdDate }}</p>
                 </div>
@@ -87,11 +87,13 @@ export default {
   },
 
   methods: {
-    computedHtml(description) {
-      let startP = description.indexOf("<p>");
-      let endP = description.indexOf("</p>");
-      description.slice(startP, endP);
-    },
+    // computedHtml(description) {
+    //   // let re = "<s*p[^>]>(.*?)<s*/s*p>";
+    //   // return description.match(re);
+    //   // let startP = description.indexOf("<p>");
+    //   // let endP = description.indexOf("</p>");
+    //   // description.slice(startP, endP);
+    // },
 
     loadMoreData: function () {
       if (this.infiniteArticles.length <= this.articles.length) {
@@ -114,8 +116,28 @@ export default {
         .then((response) => {
           response.data.forEach((item) => {
             this.articles.push(item);
+            //////////////////////////////////////////
+              // console.log(this.articles.length)
           });
-        })
+            // let reg = new RegExp("<img.*?src='(.*?)'[^\>]+>");
+            // let start;
+            // let end;
+            this.articles.forEach((item) => {
+              console.log(typeof item.description);
+              console.log(item.description);
+              // start =item.description.indexOf("<p>");
+              // end = item.description.indexOf("</p>");
+              // item.description.match(reg);
+              console.log("經過正則");
+              // console.log(start);
+              // console.log(end+3);
+              // console.log(item.d.slice(start,end+3));
+
+
+            });
+
+
+       })
         .catch((err) => {
           console.log(err);
         });
