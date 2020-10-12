@@ -82,12 +82,9 @@ export default {
       //
       postData: {
         ForumId: "",
-        PostId: null,
         Title: "",
         Description: "",
-        CreatedDate: null,
         UserId: "",
-        State: false,
       },
       selectThread: {
         threadName: [],
@@ -170,8 +167,6 @@ export default {
       this.postData.Title = this.titleContent;
       this.postData.Description = this.editorContent;
       this.postData.UserId = this.userId;
-      this.postData.State = true;
-      console.log(this.postData);
       this.$axios
         .post(process.env.VUE_APP_API + "/api/Post/Create", this.postData)
         .then((response) => {

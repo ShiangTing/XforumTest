@@ -122,19 +122,19 @@ export default {
             // let reg = new RegExp("<img.*?src='(.*?)'[^\>]+>");
             // let start;
             // let end;
-            this.articles.forEach((item) => {
-              console.log(typeof item.description);
-              console.log(item.description);
+            // this.articles.forEach((item) => {
+              // console.log(typeof item.description);
+              // console.log(item.description);
               // start =item.description.indexOf("<p>");
               // end = item.description.indexOf("</p>");
               // item.description.match(reg);
-              console.log("經過正則");
+              // console.log("經過正則");
               // console.log(start);
               // console.log(end+3);
               // console.log(item.d.slice(start,end+3));
 
 
-            });
+            // });
 
 
        })

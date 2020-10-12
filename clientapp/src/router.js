@@ -62,10 +62,12 @@ export default new VueRouter({
           path: '/Thread/:routeName',
           component: () => import('./views/Thread.vue'),
           meta: {
+            forumId:"",
             breadcrumb: [
               {
                 name: '首頁',
                 link: '/',
+
               },
               {
                 // name: `${VueRouter.$route.name}`,

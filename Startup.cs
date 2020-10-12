@@ -41,7 +41,7 @@ namespace XforumTest
             services.AddControllersWithViews();
             services.AddCors(options =>
             {
-                
+
                 options.AddPolicy("CorsPolicy", policy =>
                 {
                     policy.WithOrigins("http://localhost:8080")
@@ -54,7 +54,6 @@ namespace XforumTest
             services.AddControllers();
             //  services.AddControllers().AddNewtonsoftJson();
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
-
             //Connecting String
             services.AddDbContext<MyDBContext>(opt => opt.UseSqlServer(Configuration["MyDBContext"]));
 
@@ -159,7 +158,7 @@ namespace XforumTest
                .AllowAnyHeader());
             app.UseAuthentication();
             app.UseAuthorization();
-         
+
             app.UseMiddleware<JwtMiddleware>();
             app.UseEndpoints(endpoints =>
             {
