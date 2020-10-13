@@ -24,18 +24,18 @@
               clickMode="push"
             >
             </vue-particles>
-            <!-- <div v-if="threadDetail.img && threadDetail.name">
-              <b-card-img
-                :src="require(`@/assets/img/${threadDetail.img}`)"
-                width="50"
-                height="350"
-              ></b-card-img>
-              <h2 style="color: wheat">{{ threadDetail.name }}</h2>
-            </div> -->
-            <p style="border-bottom: 1px solid gray; padding: 10px 0">
-              全部 / 追蹤
-            </p>
 
+            <b-card-img
+              class="threadLogo"
+              :src="require(`@/assets/img/${routeName}.jpg`)"
+              width="50"
+              height="350"
+            ></b-card-img>
+            <h1
+              v-text="welcomeText(forumName)"
+              class="text-center py-2"
+              style="color: gray; font-weight: border"
+            ></h1>
             <div
               class="infinite-scroll"
               v-infinite-scroll="loadMoreData"
@@ -43,22 +43,35 @@
               infinite-scroll-distance="15"
             >
               <div
-                style="border-bottom: 1px solid gray; display: flex"
+                class="post-section"
                 v-for="(article, $index) in infiniteArticles"
                 :key="$index"
               >
-                <!-- Hacker News item loop -->
-                <div style="padding: 30px 20px">
-                  <font-awesome-icon icon="user" size="lg" />
-                  <span class="pl-4">{{ article.userName }}</span>
-                  <h5 class="py-3" id="forumName">{{ article.forumName }}</h5>
-                  <h5>{{ article.title }}</h5>
-                  <div v-html="article.description"></div>
-                  <!-- <div :id="'article' + index"></div> -->
-                  <p>{{ article.createdDate }}</p>
+                <div
+                  style="padding: 10px 20px"
+                  class="d-flex justify-content-between align-items-center w-100"
+                >
+                  <div>
+                    <font-awesome-icon icon="user" size="lg" />
+                    <div class="user">
+                      <span class="userName">{{ article.userName }}</span>
+                    </div>
+                    <p
+                      v-text="createDate(article.createdDate)"
+                      class="pt-2"
+                    ></p>
+                    <h6>{{ article.title }}</h6>
+                    <div
+                      style="width: 300px"
+                      v-html="filterDescription(article.description)"
+                    ></div>
+                  </div>
+                  <div
+                    class="previewImg d-flex"
+                    v-html="getFirstImg(article.description)"
+                  ></div>
                 </div>
               </div>
-              <!-- //此處為自訂的loading icon，並設定當只有在兩個陣列長度不相等時才會顯示 -->
               <div
                 class="d-flex justify-content-center mt-3"
                 v-if="infiniteArticles.length !== articles.length"
@@ -73,17 +86,6 @@
         <b-col></b-col>
       </b-row>
     </b-container>
-
-    <!-- <div v-else>
-
-    </div> -->
-
-    <!-- <img
-      :src="`@/assets/img/${threadDetail.img}`"
-      width="50"
-      height="50"
-      alt="logo"
-    /> -->
   </div>
 </template>
 
@@ -102,9 +104,48 @@ export default {
       infiniteArticles: [], //inifinite scroll渲染的部分
       busy: false, //true觸發載入，false停止載入
       articles: [], //全部的資料
+      routeName: this.$route.params.routeName,
+      forumName: "",
     };
   },
   methods: {
+    welcomeText(name) {
+      return `${name}`;
+    },
+    createDate(date) {
+      return date.substring(0, 10).replace(/-/g, "/");
+    },
+    filterDescription(description) {
+      let span = document.createElement("span");
+      span.innerHTML = description;
+      // 刪img
+      let imgTag = span.getElementsByTagName("img"),
+        index;
+      for (index = imgTag.length - 1; index >= 0; index--) {
+        imgTag[index].parentNode.removeChild(imgTag[index]);
+      }
+      // 第一個p
+      let pTagGroup = span.getElementsByTagName("p");
+
+      for (index = pTagGroup.length - 1; index >= 0; index--) {
+        if (index !== 0) {
+          pTagGroup[index].parentNode.removeChild(pTagGroup[index]);
+        } else {
+          pTagGroup[index].classList.add("ellipsis");
+        }
+      }
+      return span.innerHTML;
+    },
+    getFirstImg(data) {
+      let span = document.createElement("span");
+      span.innerHTML = data;
+      let imgTag = span.querySelector("img");
+      if (imgTag != null) {
+        return imgTag.outerHTML;
+      } else {
+        return `<img src="https://i.imgur.com/Ix6074X.png">`;
+      }
+    },
     loadMoreData: function () {
       if (this.infiniteArticles.length <= this.articles.length) {
         this.busy = true;
@@ -126,6 +167,7 @@ export default {
         .get(url + "/" + this.$route.params.routeName)
         .then((response) => {
           response.data.forEach((item) => {
+            this.forumName = item.forumName;
             this.articles.push(item);
           });
         })
@@ -145,6 +187,46 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+$description: rgba(0, 0, 0, 1) !important;
+
+.post-section {
+  border-bottom: 1px solid rgba($color: gray, $alpha: 0.2);
+  display: flex;
+  .user {
+    display: inline-block;
+    padding-left: 5px;
+    color: rgba($color: #000000, $alpha: 0.5);
+    font-size: 16px;
+  }
+
+  h6 {
+    color: #000;
+    font-size: 18px;
+    font-weight: bold;
+  }
+}
+/deep/ .ellipsis {
+  width: 100%;
+  font-size: 14px;
+  color: $description;
+  overflow: hidden;
+  /* word-wrap: break-word; */
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: inline-block;
+  & > * {
+    color: $description;
+  }
+}
+/deep/ .previewImg {
+  width: 100px;
+  height: 100px;
+  img {
+    height: 100%;
+    width: 100%;
+  }
+}
+
 .ellipsis {
   max-width: 20%;
   overflow: hidden;
@@ -153,6 +235,9 @@ export default {
   white-space: nowrap;
   display: inline-block;
   color: #000;
+}
+.threadLogo {
+  object-fit: cover;
 }
 @media screen and (max-width: 996px) {
   .sidebar {
