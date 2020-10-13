@@ -8,8 +8,8 @@
     >
       <!-- <font-awesome-icon :icon="thread.iconName" size="lg" /> -->
       <span
-        class="text-primary"
-        style="cursor: pointer"
+        class=""
+        style="cursor: pointer; color: rgba(150, 155, 5, 0.8)"
         :forumid="thread.forumid"
       >
         {{ thread.forumName }}</span
