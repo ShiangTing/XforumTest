@@ -40,19 +40,26 @@
                 :key="$index"
               >
                 <!-- Hacker News item loop -->
-                <div style="padding: 30px 20px">
-                  <font-awesome-icon icon="user" size="lg" />
-                  <span class="pl-4">{{ article.userName }}</span>
-                  <h5 class="py-3" id="forumName">{{ article.forumName }}</h5>
-                  <h5>{{ article.title }}</h5>
+                <div
+                  style="padding: 30px 20px"
+                  class="d-flex justify-content-between align-items-center w-100"
+                >
+                  <div>
+                    <font-awesome-icon icon="user" size="lg" />
+                    <span class="pl-4">{{ article.userName }}</span>
+                    <p>{{ article.createdDate }}</p>
+                    <h5 class="py-3" id="forumName">{{ article.forumName }}</h5>
+                    <h5>{{ article.title }}</h5>
+                    <div
+                      style="width: 300px"
+                      v-html="filterDescription(article.description)"
+                    ></div>
+                  </div>
                   <div
-                    style="width: 300px"
-                    v-html="
-                      $options.filters.filterDescription(article.description)
-                    "
+                    class="previewImg d-flex"
+                    v-html="getFirstImg(article.description)"
                   ></div>
                   <!-- <div :id="'article' + index"></div> -->
-                  <p>{{ article.createdDate }}</p>
                 </div>
               </div>
               <!-- //此處為自訂的loading icon，並設定當只有在兩個陣列長度不相等時才會顯示 -->
@@ -63,6 +70,7 @@
                 <span class="mr-5 text-primary">載入中請稍等哦!!</span>
                 <b-spinner label="Loading..."></b-spinner>
               </div>
+
               <div v-else class="text-center mt-3 text-primary">載入完畢!!</div>
             </div>
           </div>
@@ -89,11 +97,42 @@ export default {
       busy: false, //true觸發載入，false停止載入
       articles: [], //全部的資料
       htmlData: [],
-      descriptionFirstImg: "",
+      descriptionFirstImg: [],
     };
   },
 
   methods: {
+    filterDescription(description) {
+      let span = document.createElement("span");
+      span.innerHTML = description;
+      // 刪img
+      let imgTag = span.getElementsByTagName("img"),
+        index; // console.log(this);
+      for (index = imgTag.length - 1; index >= 0; index--) {
+        imgTag[index].parentNode.removeChild(imgTag[index]);
+      }
+      // 第一個p
+      let pTagGroup = span.getElementsByTagName("p");
+      for (index = pTagGroup.length - 1; index >= 0; index--) {
+        if (index !== 0) {
+          pTagGroup[index].parentNode.removeChild(pTagGroup[index]);
+        } else {
+          pTagGroup[index].classList.add("ellipsis");
+        }
+      }
+      return span.innerHTML;
+    },
+    getFirstImg(data) {
+      let span = document.createElement("span");
+      span.innerHTML = data;
+      let imgTag = span.querySelector("img");
+      if (imgTag != null) {
+        console.log(imgTag.outerHTML);
+        return imgTag.outerHTML;
+      } else {
+        return `<img src="https://i.imgur.com/Ix6074X.png">`;
+      }
+    },
     loadMoreData: function () {
       if (this.infiniteArticles.length <= this.articles.length) {
         this.busy = true;
@@ -105,7 +144,7 @@ export default {
             this.infiniteArticles.push(this.articles[this.count++]);
           }
           this.busy = false;
-        }, 1000);
+        }, 500);
       }
     },
     async GetAll() {
@@ -121,63 +160,6 @@ export default {
           console.log(err);
         });
     },
-    // GetArticleAndSideBar() {
-    //   let vm = this;
-
-    //   axios.all([vm.getSideBar(), vm.GetAll()]).then(
-    //     axios.spread((SidebarResponse, ArticleResponse) => {
-    //       SidebarResponse.data.forEach((item) => {
-    //         console.log(item);
-    //       });
-    //       ArticleResponse.data.forEach((item) => {
-    //         console.log(item);
-    //         vm.articles.push(item);
-    //       });
-    //       vm.$nextTick(() => {
-    //         vm.articles.forEach((item, index) => {
-    //           console.log("article" + index);
-    //           let temp = document.getElementById("article" + index);
-    //           console.log(temp);
-    //           temp.innerHTML = item.description;
-    //         });
-    //       });
-    //     })
-    //   );
-    // },
-    // GetAll() {
-    //   const url = process.env.VUE_APP_API + "/api/Post/GetAllPosts";
-    //   return axios.get(url);
-    //   //  this.first_request: 'first request began'
-    // },
-    // getSideBar() {
-    //   const url = process.env.VUE_APP_API + "/api/Forum/GetAll";
-    //   return axios.get(url);
-    // },
-  },
-  filters: {
-    filterDescription(description) {
-      let span = document.createElement("span");
-      span.innerHTML = description;
-
-      let imgTag = span.getElementsByTagName("img"),
-        index;
-      if (imgTag !== null) {
-        this.descriptionFirstImg = imgTag[0];
-        for (index = imgTag.length - 1; index >= 0; index--) {
-          imgTag[index].parentNode.removeChild(imgTag[index]);
-        }
-      }
-
-      let pTagGroup = span.getElementsByTagName("p");
-      for (index = pTagGroup.length - 1; index >= 0; index--) {
-        if (index !== 0) {
-          pTagGroup[index].parentNode.removeChild(pTagGroup[index]);
-        } else {
-          pTagGroup[index].classList.add("ellipsis");
-        }
-      }
-      return span.innerHTML;
-    },
   },
   async created() {
     await this.GetAll();
@@ -187,6 +169,7 @@ export default {
 
 <style lang="scss" scoped>
 $description: rgba(0, 0, 0, 1) !important;
+
 /deep/ .ellipsis {
   width: 100%;
   font-size: 14px;
@@ -200,6 +183,16 @@ $description: rgba(0, 0, 0, 1) !important;
     color: $description;
   }
 }
+
+/deep/ .previewImg {
+  width: 100px;
+  height: 100px;
+  img {
+    height: 100%;
+    width: 100%;
+  }
+}
+
 @media screen and (max-width: 996px) {
   .sidebar {
     display: none;
