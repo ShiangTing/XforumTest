@@ -24,7 +24,7 @@ namespace XforumTest.DTO
         public string Name { get; set; }
 
        
-        [Phone]
+       // [Phone]
         public string Phone { get; set; }
         
         public string Gender { get; set; }
