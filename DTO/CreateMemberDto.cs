@@ -23,7 +23,7 @@ namespace XforumTest.DTO
         [MinLength(1)]
         public string Name { get; set; }
 
-        [Required]
+       
         [Phone]
         public string Phone { get; set; }
         
