@@ -1,16 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using XforumTest.Context;
 using XforumTest.DataTable;
 using XforumTest.Interface;
 using XforumTest.Repository;
 using XforumTest.DTO;
-using Newtonsoft.Json;
-using System.Text.Json;
-using Microsoft.EntityFrameworkCore;
-using XforumTest.NewFolder;
 using System.Diagnostics;
 
 namespace XforumTest.Services

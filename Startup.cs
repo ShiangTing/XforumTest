@@ -20,7 +20,6 @@ using XforumTest.DataTable;
 using XforumTest.DTO;
 using XforumTest.Helpers;
 using XforumTest.Interface;
-using XforumTest.NewFolder;
 using XforumTest.Repository;
 using XforumTest.Services;
 

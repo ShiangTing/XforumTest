@@ -15,9 +15,7 @@ using XforumTest.Repository;
 using XforumTest.DataTable;
 using XforumTest.Context;
 using XforumTest.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using XforumTest.NewFolder;
+
 
 namespace XforumTest.Helpers
 {

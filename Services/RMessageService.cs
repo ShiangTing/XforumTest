@@ -8,8 +8,7 @@ using XforumTest.Context;
 using XforumTest.DataTable;
 using XforumTest.DTO;
 using XforumTest.Interface;
-using XforumTest.NewFolder;
-using XforumTest.Repository;
+
 
 namespace XforumTest.Services
 {

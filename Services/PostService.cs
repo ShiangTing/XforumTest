@@ -9,8 +9,7 @@ using XforumTest.DataTable;
 using XforumTest.Repository;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
-using XforumTest.NewFolder;
-using System.Transactions;
+
 
 namespace XforumTest.Services
 {

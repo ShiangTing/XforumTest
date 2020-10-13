@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 using XforumTest.Context;
 using XforumTest.DataTable;
 using XforumTest.Interface;
-using XforumTest.NewFolder;
-using XforumTest.Repository;
+
 
 namespace XforumTest.Services
 {

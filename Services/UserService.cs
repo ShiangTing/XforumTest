@@ -15,9 +15,7 @@ using XforumTest.DTO;
 using XforumTest.Entities;
 using XforumTest.Helpers;
 using XforumTest.Interface;
-using XforumTest.Models;
-using XforumTest.NewFolder;
-using XforumTest.Repository;
+
 
 namespace XforumTest.Services
 {
