@@ -4,7 +4,7 @@
       v-for="(thread, index) in threads"
       :key="index"
       :forumId="thread.forumId"
-      @click="goToThread(thread.routeName,thread.forumId)"
+      @click="goToThread(thread.routeName)"
     >
       <!-- <font-awesome-icon :icon="thread.iconName" size="lg" /> -->
       <span
@@ -25,20 +25,19 @@ export default {
     return {
       threads: [],
       // dataId:"",
-
     };
   },
   beforeRouteUpdate() {},
   methods: {
-    goToThread(name,id) {
-      // console.log(event.currentTarget);
+    goToThread(name) {
       const vm = this;
       // vm.dataId=id;
-      vm.$router.beforeEach((to, from, next) => {
-          to.meta.forumId = id;
-          next();
-      });
+      // vm.$router.beforeEach((to, from, next) => {
+      //     to.meta.forumId = id;
+      //     next();
+      // });
       // this.$bus.$emit("threadId", id);
+
       vm.$router.push(`/Thread/${name}`);
     },
 

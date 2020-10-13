@@ -61,13 +61,9 @@ namespace XforumTest.ApiController
         /// 取得所有的留言資訊
         /// </summary>
         [HttpGet]
-<<<<<<< HEAD
-        public async Task<IQueryable<PostListDto>> GetAllPosts()
-        {
-=======
         public IEnumerable<PostListDto> GetAllPosts()
         {        
->>>>>>> master
+
             return  _postservice.GetAll();
         }
 
@@ -75,13 +71,11 @@ namespace XforumTest.ApiController
         /// 取個單一看板PO文
         /// </summary>
         /// <returns></returns>
-<<<<<<< HEAD
+
         [HttpGet("{id}")]
-        public IQueryable<PostListDto> GetForum(string id)
-=======
-        [HttpGet]
-        public IEnumerable<PostListDto> GetForum(string forumid)
->>>>>>> master
+        public IEnumerable<PostListDto> GetForum(string id)
+
+
         {
             return _postservice.GetForum(id);
         }

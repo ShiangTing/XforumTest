@@ -77,7 +77,6 @@ export default {
     let isAuth = auth.isAuthorize;
     let token = auth.token;
     let url = process.env.VUE_APP_API + "/api/JwtHelper/username";
-    console.log(auth);
 
     if (isAuth) {
       vm.isLogin = true;

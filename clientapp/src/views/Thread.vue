@@ -102,7 +102,6 @@ export default {
       infiniteArticles: [], //inifinite scroll渲染的部分
       busy: false, //true觸發載入，false停止載入
       articles: [], //全部的資料
-
     };
   },
   methods: {
@@ -120,14 +119,13 @@ export default {
         }, 1000);
       }
     },
-  getThreadData() {
-    const url = process.env.VUE_APP_API + "/api/Post/GetForum";
+    getThreadData() {
+      const url = process.env.VUE_APP_API + "/api/Post/GetForum";
       console.log(this.$route.params.routeName);
       this.$axios
-        .get(url+"/"+ this.$route.params.routeName)
+        .get(url + "/" + this.$route.params.routeName)
         .then((response) => {
           response.data.forEach((item) => {
-            console.log(item);
             this.articles.push(item);
           });
         })
@@ -135,8 +133,11 @@ export default {
           console.log(err);
         });
     },
-
   },
+  watch: {
+    // $route: ["getThreadData"],
+  },
+  beforeDestroy() {},
   async created() {
     await this.getThreadData();
   },
