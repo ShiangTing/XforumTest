@@ -38,12 +38,12 @@ namespace XforumTest.Services
             return _members.GetAll()
                 .Select(x => new MemberDto()
                 {
-                    UserId = x.UserId,
+                    //UserId = x.UserId,
                     Password = x.Password,
                     Email = x.Email,
                     Name = x.Name,
                     Phone = x.Phone,
-                    RoleId = x.RoleId,
+                    RoleName = _roles.GetFirst(y => y.RoleId == x.RoleId).RoleName,
                     Gender = x.Gender,
                     Points = (decimal)x.Points,
                     Age = (int)x.Age,
@@ -51,16 +51,23 @@ namespace XforumTest.Services
                     TitleId = x.TitleId
                 });
         }
-        public MemberDto GetById(Guid id)
+        /// <summary>
+        /// 獲得UserId
+        /// </summary>
+        /// <param name="userEmail"></param>
+        /// <returns></returns>
+        public string GetUserId(string userEmail)
         {
-            throw new NotImplementedException();
+            return _members.GetAll().SingleOrDefault(x => x.Email == userEmail).UserId.ToString();
         }
-
+        /// <summary>
+        /// 新增會員資料
+        /// </summary>
+        /// <param name="dto"></param>
         public void Create(CreateMemberDto dto)
         {
             try
             {
-                var roleId = _roles.GetFirst(x => x.RoleName == "一般使用者").RoleId;
                 var user = new ForumMembers()
                 {
                     UserId = Guid.NewGuid(),
@@ -68,8 +75,14 @@ namespace XforumTest.Services
                     Email = dto.Email,
                     Name = dto.Name,
                     Gender = dto.Gender,
-                    //一般使用者guid
-                    RoleId = roleId
+                    Age = dto.Age,
+                    Phone = dto.Phone,
+                    //預設為一般使用者
+                    RoleId = _roles.GetFirst(x => x.RoleName == "一般使用者").RoleId,
+                    //預測點數為1000
+                    Points = 1000,
+                    //預設為單身一年
+                    TitleId = _titles.GetFirst(x => x.TitleName == "單身1年").TitleId
                 };
                 _members.Create(user);
                 _members.SaveContext();
@@ -79,54 +92,28 @@ namespace XforumTest.Services
                 Debug.WriteLine(ex.Message);
             }
         }
-
         /// <summary>
-        /// 取得單一會員資料(目前還不拿稱號)
+        /// 編輯會員資料
         /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-
-        public MemberDto GetSingle(Guid id)
-        {
-            var member = from m in _members.GetAll()
-                         join t in _titles.GetAll()
-                         on m.TitleId equals t.TitleId
-                         select new MemberDto()
-                         {
-                             UserId = m.UserId,
-                             Password = m.Password,
-                             Email = m.Email,
-                             Name = m.Name,
-                             Phone = m.Phone,
-                             RoleId = m.RoleId,
-                             Gender = m.Gender,
-                             Points = (decimal)m.Points,
-                             Age = (int)m.Age,
-                             EmailConformed = m.EmailConformed,
-                             TitleId = null,
-                         };
-            return member.FirstOrDefault(x => x.UserId == id);
-        }
-
-        public void Edit(MemberDto dto)
+        /// <param name="dto"></param>
+        /// <param name="userEmail"></param>
+        public void Edit(MemberDto dto, string userEmail)
         {
             try
             {
-                var user = new ForumMembers()
-                {
-                    UserId = (Guid)dto.UserId,
-                    Password = dto.Password,
-                    Email = dto.Email,
-                    Name = dto.Name,
-                    Phone = dto.Phone,
-                    RoleId = dto.RoleId,
-                    Gender = dto.Gender,
-                    Points = (decimal)dto.Points,
-                    Age = (int)dto.Age,
-                    EmailConformed = dto.EmailConformed,
-                    TitleId = dto.TitleId,
-                };
-                _members.Update(user);
+                var editedContext = _members.GetFirst(x => x.Email == userEmail);
+                editedContext.Name = dto.Name;
+                editedContext.Email = dto.Email;
+                editedContext.Password = dto.Password;
+                editedContext.Age = dto.Age;
+                editedContext.Phone = dto.Phone;
+                editedContext.Gender = dto.Gender;
+                //依據輸入的Role名稱去Role表搜RoleId並更換
+                editedContext.RoleId = _roles.GetFirst(x => x.RoleName == dto.RoleName).RoleId;
+                //依據輸入的Title名稱去Title表搜尋TitleId並更換
+                editedContext.TitleId = _titles.GetFirst(x => x.TitleName == dto.TitleName).TitleId;
+
+                _members.Update(editedContext);
                 _members.SaveContext();
             }
             catch (Exception ex)
@@ -134,20 +121,83 @@ namespace XforumTest.Services
                 Debug.WriteLine(ex.Message);
             }
         }
-
-        public string VerifyEmailAndName(string temp)
+        /// <summary>
+        /// 取得單一會員資料
+        /// </summary>
+        /// <param name="userEmail"></param>
+        /// <returns></returns>
+        public MemberDto GetSingleMember(string userEmail)
         {
-            if (_members.GetAll().Any(x => x.Email == temp))
+            var source = _members.GetAll().First(x => x.Email == userEmail);
+            var result = new MemberDto
             {
-                return "1";
+                //UserId = source.UserId,
+                Name = source.Name,
+                Email = source.Email,
+                Password = source.Password,
+                Age = (int)source.Age,
+                Phone = source.Phone,
+                Gender = source.Gender,
+                Points = (decimal)source.Points,
+                RoleId = source.RoleId,
+                RoleName = _roles.GetFirst(x => x.RoleId == source.RoleId).RoleName,
+                TitleId = source.TitleId,
+                TitleName = _titles.GetFirst(x => x.TitleId == source.TitleId).TitleName
+            };
+            return result;
+        }
+        /// <summary>
+        /// 註冊驗證Email,暱稱
+        /// </summary>
+        /// <param name="email"></param>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public ApiResult<CreateMemberDto> VerifyEmailAndNameWhenRegister(string email, string name)
+        {
+            var sourcre = _members.GetAll().Where(x => x.Email == email || x.Name == name);
+            if (sourcre.Any(x => x.Email == email && x.Name == name))
+            {
+                return new ApiResult<CreateMemberDto>($"Email:{email} 及暱稱:{name} 皆已被使用,請更換!");
             }
-            else if (_members.GetAll().Any(x => x.Name == temp))
+            if (sourcre.Any(x => x.Email == email))
             {
-                return "2";
+                return new ApiResult<CreateMemberDto>($"Email:{email} 已存在，請更換!"); //此Email已存在，請更換Email
+            }
+            if (sourcre.Any(x => x.Name == name))
+            {
+                return new ApiResult<CreateMemberDto>($"暱稱: {name}已存在，請更換!"); //此暱稱已存在，請更換暱稱
             }
             else
             {
-                return "0";
+                return new ApiResult<CreateMemberDto>();
+            }
+        }
+        /// <summary>
+        ///編輯會員資料驗證Email,暱稱(排除自己的資料)
+        /// </summary>
+        /// <param name="email"></param>
+        /// <param name="name"></param>
+        /// <param name="userEmail"></param>
+        /// <returns></returns>
+        public ApiResult<MemberDto> VerifyEmailAndNameWhenEdit(string email, string name, string userEmail)
+        {
+            var source = _members.GetAll().Where(x => x.Email != userEmail && (x.Email == email || x.Name == name));
+
+            if (source.Any(x => x.Email == email && x.Name == name))
+            {
+                return new ApiResult<MemberDto>($"Email:{email} 及暱稱:{name} 皆已被使用,請更換!");
+            }
+            if (source.Any(x => x.Email == email))
+            {
+                return new ApiResult<MemberDto>($"Email:{email} 已存在，請更換!"); //此Email已存在，請更換Email
+            }
+            if (source.Any(x => x.Name == name))
+            {
+                return new ApiResult<MemberDto>($"暱稱: {name}已存在，請更換!"); //此暱稱已存在，請更換暱稱
+            }
+            else
+            {
+                return new ApiResult<MemberDto>();
             }
         }
     }

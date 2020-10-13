@@ -38,7 +38,7 @@ namespace XforumTest.Services
             } 
             catch(Exception ex)
             {
-                
+                Debug.WriteLine(ex.Message);
             }
         }
 

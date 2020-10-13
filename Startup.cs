@@ -65,15 +65,16 @@ namespace XforumTest
             services.AddTransient<IRepository<Titles>, GeneralRepository<Titles>>();
             services.AddTransient<IRepository<ReposiveMessages>, GeneralRepository<ReposiveMessages>>();
             services.AddTransient<IRepository<Titles>, GeneralRepository<Titles>>();
+            services.AddTransient<IRepository<MemberTitle>,GeneralRepository<MemberTitle>>();
+
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IJwtHelperService, JwtHelperService>();
             services.AddTransient<IMessageService, RMessageService>();
             services.AddTransient<ILikeService<PostLikeDto>, LikeService>();
             services.AddTransient<ILikeService<MessageLikeDto>, LikeService>();
-            services.AddControllers().AddNewtonsoftJson();
             services.AddTransient<IForumService, ForumService>();
             services.AddTransient<IPostService, PostService>();
-            services.AddTransient<IRepository<MemberTitle>,GeneralRepository<MemberTitle>>();
+            services.AddControllers().AddNewtonsoftJson();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
             {

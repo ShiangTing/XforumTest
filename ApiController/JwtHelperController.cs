@@ -38,26 +38,6 @@ namespace XforumTest.ApiController
             return Ok(check);
         }
         /// <summary>
-        /// Get username(when authorized)
-        /// </summary>
-        /// <returns></returns>
-        [Authorize]
-        [HttpGet("username")]
-        public IActionResult GetUserName()
-        {
-            return Ok(User.Identity.Name);
-        }
-        /// <summary>
-        /// Get userID(when authorized)
-        /// </summary>
-        /// <returns></returns>
-        [Authorize]
-        [HttpGet("userid")]
-        public string GetUserId()
-        {
-            return _jwt.GetUserId(User.Identity.Name);
-        }
-        /// <summary>
         /// Get all claims in Jwt Token
         /// </summary>
         /// <returns></returns>

@@ -87,9 +87,5 @@ namespace XforumTest.Helpers
         {
             return _posts.GetAll();
         }
-        public string GetUserId(string userEmail)
-        {
-            return _members.GetAll().SingleOrDefault(x => x.Email == userEmail).UserId.ToString();
-        }
     }
 }
