@@ -27,7 +27,7 @@ namespace XforumTest.Services
         }
         public void Create(PostCreateDto model)
         {
-            
+
                 try
                 {
                     // 時區要再調整，先測試用
@@ -130,7 +130,7 @@ namespace XforumTest.Services
                               on p.UserId equals u.UserId
                               join f in _forums.GetAll()
                               on p.ForumId equals f.ForumId
-                              where p.ForumId.ToString() == forumid
+                              where f.RouteName == forumid
                               select new PostListDto
                               {
                                   ForumName = f.ForumName,

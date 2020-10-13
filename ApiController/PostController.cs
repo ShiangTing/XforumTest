@@ -56,13 +56,14 @@ namespace XforumTest.ApiController
             }
             return Ok();
         }
-        
+
         /// <summary>
         /// 取得所有的留言資訊
         /// </summary>
         [HttpGet]
         public IEnumerable<PostListDto> GetAllPosts()
         {        
+
             return  _postservice.GetAll();
         }
 
@@ -70,10 +71,13 @@ namespace XforumTest.ApiController
         /// 取個單一看板PO文
         /// </summary>
         /// <returns></returns>
-        [HttpGet]
-        public IEnumerable<PostListDto> GetForum(string forumid)
+
+        [HttpGet("{id}")]
+        public IEnumerable<PostListDto> GetForum(string id)
+
+
         {
-            return _postservice.GetForum(forumid);
+            return _postservice.GetForum(id);
         }
     }
 }

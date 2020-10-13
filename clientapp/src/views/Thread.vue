@@ -68,21 +68,6 @@
               </div>
               <div v-else class="text-center mt-3 text-primary">載入完畢!!</div>
             </div>
-
-            <!-- <div v-for="article in articles" :key="article.id"> -->
-            <!-- <div
-              style="border-bottom: 1px solid gray; display: flex"
-              v-for="(article, index) in titles"
-              :key="index"
-            >
-              <div class="w-100" style="padding: 30px 20px">
-                <font-awesome-icon icon="user" size="lg" />
-                <span class="pl-4">{{ article.userName }}</span>
-                <h3 class="pt-3">{{ article.title }}</h3>
-                <p class="ellipsis">{{ article.content }}</p>
-              </div>
-            </div> -->
-            <!-- </div> -->
           </div></b-col
         >
         <b-col></b-col>
@@ -117,102 +102,6 @@ export default {
       infiniteArticles: [], //inifinite scroll渲染的部分
       busy: false, //true觸發載入，false停止載入
       articles: [], //全部的資料
-
-      /////////////////
-
-      // articles: [
-      //   {
-      //     userName: "Amy",
-
-      //     title: "標題1",
-      //     content:
-      //       "Lorem ipsum dolor sit amet consectetur, adipisicing elit.Minus odit excepturi dicta blanditiis obcaecati dolores assumenda. Fugiat, unde quidem magnam quis, tempore sitmolestiae at esse, perferendis provident excepturi mollitia?",
-      //   },
-      //   {
-      //     userName: "Eric",
-
-      //     title: "標題2",
-      //     content:
-      //       "Lorem ipsum dolor sit amet consectetur, adipisicing elit.Minus odit excepturi dicta blanditiis obcaecati dolores assumenda. Fugiat, unde quidem magnam quis, tempore sitmolestiae at esse, perferendis provident excepturi mollitia?",
-      //   },
-      //   {
-      //     userName: "John",
-
-      //     title: "標題3",
-      //     content:
-      //       "Lorem ipsum dolor sit amet consectetur, adipisicing elit.Minus odit excepturi dicta blanditiis obcaecati dolores assumenda. Fugiat, unde quidem magnam quis, tempore sitmolestiae at esse, perferendis provident excepturi mollitia?",
-      //   },
-      //   {
-      //     userName: "Allen",
-
-      //     title: "標題4",
-      //     content:
-      //       "Lorem ipsum dolor sit amet consectetur, adipisicing elit.Minus odit excepturi dicta blanditiis obcaecati dolores assumenda. Fugiat, unde quidem magnam quis, tempore sitmolestiae at esse, perferendis provident excepturi mollitia?",
-      //   },
-      //   {
-      //     userName: "Allen",
-
-      //     title: "標題5",
-      //     content:
-      //       "Lorem ipsum dolor sit amet consectetur, adipisicing elit.Minus odit excepturi dicta blanditiis obcaecati dolores assumenda. Fugiat, unde quidem magnam quis, tempore sitmolestiae at esse, perferendis provident excepturi mollitia?",
-      //   },
-      //   {
-      //     userName: "Allen",
-
-      //     title: "標題6",
-      //     content:
-      //       "Lorem ipsum dolor sit amet consectetur, adipisicing elit.Minus odit excepturi dicta blanditiis obcaecati dolores assumenda. Fugiat, unde quidem magnam quis, tempore sitmolestiae at esse, perferendis provident excepturi mollitia?",
-      //   },
-      //   {
-      //     userName: "Allen",
-
-      //     title: "標題7",
-      //     content:
-      //       "Lorem ipsum dolor sit amet consectetur, adipisicing elit.Minus odit excepturi dicta blanditiis obcaecati dolores assumenda. Fugiat, unde quidem magnam quis, tempore sitmolestiae at esse, perferendis provident excepturi mollitia?",
-      //   },
-      //   {
-      //     userName: "Allen",
-
-      //     title: "標題8",
-      //     content:
-      //       "Lorem ipsum dolor sit amet consectetur, adipisicing elit.Minus odit excepturi dicta blanditiis obcaecati dolores assumenda. Fugiat, unde quidem magnam quis, tempore sitmolestiae at esse, perferendis provident excepturi mollitia?",
-      //   },
-      //   {
-      //     userName: "Allen",
-
-      //     title: "標題8",
-      //     content:
-      //       "Lorem ipsum dolor sit amet consectetur, adipisicing elit.Minus odit excepturi dicta blanditiis obcaecati dolores assumenda. Fugiat, unde quidem magnam quis, tempore sitmolestiae at esse, perferendis provident excepturi mollitia?",
-      //   },
-      //   {
-      //     userName: "Allen",
-
-      //     title: "標題9",
-      //     content:
-      //       "Lorem ipsum dolor sit amet consectetur, adipisicing elit.Minus odit excepturi dicta blanditiis obcaecati dolores assumenda. Fugiat, unde quidem magnam quis, tempore sitmolestiae at esse, perferendis provident excepturi mollitia?",
-      //   },
-      //   {
-      //     userName: "Allen",
-
-      //     title: "標題10",
-      //     content:
-      //       "Lorem ipsum dolor sit amet consectetur, adipisicing elit.Minus odit excepturi dicta blanditiis obcaecati dolores assumenda. Fugiat, unde quidem magnam quis, tempore sitmolestiae at esse, perferendis provident excepturi mollitia?",
-      //   },
-      //   {
-      //     userName: "Allen",
-
-      //     title: "標題11",
-      //     content:
-      //       "Lorem ipsum dolor sit amet consectetur, adipisicing elit.Minus odit excepturi dicta blanditiis obcaecati dolores assumenda. Fugiat, unde quidem magnam quis, tempore sitmolestiae at esse, perferendis provident excepturi mollitia?",
-      //   },
-      //   {
-      //     userName: "Allen",
-
-      //     title: "標題12",
-      //     content:
-      //       "Lorem ipsum dolor sit amet consectetur, adipisicing elit.Minus odit excepturi dicta blanditiis obcaecati dolores assumenda. Fugiat, unde quidem magnam quis, tempore sitmolestiae at esse, perferendis provident excepturi mollitia?",
-      //   },
-      // ],
     };
   },
   methods: {
@@ -232,13 +121,11 @@ export default {
     },
     getThreadData() {
       const url = process.env.VUE_APP_API + "/api/Post/GetForum";
+      console.log(this.$route.params.routeName);
       this.$axios
-        .get(url)
+        .get(url + "/" + this.$route.params.routeName)
         .then((response) => {
-          console.log(response);
-          console.log(response.data);
           response.data.forEach((item) => {
-            console.log(item);
             this.articles.push(item);
           });
         })
@@ -246,46 +133,14 @@ export default {
           console.log(err);
         });
     },
-
-    ///////////////////////
-    // getThreadData() {
-    //   const url = process.env.VUE_APP_API + "/api/Post/GetForum";
-    //   axios
-    //     .get(url)
-    //     .then((response) => {
-    //       console.log(response);
-    //       console.log("成功");
-    //     })
-    //     .catch((err) => {
-    //       console.log(err);
-    //     });
-    // },
-    // infiniteScroll($state) {
-    //   setTimeout(() => {
-    //     this.page++;
-    //     if (this.articles.length > 10) {
-    //       this.articles.forEach((item) => this.titles.push(item));
-    //       $state.loaded();
-    //     } else {
-    //       $state.complete();
-    //     }
-    //   }, 500);
-    // },
   },
-
+  watch: {
+    // $route: ["getThreadData"],
+  },
+  beforeDestroy() {},
   async created() {
     await this.getThreadData();
-    // this.$bus.$on("specialEvent", (event) => {
-    //   // alert(event.event.img);
-    //   this.threadDetail.name = event.name;
-    //   this.threadDetail.img = event.img;
-    //   // this.threadDetail.routeName = event.routeName;
-    // });
   },
-  beforeDestroy: function () {
-    // this.$bus.$off("specialEvent");
-  },
-  computed: {},
 };
 </script>
 
@@ -305,3 +160,5 @@ export default {
   }
 }
 </style>
+
+

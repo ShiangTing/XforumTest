@@ -45,7 +45,12 @@
                   <span class="pl-4">{{ article.userName }}</span>
                   <h5 class="py-3" id="forumName">{{ article.forumName }}</h5>
                   <h5>{{ article.title }}</h5>
-                  <div v-html="article.description"></div>
+                  <div
+                    style="width: 300px"
+                    v-html="
+                      $options.filters.filterDescription(article.description)
+                    "
+                  ></div>
                   <!-- <div :id="'article' + index"></div> -->
                   <p>{{ article.createdDate }}</p>
                 </div>
@@ -83,6 +88,8 @@ export default {
       infiniteArticles: [], //inifinite scroll渲染的部分
       busy: false, //true觸發載入，false停止載入
       articles: [], //全部的資料
+      htmlData: [],
+      descriptionFirstImg: "",
     };
   },
 
@@ -113,9 +120,6 @@ export default {
         .catch((err) => {
           console.log(err);
         });
-    },
-    checkImg() {
-      console.log("已改變資料");
     },
     // GetArticleAndSideBar() {
     //   let vm = this;
@@ -150,7 +154,31 @@ export default {
     //   return axios.get(url);
     // },
   },
+  filters: {
+    filterDescription(description) {
+      let span = document.createElement("span");
+      span.innerHTML = description;
 
+      let imgTag = span.getElementsByTagName("img"),
+        index;
+      if (imgTag !== null) {
+        this.descriptionFirstImg = imgTag[0];
+        for (index = imgTag.length - 1; index >= 0; index--) {
+          imgTag[index].parentNode.removeChild(imgTag[index]);
+        }
+      }
+
+      let pTagGroup = span.getElementsByTagName("p");
+      for (index = pTagGroup.length - 1; index >= 0; index--) {
+        if (index !== 0) {
+          pTagGroup[index].parentNode.removeChild(pTagGroup[index]);
+        } else {
+          pTagGroup[index].classList.add("ellipsis");
+        }
+      }
+      return span.innerHTML;
+    },
+  },
   async created() {
     await this.GetAll();
   },
@@ -158,14 +186,19 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.ellipsis {
-  max-width: 20%;
+$description: rgba(0, 0, 0, 1) !important;
+/deep/ .ellipsis {
+  width: 100%;
+  font-size: 14px;
+  color: $description;
   overflow: hidden;
   /* word-wrap: break-word; */
   text-overflow: ellipsis;
   white-space: nowrap;
   display: inline-block;
-  color: #000;
+  & > * {
+    color: $description;
+  }
 }
 @media screen and (max-width: 996px) {
   .sidebar {

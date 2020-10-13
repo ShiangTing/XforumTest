@@ -24,12 +24,19 @@ export default {
   data() {
     return {
       threads: [],
+      // dataId:"",
     };
   },
   beforeRouteUpdate() {},
   methods: {
     goToThread(name) {
       const vm = this;
+      // vm.dataId=id;
+      // vm.$router.beforeEach((to, from, next) => {
+      //     to.meta.forumId = id;
+      //     next();
+      // });
+      // this.$bus.$emit("threadId", id);
 
       vm.$router.push(`/Thread/${name}`);
     },
