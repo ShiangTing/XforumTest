@@ -7,12 +7,12 @@
           <div>
             <!-- 這裡是index區域的貼文 -->
             <vue-particles
-              color="#dedede"
+              color="#63212B"
               :particleOpacity="0.7"
               :particlesNumber="80"
               shapeType="circle"
               :particleSize="4"
-              linesColor="#dedede"
+              linesColor="#63212B"
               :linesWidth="1"
               :lineLinked="true"
               :lineOpacity="0.4"
@@ -24,9 +24,6 @@
               clickMode="push"
             >
             </vue-particles>
-            <p style="border-bottom: 1px solid gray; padding: 10px 0">
-              全部 / 追蹤
-            </p>
 
             <div
               class="infinite-scroll"
@@ -35,21 +32,26 @@
               infinite-scroll-distance="15"
             >
               <div
-                style="border-bottom: 1px solid gray; display: flex"
+                class="post-section"
                 v-for="(article, $index) in infiniteArticles"
                 :key="$index"
               >
-                <!-- Hacker News item loop -->
                 <div
-                  style="padding: 30px 20px"
+                  style="padding: 10px 20px"
                   class="d-flex justify-content-between align-items-center w-100"
                 >
                   <div>
                     <font-awesome-icon icon="user" size="lg" />
-                    <span class="pl-4">{{ article.userName }}</span>
-                    <p>{{ article.createdDate }}</p>
-                    <h5 class="py-3" id="forumName">{{ article.forumName }}</h5>
-                    <h5>{{ article.title }}</h5>
+                    <div class="user">
+                      <span class="userName">{{ article.userName }}</span>
+                      <span>{{ article.forumName }}</span>
+                    </div>
+
+                    <p
+                      v-text="CreateDate(article.createdDate)"
+                      class="pt-2"
+                    ></p>
+                    <h6>{{ article.title }}</h6>
                     <div
                       style="width: 300px"
                       v-html="filterDescription(article.description)"
@@ -59,10 +61,8 @@
                     class="previewImg d-flex"
                     v-html="getFirstImg(article.description)"
                   ></div>
-                  <!-- <div :id="'article' + index"></div> -->
                 </div>
               </div>
-              <!-- //此處為自訂的loading icon，並設定當只有在兩個陣列長度不相等時才會顯示 -->
               <div
                 class="d-flex justify-content-center mt-3"
                 v-if="infiniteArticles.length !== articles.length"
@@ -70,7 +70,6 @@
                 <span class="mr-5 text-primary">載入中請稍等哦!!</span>
                 <b-spinner label="Loading..."></b-spinner>
               </div>
-
               <div v-else class="text-center mt-3 text-primary">載入完畢!!</div>
             </div>
           </div>
@@ -96,23 +95,25 @@ export default {
       infiniteArticles: [], //inifinite scroll渲染的部分
       busy: false, //true觸發載入，false停止載入
       articles: [], //全部的資料
-      htmlData: [],
-      descriptionFirstImg: [],
     };
   },
 
   methods: {
+    CreateDate(date) {
+      return date.substring(0, 10).replace(/-/g, "/");
+    },
     filterDescription(description) {
       let span = document.createElement("span");
       span.innerHTML = description;
       // 刪img
       let imgTag = span.getElementsByTagName("img"),
-        index; // console.log(this);
+        index;
       for (index = imgTag.length - 1; index >= 0; index--) {
         imgTag[index].parentNode.removeChild(imgTag[index]);
       }
       // 第一個p
       let pTagGroup = span.getElementsByTagName("p");
+
       for (index = pTagGroup.length - 1; index >= 0; index--) {
         if (index !== 0) {
           pTagGroup[index].parentNode.removeChild(pTagGroup[index]);
@@ -127,7 +128,6 @@ export default {
       span.innerHTML = data;
       let imgTag = span.querySelector("img");
       if (imgTag != null) {
-        console.log(imgTag.outerHTML);
         return imgTag.outerHTML;
       } else {
         return `<img src="https://i.imgur.com/Ix6074X.png">`;
@@ -170,6 +170,29 @@ export default {
 <style lang="scss" scoped>
 $description: rgba(0, 0, 0, 1) !important;
 
+.post-section {
+  border-bottom: 1px solid rgba($color: gray, $alpha: 0.2);
+  display: flex;
+  .user {
+    display: inline-block;
+    padding-left: 5px;
+    color: rgba($color: #000000, $alpha: 0.5);
+    font-size: 16px;
+    .userName {
+      &::after {
+        content: ("|");
+        padding: 0 5px;
+      }
+    }
+  }
+
+  h6 {
+    color: #000;
+
+    font-size: 18px;
+    font-weight: bold;
+  }
+}
 /deep/ .ellipsis {
   width: 100%;
   font-size: 14px;
@@ -183,7 +206,6 @@ $description: rgba(0, 0, 0, 1) !important;
     color: $description;
   }
 }
-
 /deep/ .previewImg {
   width: 100px;
   height: 100px;
@@ -192,16 +214,9 @@ $description: rgba(0, 0, 0, 1) !important;
     width: 100%;
   }
 }
-
 @media screen and (max-width: 996px) {
   .sidebar {
     display: none;
   }
-}
-
-#forumName {
-  color: wheat;
-  font-weight: 900;
-  font-size: 20px;
 }
 </style>
