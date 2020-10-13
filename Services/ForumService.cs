@@ -10,26 +10,26 @@ using XforumTest.DTO;
 using Newtonsoft.Json;
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
+using XforumTest.NewFolder;
+using System.Diagnostics;
 
 namespace XforumTest.Services
 {
     public class ForumService : IForumService
     {
-        //static MyDBContext db = new MyDBContext();
+        private readonly IRepository<Forums> _Forums;
+        private readonly IRepository<ForumMembers> _members;
 
-        private MyDBContext db;
-
-        public ForumService()
+        public ForumService(IRepository<Forums> Forums, IRepository<ForumMembers> members)
         {
-            db = new MyDBContext();
+            _Forums = Forums;
+            _members = members;
         }
         public void Create(ForumCreate create)
         {
     
             try
             {
-                GeneralRepository<Forums> forums = new GeneralRepository<Forums>(db);
-                GeneralRepository<ForumMembers> forummembers = new GeneralRepository<ForumMembers>(db);
                 var createforum = new Forums
                 {
                     ForumId = Guid.NewGuid(),
@@ -40,12 +40,12 @@ namespace XforumTest.Services
                     ForumName = create.ForumName,
                     State =true
                 };
-                forums.Create(createforum);
-                forums.SaveContext();
+                _Forums.Create(createforum);
+                _Forums.SaveContext();
             }
             catch (Exception ex)
             {
-                
+                Debug.WriteLine(ex.Message);
             }
         }
         /// <summary>
@@ -54,33 +54,29 @@ namespace XforumTest.Services
         /// <param name="id"></param>
         public void Delete(string id)
         {
-            GeneralRepository<Forums> forums = new GeneralRepository<Forums>(db);
-            GeneralRepository<ForumMembers> forummembers = new GeneralRepository<ForumMembers>(db);
-            var delete = forums.GetAll().FirstOrDefault(f => f.ForumId.ToString() == id);
+            var delete = _Forums.GetAll().FirstOrDefault(f => f.ForumId.ToString() == id);
             delete.State = false;
-            forums.Update(delete);
-            forums.SaveContext();
+            _Forums.Update(delete);
+            _Forums.SaveContext();
         }
         /// <summary>
         /// 取的單一看板資料
         /// </summary>
         /// <param name="forumid"></param>
         /// <returns></returns>
-        public IQueryable GetSingle(string forumid)
+        public ForumGetSingleDto GetSingle(string forumid)
         {
-            GeneralRepository<Forums> forums = new GeneralRepository<Forums>(db);
-            GeneralRepository<ForumMembers> forummembers = new GeneralRepository<ForumMembers>(db);
-            var forum = from f in forums.GetAll()
+            var forum = from f in _Forums.GetAll().AsEnumerable()
                         where f.ForumId == Guid.Parse(forumid)
-                        select new
+                        select new ForumGetSingleDto
                         {
-                            title = f.ForumName,
-                            date = f.CreatedDate,
-                            name = f.ModeratorId,
-                            content = f.Description,
-                            state = f.State
+                            ForumName = f.ForumName,
+                            Description = f.Description,
+                            ModeratorId = f.ModeratorId,                            
+                            CreatedDate = f.CreatedDate,
+                            State = f.State
                         };
-            return forum;
+            return forum.FirstOrDefault();
         }
         /// <summary>
         /// 編輯看板資料、回復軟刪除狀態
@@ -88,28 +84,24 @@ namespace XforumTest.Services
         /// <param name="json"></param>
         public void Edit(ForumCreate json)
         {
-            GeneralRepository<Forums> forums = new GeneralRepository<Forums>(db);
-            GeneralRepository<ForumMembers> forummembers = new GeneralRepository<ForumMembers>(db);
             //var json = JsonConvert.DeserializeObject<ForumCreate>(data);
-            var oldforum = forums.GetAll().FirstOrDefault(f => f.ModeratorId == json.ModeratorId);
+            var oldforum = _Forums.GetAll().FirstOrDefault(f => f.ModeratorId == json.ModeratorId);
             oldforum.Img = json.Img;
             oldforum.ModeratorId = json.ModeratorId;
             oldforum.Description = json.Description;
             oldforum.ForumName = json.ForumName;
             oldforum.State = json.State;
-                           
-            forums.Update(oldforum);
-            forums.SaveContext();
+
+            _Forums.Update(oldforum);
+            _Forums.SaveContext();
         }    
         /// <summary>
         /// 取的所有看板
         /// </summary>
         /// <returns></returns>
-        public IQueryable<ForumGetAllDTO> GetAll()
+        public IEnumerable<ForumGetAllDTO> GetAll()
         {
-            GeneralRepository<Forums> forums = new GeneralRepository<Forums>(db);
-            GeneralRepository<ForumMembers> forummembers = new GeneralRepository<ForumMembers>(db);
-            var getall = from fm in forums.GetAll()
+            var getall = from fm in _Forums.GetAll2()
                          where fm.State == true
                          select new ForumGetAllDTO
                          {

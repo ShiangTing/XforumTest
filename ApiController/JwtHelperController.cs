@@ -38,26 +38,6 @@ namespace XforumTest.ApiController
             return Ok(check);
         }
         /// <summary>
-        /// Get username(when authorized)
-        /// </summary>
-        /// <returns></returns>
-        [Authorize]
-        [HttpGet("username")]
-        public IActionResult GetUserName()
-        {
-            return Ok(User.Identity.Name);
-        }
-        /// <summary>
-        /// Get userID(when authorized)
-        /// </summary>
-        /// <returns></returns>
-        [Authorize]
-        [HttpGet("userid")]
-        public string GetUserId()
-        {
-            return _jwt.GetUserId(User.Identity.Name);
-        }
-        /// <summary>
         /// Get all claims in Jwt Token
         /// </summary>
         /// <returns></returns>
@@ -91,7 +71,7 @@ namespace XforumTest.ApiController
         /// Get all members, convert to JSON(when authorized)
         /// </summary>
         /// <returns></returns>
-        [Authorize(Roles = "肥宅魔法師")]
+        [Authorize(Roles = "版主")]
         [HttpGet("getmembers")]
         public IActionResult GetMembers()
         {
@@ -101,7 +81,7 @@ namespace XforumTest.ApiController
         /// Get all posts, convert to JSON(when authorized)
         /// </summary>
         /// <returns></returns>
-        [Authorize(Roles = "我怕練太壯")]
+        [Authorize(Roles = "管理者")]
         [HttpGet("getposts")]
         public IActionResult GetPosts()
         {

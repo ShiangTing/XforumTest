@@ -13,7 +13,7 @@ namespace XforumTest.Interface
         void Delete(T entity);
 
         IQueryable<T> GetAll();
-
+        IEnumerable<T> GetAll2();
         T GetFirst(Expression<Func<T, bool>> entity);
         void SaveContext();
 

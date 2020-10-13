@@ -3,10 +3,15 @@
     <b-list-group-item
       v-for="(thread, index) in threads"
       :key="index"
+      :forumId="thread.forumId"
       @click="goToThread(thread.routeName)"
     >
       <!-- <font-awesome-icon :icon="thread.iconName" size="lg" /> -->
-      <span class="text-primary" style="cursor: pointer">
+      <span
+        class="text-primary"
+        style="cursor: pointer"
+        :forumid="thread.forumid"
+      >
         {{ thread.forumName }}</span
       >
     </b-list-group-item>
@@ -19,25 +24,28 @@ export default {
   data() {
     return {
       threads: [],
+      // dataId:"",
     };
   },
   beforeRouteUpdate() {},
   methods: {
-    showAlert(msg) {
-      console.log(msg);
-    },
     goToThread(name) {
       const vm = this;
+      // vm.dataId=id;
+      // vm.$router.beforeEach((to, from, next) => {
+      //     to.meta.forumId = id;
+      //     next();
+      // });
+      // this.$bus.$emit("threadId", id);
+
       vm.$router.push(`/Thread/${name}`);
     },
 
-    getSideBar() {
+    async getSideBar() {
       const url = process.env.VUE_APP_API + "/api/Forum/GetAll";
-      this.$axios
+      await this.$axios
         .get(url)
         .then((response) => {
-          console.log(response.data);
-          console.log("成功");
           response.data.forEach((item) => {
             this.threads.push(item);
           });

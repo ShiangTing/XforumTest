@@ -24,6 +24,7 @@ namespace XforumTest.Context
         public virtual DbSet<ForumMembers> ForumMembers { get; set; }
         public virtual DbSet<ForumRoles> ForumRoles { get; set; }
         public virtual DbSet<Forums> Forums { get; set; }
+        public virtual DbSet<MemberTitle> MemberTitle { get; set; }
         public virtual DbSet<Posts> Posts { get; set; }
         public virtual DbSet<Product> Product { get; set; }
         public virtual DbSet<ProductImgs> ProductImgs { get; set; }
@@ -31,15 +32,6 @@ namespace XforumTest.Context
         public virtual DbSet<ReposiveMessages> ReposiveMessages { get; set; }
         public virtual DbSet<Tags> Tags { get; set; }
         public virtual DbSet<Titles> Titles { get; set; }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Server=azurewebtest.database.windows.net,1433;Database=MyDB;User=azurewebtest;Password=yphrT8Cn;");
-            }
-        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -183,6 +175,11 @@ namespace XforumTest.Context
                     .WithMany(p => p.Forums)
                     .HasForeignKey(d => d.ModeratorId)
                     .HasConstraintName("FK_Forums_ForumMembers");
+            });
+
+            modelBuilder.Entity<MemberTitle>(entity =>
+            {
+                entity.HasNoKey();
             });
 
             modelBuilder.Entity<Posts>(entity =>

@@ -2,6 +2,11 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 Vue.use(VueRouter);
 
+const originalPush = VueRouter.prototype.push;
+VueRouter.prototype.push = function push(location) {
+  return originalPush.call(this, location).catch(err => err)
+}
+
 export default new VueRouter({
   mode: 'hash',
   routes: [
@@ -27,7 +32,7 @@ export default new VueRouter({
       component: () => import('./views/Post.vue'),
       name: 'post',
       meta: {
-        isAuthorize: true ,
+        isAuthorize: true,
         breadcrumb: [
           {
             name: '首頁',
@@ -62,10 +67,12 @@ export default new VueRouter({
           path: '/Thread/:routeName',
           component: () => import('./views/Thread.vue'),
           meta: {
+            forumId: "",
             breadcrumb: [
               {
                 name: '首頁',
                 link: '/',
+
               },
               {
                 // name: `${VueRouter.$route.name}`,
@@ -73,33 +80,8 @@ export default new VueRouter({
               },
             ],
           },
-          // meta: {
-          //   breadcrumb: [
-          //     {
-          //       name: "123",
-          //     },
-          //     // {
-          //     //   name: "關於我",
-          //     // },
-          //   ],
-          // },
         },
       ],
     },
   ],
 });
-
-// {
-//   path: "/courses",
-//   component: Courses,
-//   children: [
-//     {
-//       path: "",
-//       component: CourseList,
-//     },
-//     {
-//       path: ":id",
-//       component: CourseDetail,
-//     },
-//   ],
-// },

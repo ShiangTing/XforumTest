@@ -8,10 +8,10 @@ namespace XforumTest.Interface
 {
     public interface IPostService
     {
-        void Create(PostDto po);
-        IQueryable<PostListDto> GetAll();
-        IQueryable GetSingle(string id);
-        IQueryable<PostListDto> GetForum(string id);
+        void Create(PostCreateDto po);
+        IEnumerable<PostListDto> GetAll();
+        PostListDto GetSingle(string id);
+        IEnumerable<PostListDto> GetForum(string id);
         void Delete(string id);
         void Edit(PostListDto json);
       

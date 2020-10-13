@@ -16,9 +16,11 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using XforumTest.Context;
+using XforumTest.DataTable;
 using XforumTest.DTO;
 using XforumTest.Helpers;
 using XforumTest.Interface;
+using XforumTest.NewFolder;
 using XforumTest.Repository;
 using XforumTest.Services;
 
@@ -39,7 +41,7 @@ namespace XforumTest
             services.AddControllersWithViews();
             services.AddCors(options =>
             {
-                
+
                 options.AddPolicy("CorsPolicy", policy =>
                 {
                     policy.WithOrigins("http://localhost:8080")
@@ -49,12 +51,20 @@ namespace XforumTest
                 });
             });
 
-            services.AddDbContext<MyDBContext>(options =>
-                         options.UseSqlServer("Server=azurewebtest.database.windows.net,1433;Database=MyDB;User=azurewebtest;Password=yphrT8Cn;"));
-            services.AddMvc();
             services.AddControllers();
-
+            //  services.AddControllers().AddNewtonsoftJson();
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
+            //Connecting String
+            services.AddDbContext<MyDBContext>(opt => opt.UseSqlServer(Configuration["MyDBContext"]));
+
+            services.AddTransient<IRepository<ForumMembers>, GeneralRepository<ForumMembers>>();
+            services.AddTransient<IRepository<Posts>, GeneralRepository<Posts>>();
+            services.AddTransient<IRepository<ForumRoles>, GeneralRepository<ForumRoles>>();
+            services.AddTransient<IRepository<Forums>, GeneralRepository<Forums>>();
+            services.AddTransient<IRepository<Titles>, GeneralRepository<Titles>>();
+            services.AddTransient<IRepository<ReposiveMessages>, GeneralRepository<ReposiveMessages>>();
+            services.AddTransient<IRepository<Titles>, GeneralRepository<Titles>>();
+            services.AddTransient<IRepository<MemberTitle>,GeneralRepository<MemberTitle>>();
 
 
             services.AddTransient<IRepository<MessageLikeDto>, GeneralRepository<MessageLikeDto>>();
@@ -63,9 +73,9 @@ namespace XforumTest
             services.AddTransient<IMessageService, RMessageService>();
             services.AddTransient<ILikeService<PostLikeDto>, LikeService>();
             services.AddTransient<ILikeService<MessageLikeDto>, LikeService>();
-            services.AddControllers().AddNewtonsoftJson();
             services.AddTransient<IForumService, ForumService>();
             services.AddTransient<IPostService, PostService>();
+            services.AddControllers().AddNewtonsoftJson();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
             {
@@ -152,7 +162,7 @@ namespace XforumTest
                .AllowAnyHeader());
             app.UseAuthentication();
             app.UseAuthorization();
-         
+
             app.UseMiddleware<JwtMiddleware>();
             app.UseEndpoints(endpoints =>
             {

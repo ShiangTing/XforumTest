@@ -18,17 +18,16 @@ namespace XforumTest.ApiController
     public class RMessageController : ControllerBase
     {
         //private ApiResult<RMessageDTO> results;
-        
-        private readonly IMessageService _messageService;
-        private readonly ILikeService<MessageLikeDto> _likeService;
 
-        public RMessageController(IMessageService messageService,ILikeService<MessageLikeDto> likeService)
+        private readonly IMessageService _messageService;
+        private readonly ILikeService<MessageLikeDto> _messagelike;
+
+        public RMessageController(IMessageService messageService, ILikeService<MessageLikeDto> messagelike)
         {
             _messageService = messageService;
-            _likeService = likeService;
+            _messagelike = messagelike;
         }
-        
-        
+
         /// <summary>
         /// 留言
         /// </summary>
@@ -40,14 +39,13 @@ namespace XforumTest.ApiController
             var result = new ApiResult<RMessageDTO>();
             if (ModelState.IsValid)
             {
-               // var service = new RMessageService();
+                // var service = new RMessageService();
                 _messageService.Create(dto);
 
-                return  result;
+                return result;
             }
             else
             {
-      
                 return new ApiResult<RMessageDTO>("dto");
             }
         }
@@ -66,15 +64,15 @@ namespace XforumTest.ApiController
 
             if (postId != null)
             {
-              //  var service = new RMessageService();
+                //  var service = new RMessageService();
                 result.Data = await _messageService.GetAllbyPostId(postId);
                 return result;
 
             }
             else
             {
-   
-                return new ApiResult<List<RMessageDTO>>("postId"); 
+
+                return new ApiResult<List<RMessageDTO>>("postId");
             }
         }
 
@@ -96,7 +94,6 @@ namespace XforumTest.ApiController
             }
             else
             {
-             
                 return new ApiResult<RMessageDTO>("Id");
             }
 
@@ -116,7 +113,8 @@ namespace XforumTest.ApiController
             if (ModelState.IsValid)
             {
                 //var service = new LikeService();
-                _likeService.PostLikeAndDisLike(Dto);
+                //service.PostLikeAndDisLike(Dto);
+                _messagelike.PostLikeAndDisLike(Dto);
                 return result;
             }
             else

@@ -13,16 +13,16 @@ namespace XforumTest.Models
         //public string LastName { get; set; }
         public string UserEmail { get; set; }
         public string Token { get; set; }
-        public string TitleId { get; set; }
-        public string TitleName { get; set; }
+        public string RoleId { get; set; }
+        public string ForumRoles { get; set; }
         public AuthenticateResponse(User user, string token)
         {
             //FirstName = user.FirstName;
             //LastName = user.LastName;
             Id = user.Id;
             UserEmail = user.Email;
-            TitleId = user.TitleId;
-            TitleName = user.TitleName;
+            RoleId = user.RoleId;
+            ForumRoles = user.ForumRoles;
             Token = token;
         }
     }

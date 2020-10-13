@@ -15,20 +15,18 @@ namespace XforumTest.ApiController
     [ApiController]
     public class PostController : ControllerBase
     {
-        //private static PostService post = new PostService();
         private IPostService _postservice;
         public PostController(IPostService postservice)
         {
             _postservice = postservice;
         }
 
-
         [HttpPost]
-        public IActionResult Create(PostDto po)
+        public IActionResult Create(PostCreateDto createpost)
         {
             if (ModelState.IsValid)
             {
-                _postservice.Create(po);
+                _postservice.Create(createpost);
                 return Ok();
             }
             return Ok();
@@ -43,10 +41,11 @@ namespace XforumTest.ApiController
 
         //編輯 留言資訊
         [HttpGet]
-        public IQueryable GetSingle(string id)
+        public PostListDto GetSingle(string id)
         {
             return _postservice.GetSingle(id);
         }
+
         [HttpPost]
         public IActionResult Edit(PostListDto json)
         {
@@ -57,25 +56,28 @@ namespace XforumTest.ApiController
             }
             return Ok();
         }
-    
-        
+
         /// <summary>
         /// 取得所有的留言資訊
         /// </summary>
-
         [HttpGet]
-        public IQueryable<PostListDto> GetAllPosts()
+        public IEnumerable<PostListDto> GetAllPosts()
         {        
-                return  _postservice.GetAll();
+
+            return  _postservice.GetAll();
         }
+
         /// <summary>
         /// 取個單一看板PO文
         /// </summary>
         /// <returns></returns>
-        [HttpGet]
-        public IQueryable<PostListDto> GetForum(string forumid)
+
+        [HttpGet("{id}")]
+        public IEnumerable<PostListDto> GetForum(string id)
+
+
         {
-            return _postservice.GetForum(forumid);
+            return _postservice.GetForum(id);
         }
     }
 }

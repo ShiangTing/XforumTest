@@ -6,28 +6,25 @@ using XforumTest.DataTable;
 using XforumTest.DTO;
 using XforumTest.Entities;
 using XforumTest.Models;
+using XforumTest.Services;
 
 namespace XforumTest.Interface
 {
     public interface IUserService
     {
-        //AuthenticateResponse Authenticate(AuthenticateRequest model);
-        //IEnumerable<ForumMembers> GetAll();
-        //ForumMembers GetById(Guid id);
-
         //註冊
         void Create(CreateMemberDto dto);
-
-
         //拿到單一會員資料
-        MemberDto GetSingle(Guid id);
-
+        MemberDto GetSingleMember(string userEmail);
 
         //編輯會員資料
-        void Edit(MemberDto dto);
+        void Edit(MemberDto dto, string userEmail);
 
-        string VerifyEmailAndName(string temp);
-
-        //選擇稱號
+        //註冊驗證Email, 暱稱
+        ApiResult<CreateMemberDto> VerifyEmailAndNameWhenRegister(string email, string name);
+        //編輯會員資料驗證Email, 暱稱(排除自己的資料)
+        ApiResult<MemberDto> VerifyEmailAndNameWhenEdit(string email, string name, string userEmail);
+        //獲得登入者UserId
+        string GetUserId(string userEmail);
     }
 }

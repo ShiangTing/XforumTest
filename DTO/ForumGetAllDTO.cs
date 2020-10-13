@@ -29,4 +29,14 @@ namespace XforumTest.DTO
         new public string ForumName { get; set; }
         public bool? State { get; set; }
     }
+
+    public class ForumGetSingleDto
+    {
+        public string ForumName { get; set; }
+        public string Description { get; set; }
+        public Guid? ModeratorId { get; set; }
+        public DateTime? CreatedDate { get; set; }
+        public bool? State { get; set; }
+
+    }
 }
