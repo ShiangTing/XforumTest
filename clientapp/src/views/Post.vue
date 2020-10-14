@@ -145,7 +145,7 @@ export default {
       let auth = vm.$store.state.tokenModule;
       let isAuth = auth.isAuthorize;
       let token = auth.token;
-      const url = process.env.VUE_APP_API + "/api/JwtHelper/userid";
+      const url = process.env.VUE_APP_API + "/api/Users/GetUserId";
       if (isAuth) {
         vm.isLogin = true;
         vm.$axios({
