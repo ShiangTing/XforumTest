@@ -8,8 +8,9 @@
             <div class="card-body">
               <div class="row">
                 <div class="col-6">
-                  <h5 class="card-title">標題</h5>
-                  <h6 class="card-subtitle mb-2 text-muted">作者: 132</h6>
+                  <h3 class="card-title">{{article.title}}</h3>
+                  <h6 class="card-subtitle mb-2 text-muted">作者: {{article.author}}</h6>
+                  <p>日期: {{article.createDate}}</p>
                 </div>
                 <div class="col-6 d-flex justify-content-end align-items-center">
                   <a class="title-btn text-secondary border rounded-circle">
@@ -28,44 +29,36 @@
               </div>
               <hr>
               <div class="article-content">
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Vel, expedita unde. Minima
-                  perspiciatis ut impedit harum illum accusantium tenetur iste temporibus quisquam earum id incidunt
-                  dignissimos rerum modi, unde eveniet.</p>
-                <img src="https://fakeimg.pl/300x300/123">
+                <div v-html="article.description"></div>
               </div>
             </div>
           </div>
           <div class="reply-group border p-3">
-            <div class="reply-item">
+            <div class="reply-item d-flex justify-content-between" v-for="message in messageList"
+              :key="message.messageId">
               <div class="d-flex">
                 <a class="user-img">
                   <font-awesome-icon icon="user" size="lg" />
                 </a>
                 <div class="reply-content">
-                  <a class="replay-user">Mike</a>
-                  <p>Lorem ipsum dolor sit amet</p>
+                  <a class="replay-user mr-2 d-inline-block">{{message.userName}}</a>
+                  <span>{{message.createdDate}}</span>
+                  <p>{{message.context}}</p>
                 </div>
               </div>
-            </div>
-            <div class="reply-item">
               <div class="d-flex">
+                <p class="mr-2">Like : {{message.disLikeNumber === null ? 0 : message.disLikeNumber}}</p>
+                <p>Unlike : {{message.disLikeNumber === null ? 0 : message.disLikeNumber }}</p>
+              </div>
+            </div>
+            <div class="p-3">
+              <div class="input-group">
                 <a class="user-img">
                   <font-awesome-icon icon="user" size="lg" />
                 </a>
-                <div class="reply-content">
-                  <a class="replay-user">Mike</a>
-                  <p>Lorem ipsum dolor sit amet</p>
-                </div>
+                <textarea class="form-control h-100" placeholder="留個言吧~"></textarea>
+                <button class="btn btn-dark h-100">送出</button>
               </div>
-            </div>
-          </div>
-          <div class="replay p-3 border">
-            <div class="input-group">
-              <a class="user-img">
-                <font-awesome-icon icon="user" size="lg" />
-              </a>
-              <textarea class="form-control h-100" placeholder="留個言吧~"></textarea>
-              <button class="btn btn-dark h-100">送出</button>
             </div>
           </div>
         </div>
@@ -80,9 +73,48 @@ export default {
   components: { Navbar },
   data () {
     return {
-
+      article: {
+        title: "",
+        author: "",
+        createDate: "",
+        like: 0,
+        unlike: 0,
+        edit: false,
+        delete: false,
+        description: ""
+      },
+      messageList: [],
     };
   },
+  methods: {
+    getArticle () {
+      let vm = this;
+      let url = process.env.VUE_APP_API + "/api/Post/getSingle/" + vm.$route.params.id;
+      vm.$axios.get(url).then(res => {
+        vm.article = {
+          title: res.data.title,
+          author: res.data.userName,
+          createDate: res.data.createdDate,
+          description: res.data.description,
+          like: 0,
+          unlike: 0,
+        }
+      })
+    },
+    getMessages () {
+      let vm = this;
+      let url = process.env.VUE_APP_API + "/api/RMessage/GetAllMessages/" + "B2160343-1272-45AE-980D-B1E3BBDCB969";
+      vm.$axios.get(url).then(res => {
+        if (res.data.issuccessful) {
+          vm.messageList = res.data.data;
+        }
+      })
+    },
+  },
+  created () {
+    this.getArticle()
+    this.getMessages()
+  }
 }
 </script>
 <style lang="scss" scoped>
@@ -92,6 +124,9 @@ export default {
   }
   p {
     margin: 0;
+  }
+  /deep/ .article-content img {
+    width: 100% ;
   }
   a.title-btn {
     display: flex;
@@ -116,6 +151,9 @@ export default {
       outline: $border-color;
       box-shadow: 0px 0px transparent;
     }
+  }
+  .reply-group {
+    background-color: #f5f5f5;
   }
   .reply-item {
     padding: 10px;

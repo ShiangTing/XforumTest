@@ -88,7 +88,7 @@ export default new VueRouter({
       ],
     },
     {
-      path: '/article',
+      path: '/article/:id',
       component: () => import('./views/Article.vue')
     }
   ],

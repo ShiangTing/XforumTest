@@ -90,6 +90,7 @@ export default {
             vm.$store.dispatch("setAuth", { token, isAuthorize });
             vm.$router.push("/home");
           }
+          console.log(res);
         })
         .catch((err) => {
           vm.error.isError = true;
