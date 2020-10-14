@@ -84,7 +84,7 @@ export default new VueRouter({
     },
     {
       path: '/article',
-      component: () => import('./views/PostList.vue')
+      component: () => import('./views/Article.vue')
     }
   ],
 });

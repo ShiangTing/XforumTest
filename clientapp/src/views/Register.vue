@@ -6,49 +6,64 @@
         <div class="card p-lg-5 p-3 w-100" style="max-width: 35rem;">
           <div class="card-body">
             <h1 class="login-title">註冊</h1>
-            <form>
-              <div class="form-group">
-                <label for="account">暱稱</label>
-                <input type="text" class="form-control" id="account" placeholder="輸入暱稱" v-model="registerData.username">
-              </div>
-              <div class="form-group">
-                <label for="email">帳號</label>
-                <input type="email" class="form-control" id="email" placeholder="輸入信箱" v-model="registerData.email">
-              </div>
-              <div class="form-group">
-                <label for="password">密碼</label>
-                <input type="password" class="form-control" id="password" placeholder="輸入密碼"
-                  v-model="registerData.password">
-              </div>
-              <div class="form-group">
-                <label for="confirmPassword">確認密碼</label>
-                <input type="password" class="form-control" id="password" placeholder="確認密碼"
-                  v-model="registerData.confirmPassword">
-              </div>
-              <div class="form-group">
-                <label>性別</label>
-                <div class="d-flex justify-content-center">
-                  <div class="form-check mr-5">
-                    <input class="form-check-input" type="radio" name="gender" id="male" value="male"
-                      v-model="registerData.gender">
-                    <label class="form-check-label" for="male">
-                      男性
-                    </label>
-                  </div>
-                  <div class="form-check">
-                    <input class="form-check-input" type="radio" name="gender" id="female" value="female"
-                      v-model="registerData.gender">
-                    <label class="form-check-label" for="female">
-                      女性
-                    </label>
-                  </div>
+            <ValidationObserver v-slot="{ handleSubmit }">
+              <form>
+                <div class="form-group">
+                  <label for="account">暱稱</label>
+                  <validation-provider rules='required' v-slot='{errors}'>
+                    <input class="form-control" type="text" v-model='registerData.username'>
+                    <span class="text-danger">{{errors[0]}}</span>
+                  </validation-provider>
                 </div>
-              </div>
-              <input type="button" class="w-100 btn btn-primary" v-on:click="register" value="註冊">
-              <div class="alert mt-3" :class="message.isError ? 'alert-danger' : 'alert-success'" role="alert"
-                v-if="message.display" v-html="message.content">
-              </div>
-            </form>
+                <div class="form-group">
+                  <label for="email">帳號</label>
+                  <validation-provider name="信箱" rules='required|email' v-slot='{errors}'>
+                    <input class="form-control" type="text" v-model='registerData.email'>
+                    <span class="text-danger">{{errors[0]}}</span>
+                  </validation-provider>
+                </div>
+                <div class="form-group">
+                  <label for="password">密碼</label>
+                  <validation-provider name="confirm" rules='required|min:6' v-slot='{errors}'>
+                    <input class="form-control" type="password" v-model='registerData.password'>
+                    <span class="text-danger">{{errors[0]}}</span>
+                  </validation-provider>
+                </div>
+                <div class="form-group">
+                  <label for="confirmPassword">確認密碼</label>
+                  <validation-provider rules='required|password:@confirm' v-slot='{errors}'>
+                    <input class="form-control" type="password" v-model='registerData.confirmPassword'>
+                    <span class="text-danger">{{errors[0]}}</span>
+                  </validation-provider>
+                </div>
+                <div class="form-group">
+                  <label>性別</label>
+                  <validation-provider rules='required' v-slot='{errors}'>
+                    <div class="d-flex">
+                      <div class="form-check mr-5">
+                        <input class="form-check-input" type="radio" name="gender" id="male" value="male"
+                          v-model='registerData.gender'>
+                        <label class="form-check-label" for="male">
+                          男性
+                        </label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="gender" id="female" value="female"
+                          v-model='registerData.gender'>
+                        <label class="form-check-label" for="female">
+                          女性
+                        </label>
+                      </div>
+                    </div>
+                    <div class="text-danger">{{errors[0]}}</div>
+                  </validation-provider>
+                </div>
+                <button type="submit" class="w-100 btn btn-primary" @click.prevent="handleSubmit(register)">註冊</button>
+                <div class="alert mt-3" :class="message.isError ? 'alert-danger' : 'alert-success'" role="alert"
+                  v-if="message.display" v-html="message.content">
+                </div>
+              </form>
+            </ValidationObserver>
           </div>
         </div>
       </div>

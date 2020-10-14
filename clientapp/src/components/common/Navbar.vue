@@ -64,7 +64,7 @@ export default {
     let auth = vm.$store.state.tokenModule;
     let isAuth = auth.isAuthorize;
     let token = auth.token;
-    let url = process.env.VUE_APP_API + "/api/JwtHelper/username";
+    let url = process.env.VUE_APP_API + "/api/Users/GetSingleMember";
     if (isAuth) {
       vm.isLogin = true;
         vm.$axios({
@@ -72,7 +72,8 @@ export default {
           method: "GET",
           headers: { "Authorization": `Bearer ${token}` }
         }).then(res => {
-          vm.name = res.data
+          console.log(res.data.data.name);
+          vm.name = res.data.data.name
         }).catch(err => {
           console.log(err);
           window.localStorage.clear();
