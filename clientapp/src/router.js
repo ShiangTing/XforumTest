@@ -48,7 +48,6 @@ export default new VueRouter({
     {
       path: '/',
       component: () => import('./views/Layout.vue'),
-
       children: [
         {
           path: '',
@@ -83,5 +82,9 @@ export default new VueRouter({
         },
       ],
     },
+    {
+      path: '/article',
+      component: () => import('./views/Article.vue')
+    }
   ],
 });
