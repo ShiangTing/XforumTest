@@ -153,12 +153,13 @@ namespace XforumTest.Services
         public ApiResult<CreateMemberDto> VerifyEmailAndNameWhenRegister(string email, string name)
         {
             var sourcre = _members.GetAll().Where(x => x.Email == email || x.Name == name);
-            if (sourcre.Any(x => x.Email == email && x.Name == name))
-            {
-                return new ApiResult<CreateMemberDto>($"Email:{email} 及暱稱:{name} 皆已被使用,請更換!");
-            }
+
             if (sourcre.Any(x => x.Email == email))
             {
+                if (sourcre.Any(x => x.Name == name))
+                {
+                    return new ApiResult<CreateMemberDto>($"Email:{email} 及暱稱:{name} 皆已被使用,請更換!"); //兩者皆已存在
+                }
                 return new ApiResult<CreateMemberDto>($"Email:{email} 已存在，請更換!"); //此Email已存在，請更換Email
             }
             if (sourcre.Any(x => x.Name == name))
@@ -179,14 +180,15 @@ namespace XforumTest.Services
         /// <returns></returns>
         public ApiResult<MemberDto> VerifyEmailAndNameWhenEdit(string email, string name, string userEmail)
         {
+            //排除自己資料
             var source = _members.GetAll().Where(x => x.Email != userEmail && (x.Email == email || x.Name == name));
 
-            if (source.Any(x => x.Email == email && x.Name == name))
-            {
-                return new ApiResult<MemberDto>($"Email:{email} 及暱稱:{name} 皆已被使用,請更換!");
-            }
             if (source.Any(x => x.Email == email))
             {
+                if(source.Any(x => x.Name == name))
+                {
+                    return new ApiResult<MemberDto>($"Email:{email} 及暱稱:{name} 皆已被使用,請更換!"); //兩者皆已存在
+                }
                 return new ApiResult<MemberDto>($"Email:{email} 已存在，請更換!"); //此Email已存在，請更換Email
             }
             if (source.Any(x => x.Name == name))

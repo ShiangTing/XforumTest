@@ -15,6 +15,7 @@ namespace XforumTest.Models
         public string Token { get; set; }
         public string RoleId { get; set; }
         public string ForumRoles { get; set; }
+        public string ErrorMsg { get; set; }
         public AuthenticateResponse(User user, string token)
         {
             //FirstName = user.FirstName;
@@ -23,7 +24,12 @@ namespace XforumTest.Models
             UserEmail = user.Email;
             RoleId = user.RoleId;
             ForumRoles = user.ForumRoles;
+            ErrorMsg = "no error!";
             Token = token;
+        }
+        public AuthenticateResponse(string error)
+        {
+            ErrorMsg = $"{error}";
         }
     }
 }
