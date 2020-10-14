@@ -16,7 +16,7 @@ namespace XforumTest.ApiController
     public class ForumController : ControllerBase
     {
         //private static ForumService forumservice = new ForumService();
-        private IForumService _forumservice;
+        private readonly IForumService _forumservice;
         public ForumController(IForumService Service) 
         {
             _forumservice = Service;
@@ -42,7 +42,7 @@ namespace XforumTest.ApiController
         /// Edit getsingle取得各版資料，edit post 以編輯的資料回DB
         /// </summary>
         /// <returns></returns>
-        [HttpGet]
+        [HttpGet("{id}")]
         public ForumGetSingleDto GetSingle(string id)
         {
             var edit = _forumservice.GetSingle(id);

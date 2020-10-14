@@ -64,6 +64,7 @@ namespace XforumTest
             services.AddTransient<IRepository<Forums>, GeneralRepository<Forums>>();
             services.AddTransient<IRepository<Titles>, GeneralRepository<Titles>>();
             services.AddTransient<IRepository<ReposiveMessages>, GeneralRepository<ReposiveMessages>>();
+            services.AddTransient<IRepository<MemberTitle>, GeneralRepository<MemberTitle>>();
 
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IJwtHelperService, JwtHelperService>();

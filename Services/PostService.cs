@@ -26,8 +26,7 @@ namespace XforumTest.Services
             _forums = forums;
         }
         public void Create(PostCreateDto model)
-        {
-            
+        {           
                 try
                 {
                     // 時區要再調整，先測試用
@@ -109,6 +108,7 @@ namespace XforumTest.Services
                         on p.UserId equals u.UserId
                         join f in _forums.GetAll()
                         on p.ForumId equals f.ForumId
+                        orderby p.CreatedDate
                         select new PostListDto
                         {
                             ForumName = f.ForumName,
@@ -123,14 +123,15 @@ namespace XforumTest.Services
             return pList.ToList();
         }
 
-        public IEnumerable<PostListDto> GetForum(string forumid)
+        public IEnumerable<PostListDto> GetForum(string routename)
         {
             var singleforum = from p in _posts.GetAll()
                               join u in _members.GetAll()
                               on p.UserId equals u.UserId
                               join f in _forums.GetAll()
                               on p.ForumId equals f.ForumId
-                              where p.ForumId.ToString() == forumid
+                              where f.RouteName == routename
+                              orderby p.CreatedDate
                               select new PostListDto
                               {
                                   ForumName = f.ForumName,

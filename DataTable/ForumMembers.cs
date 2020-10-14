@@ -8,6 +8,7 @@ namespace XforumTest.DataTable
         public ForumMembers()
         {
             Forums = new HashSet<Forums>();
+            MemberTitle = new HashSet<MemberTitle>();
             Posts = new HashSet<Posts>();
         }
 
@@ -27,6 +28,7 @@ namespace XforumTest.DataTable
         public virtual ForumRoles Role { get; set; }
         public virtual Titles Title { get; set; }
         public virtual ICollection<Forums> Forums { get; set; }
+        public virtual ICollection<MemberTitle> MemberTitle { get; set; }
         public virtual ICollection<Posts> Posts { get; set; }
     }
 }

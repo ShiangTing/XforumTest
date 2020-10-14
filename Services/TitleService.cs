@@ -50,8 +50,9 @@ namespace XforumTest.Services
             throw new NotImplementedException();
         }
 
-        public void EditTitle()
+        public void EditTitle(string titleid)
         {
+            var title = _titles.GetAll().FirstOrDefault(t => t.TitleId.ToString() == titleid);
             throw new NotImplementedException();
         }
 
@@ -64,9 +65,34 @@ namespace XforumTest.Services
         {
             throw new NotImplementedException();
         }
-        public void BuyTitle(string titleid)
+        /// <summary>
+        /// 購買稱號系統
+        /// </summary>
+        /// <param name="titleid"></param>
+        /// <param name="userid"></param>
+        /// <returns></returns>
+        public string BuyTitle(string userid, string titleid)
         {
-            throw new NotImplementedException();
+            var user = _users.GetAll().FirstOrDefault(u => u.UserId.ToString() == userid);
+            var price = _titles.GetAll().FirstOrDefault(t => t.TitleId.ToString() == titleid).Price;
+            if (user.Points > price)
+            {
+                user.Points = user.Points - price;
+                _users.Update(user);
+                _users.SaveContext();
+
+                var newtitle = new MemberTitle
+                {
+                    UserId = Guid.Parse(userid),
+                    HasTitleId = Guid.Parse(titleid)
+                };
+
+                _usertitle.Create(newtitle);
+                _usertitle.SaveContext();
+                return "稱號購買完成";
+            }
+            return "點數不足，請加把勁";
+
         }
         public void ChangeTitle()
         {

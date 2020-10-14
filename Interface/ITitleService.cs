@@ -6,14 +6,14 @@ using XforumTest.DTO;
 
 namespace XforumTest.Interface
 {
-    interface ITitleService
+    public interface ITitleService
     {
         void CreateTitile(TitleCreateDto model);
-        void EditTitle();
+        void EditTitle(string titleid);
         void DeleteTitile();
         void GetAllTitles();
         void GetHasTitles();
-        void BuyTitle(string titleid);
+        string BuyTitle(string titleid, string userid);
         void ChangeTitle();
     }
 }
