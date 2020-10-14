@@ -108,6 +108,7 @@ namespace XforumTest.Services
                         on p.UserId equals u.UserId
                         join f in _forums.GetAll2()
                         on p.ForumId equals f.ForumId
+                        orderby p.CreatedDate
                         select new PostListDto
                         {
                             ForumName = f.ForumName,
@@ -122,14 +123,15 @@ namespace XforumTest.Services
             return pList;
         }
 
-        public IEnumerable<PostListDto> GetForum(string forumid)
+        public IEnumerable<PostListDto> GetForum(string routename)
         {
             var singleforum = from p in _posts.GetAll()
                               join u in _members.GetAll()
                               on p.UserId equals u.UserId
                               join f in _forums.GetAll()
                               on p.ForumId equals f.ForumId
-                              where f.RouteName == forumid
+                              where f.RouteName == routename
+                              orderby p.CreatedDate
                               select new PostListDto
                               {
                                   ForumName = f.ForumName,

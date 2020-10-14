@@ -179,7 +179,15 @@ namespace XforumTest.Context
 
             modelBuilder.Entity<MemberTitle>(entity =>
             {
-                entity.HasNoKey();
+                entity.HasOne(d => d.HasTitle)
+                    .WithMany(p => p.MemberTitle)
+                    .HasForeignKey(d => d.HasTitleId)
+                    .HasConstraintName("FK_MemberTitle_Titles");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.MemberTitle)
+                    .HasForeignKey(d => d.UserId)
+                    .HasConstraintName("FK_MemberTitle_ForumMembers");
             });
 
             modelBuilder.Entity<Posts>(entity =>

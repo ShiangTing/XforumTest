@@ -15,7 +15,7 @@ namespace XforumTest.ApiController
     [ApiController]
     public class PostController : ControllerBase
     {
-        private IPostService _postservice;
+        private readonly IPostService _postservice;
         public PostController(IPostService postservice)
         {
             _postservice = postservice;
@@ -40,7 +40,7 @@ namespace XforumTest.ApiController
         }
 
         //編輯 留言資訊
-        [HttpGet]
+        [HttpGet("{id}")]
         public PostListDto GetSingle(string id)
         {
             return _postservice.GetSingle(id);
@@ -71,13 +71,10 @@ namespace XforumTest.ApiController
         /// 取個單一看板PO文
         /// </summary>
         /// <returns></returns>
-
-        [HttpGet("{id}")]
-        public IEnumerable<PostListDto> GetForum(string id)
-
-
+        [HttpGet("{route}")]
+        public IEnumerable<PostListDto> GetForum(string route)
         {
-            return _postservice.GetForum(id);
+            return _postservice.GetForum(route);
         }
     }
 }
