@@ -8,6 +8,7 @@ namespace XforumTest.Models
 {
     public class AuthenticateResponse
     {
+        public bool Issuccessful { get; set; }
         public int Id { get; set; }
         //public string FirstName { get; set; }
         //public string LastName { get; set; }
@@ -20,6 +21,7 @@ namespace XforumTest.Models
         {
             //FirstName = user.FirstName;
             //LastName = user.LastName;
+            Issuccessful = true;
             Id = user.Id;
             UserEmail = user.Email;
             RoleId = user.RoleId;
@@ -29,6 +31,7 @@ namespace XforumTest.Models
         }
         public AuthenticateResponse(string error)
         {
+            Issuccessful = false;
             ErrorMsg = $"{error}";
         }
     }
