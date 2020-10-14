@@ -18,5 +18,7 @@ namespace XforumTest.DTO
         public DateTime? CreatedDate { get; set; }
 
         public Guid UserId { get; set; }
+
+        public string UserImg { get; set; }
     }
 }
