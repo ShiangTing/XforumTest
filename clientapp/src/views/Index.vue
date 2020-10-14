@@ -7,12 +7,12 @@
           <div>
             <!-- 這裡是index區域的貼文 -->
             <vue-particles
-              color="#63212B"
+              color="#dedede"
               :particleOpacity="0.7"
               :particlesNumber="80"
               shapeType="circle"
               :particleSize="4"
-              linesColor="#63212B"
+              linesColor="#dedede"
               :linesWidth="1"
               :lineLinked="true"
               :lineOpacity="0.4"
@@ -35,6 +35,7 @@
                 class="post-section"
                 v-for="(article, $index) in infiniteArticles"
                 :key="$index"
+                :postId="article.postId"
               >
                 <div
                   style="padding: 10px 20px"
@@ -194,6 +195,7 @@ $description: rgba(0, 0, 0, 1) !important;
   }
 }
 /deep/ .ellipsis {
+  font-weight: normal;
   width: 100%;
   font-size: 14px;
   color: $description;
