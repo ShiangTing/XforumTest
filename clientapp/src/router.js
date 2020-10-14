@@ -28,6 +28,11 @@ export default new VueRouter({
       name: 'register',
     },
     {
+      path: '/CreateThread',
+      component: () => import('./views/CreateThread.vue'),
+      name: 'createthread',
+    },
+    {
       path: '/post',
       component: () => import('./views/Post.vue'),
       name: 'post',

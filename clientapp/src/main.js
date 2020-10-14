@@ -16,7 +16,8 @@ import {
   faPen,
   faThumbsUp, 
   faThumbsDown,
-  faTrash
+  faTrash,
+  faBookmark
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import VueQuillEditor from "vue-quill-editor";
@@ -71,7 +72,8 @@ library.add(
   faPen,
   faThumbsUp,
   faThumbsDown,
-  faTrash
+  faTrash,
+  faBookmark
 );
 
 Vue.prototype.$bus = new Vue();
