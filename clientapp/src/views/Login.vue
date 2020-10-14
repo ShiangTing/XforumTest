@@ -82,13 +82,16 @@ export default {
       vm.$axios
         .post(url, vm.loginData)
         .then((res) => {
-          if (res.status == 200) {
+          if (res.status == 200 && res.data.issuccessful) {
             let { token, isAuthorize } = {
               token: res.data.token,
               isAuthorize: true,
             };
             vm.$store.dispatch("setAuth", { token, isAuthorize });
             vm.$router.push("/home");
+          }else if(res.status == 200 && !res.data.issuccessful){
+            vm.error.isError = true;
+            vm.error.message = res.data.errorMsg;
           }
           console.log(res);
         })
