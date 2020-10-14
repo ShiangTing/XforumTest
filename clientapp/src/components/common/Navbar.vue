@@ -11,6 +11,9 @@
           <b-nav-item class="sidebarGroup">
             <SideBar />
           </b-nav-item>
+          <b-nav-item class="pl-4" to="/CreateThread">
+            <font-awesome-icon icon="bookmark" />
+          </b-nav-item>
           <b-nav-item class="pl-4" v-if="isLogin" to="/post">
             <font-awesome-icon icon="pen" />
           </b-nav-item>

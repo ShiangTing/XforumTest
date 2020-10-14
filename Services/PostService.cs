@@ -58,10 +58,10 @@ namespace XforumTest.Services
         /// </summary>
         public PostListDto GetSingle(string postid)
         {
-            var single = from p in _posts.GetAll().AsEnumerable()
-                         join u in _members.GetAll().AsEnumerable()
+            var single = from p in _posts.GetAll2()
+                         join u in _members.GetAll2()
                          on p.UserId equals u.UserId
-                         join f in _forums.GetAll().AsEnumerable()
+                         join f in _forums.GetAll2()
                          on p.ForumId equals f.ForumId
                          where p.PostId.ToString() == postid
                          select new PostListDto
@@ -73,6 +73,8 @@ namespace XforumTest.Services
                              CreatedDate = p.CreatedDate,
                              UserId = p.UserId,
                              UserName = u.Name,
+                             LikeNumber = p.LikeNumber,
+                             DisLikeNumber = p.DisLikeNumber,
                              State = p.State
                          };
 
@@ -118,6 +120,8 @@ namespace XforumTest.Services
                             CreatedDate = p.CreatedDate,
                             UserId = p.UserId,
                             UserName = u.Name,
+                            LikeNumber = p.LikeNumber,
+                            DisLikeNumber = p.DisLikeNumber,
                             State = p.State
                         };
             return pList;
@@ -141,6 +145,8 @@ namespace XforumTest.Services
                                   CreatedDate = p.CreatedDate,
                                   UserId = p.UserId,
                                   UserName = u.Name,
+                                  LikeNumber = p.LikeNumber,
+                                  DisLikeNumber = p.DisLikeNumber,
                                   State = p.State
                               };
 
