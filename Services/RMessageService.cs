@@ -16,17 +16,22 @@ namespace XforumTest.Services
     {
         private readonly IRepository<ReposiveMessages> _messages;
         private readonly IRepository<ForumMembers> _members;
+        private readonly IRepository<Posts> _post;
 
         public RMessageService(IRepository<ReposiveMessages> messages, IRepository<Posts> posts, IRepository<ForumMembers> members)
         {
             _messages = messages;
             _members = members;
+            _post = posts;
         }
 
         public void Create(RMessageDTO dto)
         {
+            //if post!=null
             try
             {
+                //var post = _post.GetFirst(x => x.PostId == dto.PostId);
+                //if (post != null) { }
                 ReposiveMessages messages = new ReposiveMessages()
                 {
                     MessageId = Guid.NewGuid(),

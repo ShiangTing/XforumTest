@@ -100,29 +100,25 @@ namespace XforumTest.ApiController
         }
 
 
-        /// <summary>
-        /// 按讚跟按倒讚功能
-        /// </summary>
-        /// <param name="Dto"></param>
-        /// <returns></returns>
-        [HttpPut]
-        public ApiResult<MessageLikeDto> PostLikeAndDisLike(MessageLikeDto Dto)
-        {
-            var result = new ApiResult<MessageLikeDto>();
 
-            if (ModelState.IsValid)
-            {
-                //var service = new LikeService();
-                //service.PostLikeAndDisLike(Dto);
-                _messagelike.PostLikeAndDisLike(Dto);
-                return result;
-            }
-            else
-            {
-                return new ApiResult<MessageLikeDto>("Dto");
-            }
+        //[HttpPut]
+        //public ApiResult<MessageLikeDto> PostLikeAndDisLike(MessageLikeDto Dto)
+        //{
+        //    var result = new ApiResult<MessageLikeDto>();
 
-        }
+        //    if (ModelState.IsValid)
+        //    {
+        //        //var service = new LikeService();
+        //        //service.PostLikeAndDisLike(Dto);
+        //        _messagelike.PostLikeAndDisLike(Dto);
+        //        return result;
+        //    }
+        //    else
+        //    {
+        //        return new ApiResult<MessageLikeDto>("Dto");
+        //    }
+
+        //}
 
     }
 }
