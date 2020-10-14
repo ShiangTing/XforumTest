@@ -73,6 +73,8 @@ namespace XforumTest.Services
                              CreatedDate = p.CreatedDate,
                              UserId = p.UserId,
                              UserName = u.Name,
+                             LikeNumber = p.LikeNumber,
+                             DisLikeNumber = p.DisLikeNumber,
                              State = p.State
                          };
 
@@ -118,6 +120,8 @@ namespace XforumTest.Services
                             CreatedDate = p.CreatedDate,
                             UserId = p.UserId,
                             UserName = u.Name,
+                            LikeNumber = p.LikeNumber,
+                            DisLikeNumber = p.DisLikeNumber,
                             State = p.State
                         };
             return pList;
@@ -141,6 +145,8 @@ namespace XforumTest.Services
                                   CreatedDate = p.CreatedDate,
                                   UserId = p.UserId,
                                   UserName = u.Name,
+                                  LikeNumber = p.LikeNumber,
+                                  DisLikeNumber = p.DisLikeNumber,
                                   State = p.State
                               };
 
