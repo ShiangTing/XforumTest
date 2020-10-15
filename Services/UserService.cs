@@ -180,6 +180,7 @@ namespace XforumTest.Services
         /// <returns></returns>
         public ApiResult<MemberDto> VerifyEmailAndNameWhenEdit(string email, string name, string userEmail)
         {
+            int a =1 ;
             //排除自己資料
             var source = _members.GetAll().Where(x => x.Email != userEmail && (x.Email == email || x.Name == name));
 
