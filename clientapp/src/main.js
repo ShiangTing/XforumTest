@@ -18,7 +18,8 @@ import {
   faThumbsDown,
   faTrash,
   faHeart,
-  faBookmark
+  faBookmark,
+  faCrown
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import VueQuillEditor from "vue-quill-editor";
@@ -76,6 +77,7 @@ library.add(
   faTrash,
   faBookmark,
   faHeart,
+  faCrown
 
 );
 

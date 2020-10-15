@@ -18,13 +18,16 @@
           <b-nav-item class="sidebarGroup">
             <SideBar />
           </b-nav-item>
+          <b-nav-item class="pl-4" to="/Rank">
+            <font-awesome-icon icon="crown" />
+          </b-nav-item>
           <b-nav-item class="pl-4" to="/CreateThread">
             <font-awesome-icon icon="bookmark" />
           </b-nav-item>
-          <b-nav-item class="pl-4" v-if="isLogin" to="/post">
+          <b-nav-item class="pl-4" v-if="isLogin" to="/Post">
             <font-awesome-icon icon="pen" />
           </b-nav-item>
-          <b-nav-item class="pl-4" v-else to="/login">
+          <b-nav-item class="pl-4" v-else to="/Login">
             <font-awesome-icon icon="pen" />
           </b-nav-item>
           <b-nav-item class="pl-4" to="/LoveWheal">
