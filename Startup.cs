@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -43,10 +44,11 @@ namespace XforumTest
 
                 options.AddPolicy("CorsPolicy", policy =>
                 {
-                    policy.WithOrigins("http://localhost:8080")
-                          .AllowAnyHeader()
-                          .AllowAnyMethod()
-                          .AllowCredentials();
+
+                    policy.AllowAnyHeader();
+                    policy.AllowAnyMethod();
+                    policy.AllowAnyOrigin();
+                    //.AllowCredentials();
                 });
             });
 
@@ -63,7 +65,7 @@ namespace XforumTest
             services.AddTransient<IRepository<Titles>, GeneralRepository<Titles>>();
             services.AddTransient<IRepository<ReposiveMessages>, GeneralRepository<ReposiveMessages>>();
             services.AddTransient<IRepository<Titles>, GeneralRepository<Titles>>();
-            services.AddTransient<IRepository<MemberTitle>,GeneralRepository<MemberTitle>>();
+            services.AddTransient<IRepository<MemberTitle>, GeneralRepository<MemberTitle>>();
 
 
             services.AddTransient<IRepository<MessageLikeDto>, GeneralRepository<MessageLikeDto>>();
@@ -74,7 +76,6 @@ namespace XforumTest
             services.AddTransient<ILikeService<MessageLikeDto>, LikeService>();
             services.AddTransient<IForumService, ForumService>();
             services.AddTransient<IPostService, PostService>();
-            services.AddControllers().AddNewtonsoftJson();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
             {
@@ -134,18 +135,26 @@ namespace XforumTest
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+            app.Use(async (context, next) =>
+            {
+                await next.Invoke();
+                if (context.Response.StatusCode == 404 && !context.Request.Path.Value.Contains("/api"))
+                {
+                    context.Request.Path = new PathString("/");
+                    await next.Invoke();
+                }
+            });
             app.UseHttpsRedirection();
+
             app.UseCors("CorsPolicy");
 
-            app.UseStaticFiles();
-
-            app.UseStaticFiles(new StaticFileOptions
-            {
-                FileProvider = new PhysicalFileProvider(
-                    Path.Combine(Directory.GetCurrentDirectory(), "HtmlPages")),
-                RequestPath = "/HtmlPages"
-            });
-         //   app.UseExceptionHandler("/api/error");
+            //app.UseStaticFiles(new StaticFileOptions
+            //{
+            //    FileProvider = new PhysicalFileProvider(
+            //        Path.Combine(Directory.GetCurrentDirectory(), "HtmlPages")),
+            //    RequestPath = "/HtmlPages"
+            //});
+            app.UseExceptionHandler("/api/error");
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();
             // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
@@ -154,15 +163,18 @@ namespace XforumTest
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
             });
+
+            app.UseStaticFiles();
             app.UseRouting();
-            app.UseCors(x => x
-               .AllowAnyOrigin()
-               .AllowAnyMethod()
-               .AllowAnyHeader());
             app.UseAuthentication();
             app.UseAuthorization();
+            
+            //app.UseWhen(context => context.Request.Path.StartsWithSegments("/api"), appBuilder =>
+            //{
+            //app.UseMiddleware<JwtMiddleware>();
+            //});
 
-            app.UseMiddleware<JwtMiddleware>();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
