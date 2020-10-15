@@ -75,7 +75,8 @@ library.add(
   faThumbsDown,
   faTrash,
   faBookmark,
-  faHeart
+  faHeart,
+
 );
 
 Vue.prototype.$bus = new Vue();
