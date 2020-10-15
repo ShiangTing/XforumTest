@@ -28,6 +28,11 @@ export default new VueRouter({
       name: 'register',
     },
     {
+      path: '/CreateThread',
+      component: () => import('./views/CreateThread.vue'),
+      name: 'createthread',
+    },
+    {
       path: '/post',
       component: () => import('./views/Post.vue'),
       name: 'post',
@@ -48,7 +53,6 @@ export default new VueRouter({
     {
       path: '/',
       component: () => import('./views/Layout.vue'),
-
       children: [
         {
           path: '',
@@ -83,5 +87,9 @@ export default new VueRouter({
         },
       ],
     },
+    {
+      path: '/article/:id',
+      component: () => import('./views/Article.vue')
+    }
   ],
 });

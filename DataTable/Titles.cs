@@ -8,6 +8,7 @@ namespace XforumTest.DataTable
         public Titles()
         {
             ForumMembers = new HashSet<ForumMembers>();
+            MemberTitle = new HashSet<MemberTitle>();
         }
 
         public Guid TitleId { get; set; }
@@ -15,5 +16,6 @@ namespace XforumTest.DataTable
         public decimal? Price { get; set; }
 
         public virtual ICollection<ForumMembers> ForumMembers { get; set; }
+        public virtual ICollection<MemberTitle> MemberTitle { get; set; }
     }
 }

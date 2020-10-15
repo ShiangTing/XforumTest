@@ -85,7 +85,8 @@ namespace XforumTest.Services
                             CreatedDate = m.CreatedDate,
                             Context = m.Context,
                             UserId = (Guid)m.UserId,
-                            UserName = p.Name
+                            UserName = p.Name,
+                            UserImg = p.ImgLink
                         };
             return await mRepo.ToListAsync();
         }

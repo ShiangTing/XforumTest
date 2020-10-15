@@ -29,8 +29,13 @@
             v-model="titleContent"
             id="inline-form-input-name"
             class="mb-2 mr-sm-2 mb-sm-0"
-            placeholder="請輸入標題名稱"
+            placeholder="請輸入文字"
+            :class="{ 'is-invalid': inputDataCheck.TitleError }"
+            maxlength="15"
           ></b-input>
+          <div class="text-danger small mt-1">
+            {{ inputDataCheck.TitleErrorMsg }}
+          </div>
         </b-form>
 
         <p class="my-4">內文:</p>
@@ -42,7 +47,13 @@
           :editorOptions="editorSettings"
           v-model="editorContent"
         ></vue-editor>
-        <button @click="saveContent">發文</button>
+        <b-button
+          :disabled="AddVerify == false"
+          class="btn btn-primary mt-3"
+          @click="saveContent"
+        >
+          發文
+        </b-button>
       </b-col>
       <b-col></b-col>
     </b-row>
@@ -79,7 +90,6 @@ export default {
         [{ list: "ordered" }, { list: "bullet" }],
         ["image", "code-block"],
       ],
-      //
       postData: {
         ForumId: "",
         Title: "",
@@ -94,12 +104,15 @@ export default {
       selectPlaceHolder: "請選擇看板",
       titleContent: "",
       isLogin: "",
+      inputDataCheck: {
+        TitleError: false,
+        TitleErrorMsg: "",
+      },
+      AddVerify: true,
     };
   },
   methods: {
     getOptionIdx: function (event, selectedIndex) {
-      // console.log(event, selectedIndex);
-      // console.log(event.target.querySelectorAll("option")[selectedIndex].id);
       this.selectThread.select = event.target.querySelectorAll("option")[
         selectedIndex
       ].id;
@@ -132,7 +145,7 @@ export default {
       let auth = vm.$store.state.tokenModule;
       let isAuth = auth.isAuthorize;
       let token = auth.token;
-      const url = process.env.VUE_APP_API + "/api/JwtHelper/userid";
+      const url = process.env.VUE_APP_API + "/api/Users/GetUserId";
       if (isAuth) {
         vm.isLogin = true;
         vm.$axios({
@@ -177,6 +190,34 @@ export default {
         .catch((err) => {
           console.log(err);
         });
+    },
+    checkAddVerify() {
+      for (let index in this.inputDataCheck) {
+        if (this.inputDataCheck[index] == true) {
+          console.log(this.inputDataCheck[index]);
+          this.AddVerify = false;
+          return;
+        }
+      }
+      this.AddVerify = true;
+    },
+  },
+  watch: {
+    titleContent: {
+      immediate: true,
+      handler: function () {
+        if (this.titleContent == "") {
+          this.inputDataCheck.TitleError = true;
+          this.inputDataCheck.TitleErrorMsg = "請輸入文字哦!";
+        } else if (this.titleContent.length == 15) {
+          this.inputDataCheck.TitleError = true;
+          this.inputDataCheck.TitleErrorMsg = "最多只能15個字哦!";
+        } else {
+          this.inputDataCheck.TitleError = false;
+          this.inputDataCheck.TitleErrorMsg = "";
+        }
+        this.checkAddVerify();
+      },
     },
   },
   async created() {
