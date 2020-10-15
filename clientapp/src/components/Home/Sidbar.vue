@@ -31,13 +31,6 @@ export default {
   methods: {
     goToThread(name) {
       const vm = this;
-      // vm.dataId=id;
-      // vm.$router.beforeEach((to, from, next) => {
-      //     to.meta.forumId = id;
-      //     next();
-      // });
-      // this.$bus.$emit("threadId", id);
-
       vm.$router.push(`/Thread/${name}`);
     },
 
@@ -54,17 +47,6 @@ export default {
           console.log(err);
         });
     },
-    // doSomethingSpecial(event) {
-    //   setTimeout(() => {
-    //     console.log(event);
-    //     // emit the event and pass with it an object of "event data".
-    //     this.$bus.$emit(
-    //       "specialEvent",
-    //       event
-    //       // routeName: event.routeName,
-    //     );
-    //   }, 100);
-    // },
   },
 
   async created() {

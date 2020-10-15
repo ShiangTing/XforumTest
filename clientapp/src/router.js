@@ -46,6 +46,10 @@ export default new VueRouter({
       },
     },
     {
+      path: '/LoveWheal',
+      component: () => import('./views/LoveWheal.vue')
+    },
+    {
       path: '/',
       component: () => import('./views/Layout.vue'),
       children: [

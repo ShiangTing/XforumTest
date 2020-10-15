@@ -176,9 +176,7 @@ export default {
         });
     },
   },
-  watch: {
-    // $route: ["getThreadData"],
-  },
+  watch: {},
   beforeDestroy() {},
   async created() {
     await this.getThreadData();

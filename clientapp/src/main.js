@@ -14,9 +14,10 @@ import {
   faUserGraduate,
   faGhost,
   faPen,
-  faThumbsUp, 
+  faThumbsUp,
   faThumbsDown,
-  faTrash
+  faTrash,
+  faHeart
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import VueQuillEditor from "vue-quill-editor";
@@ -27,8 +28,8 @@ import "quill/dist/quill.bubble.css"; // for bubble theme
 import store from './store'
 import axios from 'axios';
 // Vee-Validate
-import { ValidationObserver ,ValidationProvider, extend , localize } from 'vee-validate';
-import { required , email } from 'vee-validate/dist/rules';
+import { ValidationObserver, ValidationProvider, extend, localize } from 'vee-validate';
+import { required, email } from 'vee-validate/dist/rules';
 import TW from 'vee-validate/dist/locale/zh_TW.json'
 
 localize('zh_TW', TW)
@@ -39,10 +40,10 @@ extend('required', {
 });
 extend('email', {
   ...email,
-  message :'{_field_}格式錯誤'
+  message: '{_field_}格式錯誤'
 });
 extend('min', {
-  validate (value, args) {
+  validate(value, args) {
     return value.length >= args.length
   },
   params: ['length'],
@@ -59,7 +60,7 @@ extend('password', {
 Vue.prototype.$axios = axios
 Vue.component('font-awesome-icon', FontAwesomeIcon); //使用kebab-case
 Vue.component('ValidationProvider', ValidationProvider);
-Vue.component('ValidationObserver',ValidationObserver)
+Vue.component('ValidationObserver', ValidationObserver)
 library.add(
   faShoppingCart,
   faCoffee,
@@ -71,7 +72,8 @@ library.add(
   faPen,
   faThumbsUp,
   faThumbsDown,
-  faTrash
+  faTrash,
+  faHeart
 );
 
 Vue.prototype.$bus = new Vue();
