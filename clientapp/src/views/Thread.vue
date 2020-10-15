@@ -166,7 +166,7 @@ export default {
       this.$axios
         .get(url + "/" + this.$route.params.routeName)
         .then((response) => {
-          response.data.forEach((item) => {
+          response.data.reverse().forEach((item) => {
             this.forumName = item.forumName;
             this.articles.push(item);
           });
