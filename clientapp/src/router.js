@@ -10,13 +10,7 @@ VueRouter.prototype.push = function push(location) {
 export default new VueRouter({
   mode: 'hash',
   routes: [
-    {
-      path: '*',
-      redirect: { name: 'home' },
-      // meta: {
-      //   title: 'RagnarokShopV3 - 404',
-      // },
-    },
+
     {
       path: '/Login',
       component: () => import('./views/Login.vue'),
@@ -85,6 +79,13 @@ export default new VueRouter({
           },
         },
       ],
+    },
+    {
+      path: '*',
+      component: () => import('./views/404.vue'),
+      // meta: {
+      //   title: 'RagnarokShopV3 - 404',
+      // },
     },
     {
       path: '/article',
