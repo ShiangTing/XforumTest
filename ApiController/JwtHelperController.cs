@@ -33,7 +33,7 @@ namespace XforumTest.ApiController
         public IActionResult SignIn([FromBody] AuthenticateRequest login)
         {
             var check = _jwt.ValidateUser(login);
-            if (check == null) return BadRequest(new { message = "Username or password is incorrect!" });
+            //if (check == null) return BadRequest(new { message = "Username or password is incorrect!" });
             //HttpContext.Response.Cookies.Append("UserToken", check.Token);
             return Ok(check);
         }

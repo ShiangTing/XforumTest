@@ -35,7 +35,7 @@
                 class="post-section"
                 v-for="(article, $index) in infiniteArticles"
                 :key="$index"
-                :postId="article.postId"
+                @click="goToArticle(article.postId)"
               >
                 <div
                   style="padding: 10px 20px"
@@ -161,6 +161,10 @@ export default {
           console.log(err);
         });
     },
+    goToArticle(id){
+      let vm = this;
+      vm.$router.push(`/article/${id}`)
+    }
   },
   async created() {
     await this.GetAll();

@@ -6,8 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.IdentityModel.Tokens.Jwt;
 using XforumTest.Interface;
 using XforumTest.Entities;
@@ -15,7 +13,7 @@ using XforumTest.Repository;
 using XforumTest.DataTable;
 using XforumTest.Context;
 using XforumTest.Models;
-
+using Microsoft.AspNetCore.Mvc;
 
 namespace XforumTest.Helpers
 {
@@ -65,16 +63,28 @@ namespace XforumTest.Helpers
         //Verify user login
         public AuthenticateResponse ValidateUser(AuthenticateRequest login)
         {
-            var user = _members.GetAll().Select(x => new User
+            var members = _members.GetAll();
+            if (!members.Any(x => x.Email == login.Email))
             {
-                Email = x.Email,
-                Password = x.Password,
-                RoleId = x.RoleId.GetValueOrDefault().ToString(),
-                ForumRoles = _forumRole.GetAll().FirstOrDefault(y => y.RoleId == x.RoleId).RoleName
-            }).SingleOrDefault(x => x.Email == login.Email && x.Password == login.Password);
+                return new AuthenticateResponse($"查無此 {login.Email} Email!");
+            }
+            if (members.Any(x => x.Email == login.Email) && members.FirstOrDefault(x => x.Email == login.Email).Password != login.Password)
+            {
+                return new AuthenticateResponse($"密碼輸入錯誤!");
+            }
+            else
+            {
+                var user = members.Select(x => new User
+                {
+                    Email = x.Email,
+                    Password = x.Password,
+                    RoleId = x.RoleId.GetValueOrDefault().ToString(),
+                    ForumRoles = _forumRole.GetAll().FirstOrDefault(y => y.RoleId == x.RoleId).RoleName
+                }).SingleOrDefault(x => x.Email == login.Email && x.Password == login.Password);
 
-            if (user == null) return null;
-            return new AuthenticateResponse(user, GenerateToken(user.Email, 60));
+                //if (user == null) return null;
+                return new AuthenticateResponse(user, GenerateToken(user.Email, 60));
+            }
         }
 
         public IEnumerable<ForumMembers> GetMembers()
