@@ -181,9 +181,7 @@ export default {
       vm.$router.push(`/article/${id}`)
     }
   },
-  watch: {
-    // $route: ["getThreadData"],
-  },
+  watch: {},
   beforeDestroy() {},
   async created() {
     await this.getThreadData();
