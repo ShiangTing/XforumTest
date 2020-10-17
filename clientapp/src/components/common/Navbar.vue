@@ -85,22 +85,18 @@ export default {
     let vm = this;
     let auth = vm.$store.state.tokenModule;
     let isAuth = auth.isAuthorize;
-    let token = auth.token;
     let url = process.env.VUE_APP_API + "/api/Users/GetSingleMember";
     if (isAuth) {
       vm.isLogin = true;
-      vm.$axios({
-        url: url,
-        method: "GET",
-        headers: { Authorization: `Bearer ${token}` },
-      })
-        .then((res) => {
+        vm.$axios({
+          url: url,
+          method: "GET",
+        }).then(res => {
           console.log(res.data.data.name);
           vm.name = res.data.data.name;
         })
         .catch((err) => {
           console.log(err);
-          window.localStorage.clear();
         });
     }
   },

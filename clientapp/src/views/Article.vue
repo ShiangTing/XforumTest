@@ -57,7 +57,7 @@
                   <font-awesome-icon icon="user" size="lg" />
                 </a>
                 <textarea class="form-control h-100" placeholder="留個言吧~"></textarea>
-                <button class="btn btn-dark h-100">送出</button>
+                <button class="btn btn-secondary h-100">送出</button>
               </div>
             </div>
           </div>
@@ -87,6 +87,20 @@ export default {
     };
   },
   methods: {
+    getUser() {
+      let userIdUrl = process.env.VUE_APP_API + "/api/Users/getUserId";
+      let userName = process.env.VUE_APP_API + "/api/Users/getUserName";
+      vm.$axios.get(url).then(res => {
+        vm.article = {
+          title: res.data.title,
+          author: res.data.userName,
+          createDate: res.data.createdDate,
+          description: res.data.description,
+          like: 0,
+          unlike: 0,
+        }
+      })
+    },
     getArticle () {
       let vm = this;
       let url = process.env.VUE_APP_API + "/api/Post/getSingle/" + vm.$route.params.id;
@@ -103,13 +117,22 @@ export default {
     },
     getMessages () {
       let vm = this;
-      let url = process.env.VUE_APP_API + "/api/RMessage/GetAllMessages/" + "B2160343-1272-45AE-980D-B1E3BBDCB969";
+      let url = process.env.VUE_APP_API + "/api/RMessage/GetAllMessages/" + vm.$route.params.id;
       vm.$axios.get(url).then(res => {
         if (res.data.issuccessful) {
           vm.messageList = res.data.data;
         }
       })
     },
+    postMessage () {
+      let vm = this;
+      let url = process.env.VUE_APP_API + "/api/RMessage/GetAllMessages/" + vm.$route.params.id;
+      vm.$axios.get(url).then(res => {
+        if (res.data.issuccessful) {
+          vm.messageList = res.data.data;
+        }
+      })
+    }
   },
   created () {
     this.getArticle()
@@ -126,7 +149,7 @@ export default {
     margin: 0;
   }
   /deep/ .article-content img {
-    width: 100% ;
+    width: 100%;
   }
   a.title-btn {
     display: flex;

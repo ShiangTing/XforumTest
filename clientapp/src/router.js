@@ -12,6 +12,10 @@ export default new VueRouter({
   routes: [
 
     {
+      path: '*',
+      redirect: { name: 'home' },
+    },
+    {
       path: '/Login',
       component: () => import('./views/Login.vue'),
       name: 'login',
