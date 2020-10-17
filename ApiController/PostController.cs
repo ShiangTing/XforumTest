@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -60,6 +61,7 @@ namespace XforumTest.ApiController
         /// <summary>
         /// 取得所有的留言資訊
         /// </summary>
+      //  [Route("/")]
         [HttpGet]
         public IEnumerable<PostListDto> GetAllPosts()
         {        
@@ -67,10 +69,13 @@ namespace XforumTest.ApiController
             return  _postservice.GetAll();
         }
 
+
         /// <summary>
         /// 取個單一看板PO文
         /// </summary>
         /// <returns></returns>
+
+        //  [Route("/")]
         [HttpGet("{route}")]
         public IEnumerable<PostListDto> GetForum(string route)
         {
