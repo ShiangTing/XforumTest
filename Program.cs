@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.AzureAppConfiguration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
@@ -13,14 +14,22 @@ namespace XforumTest
     {
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run() ;
+            CreateHostBuilder(args).Build().Run();
         }
 
+        //public static IHostBuilder CreateHostBuilder(string[] args) =>
+        //    Host.CreateDefaultBuilder(args)
+        //        .ConfigureWebHostDefaults(webBuilder =>
+        //        {
+        //            webBuilder.UseStartup<Startup>();
+        //        });
         public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                });
+    Host.CreateDefaultBuilder(args)
+        .ConfigureWebHostDefaults(webBuilder =>
+            webBuilder.ConfigureAppConfiguration(config =>
+            {
+                var settings = config.Build();
+                var connection = settings.GetConnectionString("AppConfig");
+            }).UseStartup<Startup>());
     }
 }
