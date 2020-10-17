@@ -1,20 +1,13 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.FileProviders;
-using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using XforumTest.Context;
 using XforumTest.DataTable;
@@ -56,15 +49,17 @@ namespace XforumTest
             //Connecting String
             if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIROMENT") == "Production")
             {
-                services.AddDbContext<MyDBContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("ConnectionStrings:AppConfig")));
+                services.AddDbContext<MyDBContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("MyDBContext")));
             }
             else
             {
-                services.AddDbContext<MyDBContext>(opt => opt.UseSqlServer(Configuration["ConnectionStrings:AppConfig"]));
+                services.AddDbContext<MyDBContext>(opt => opt.UseSqlServer(Configuration["MyDBContext"]));
                 
             }
             
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
+
+
             services.AddTransient<IRepository<ForumMembers>, GeneralRepository<ForumMembers>>();
             services.AddTransient<IRepository<Posts>, GeneralRepository<Posts>>();
             services.AddTransient<IRepository<ForumRoles>, GeneralRepository<ForumRoles>>();

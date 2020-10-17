@@ -36,8 +36,8 @@ namespace XforumTest.Services
                 {
                     MessageId = Guid.NewGuid(),
                     Context = dto.Context,
-                    LikeNumber = dto.LikeNumber,
-                    DisLikeNumber = dto.DisLikeNumber,
+                    LikeNumber = 0,
+                    DisLikeNumber = 0,
                     CreatedDate = DateTime.Now,
                     PostId = dto.PostId
                 };
