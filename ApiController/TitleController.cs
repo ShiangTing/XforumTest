@@ -10,7 +10,7 @@ using XforumTest.Services;
 
 namespace XforumTest.ApiController
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class TitleController : ControllerBase
     {
@@ -25,6 +25,23 @@ namespace XforumTest.ApiController
         public string BuyTitle(string userid, string titleid)
         {
             return _titleservice.BuyTitle(userid,titleid);
+        }
+
+        [HttpGet("{id}")]
+        public List<HasTitle> GetHasTitles(string id)
+        {
+            return _titleservice.GetHasTitles(id);
+        }
+
+        [HttpGet("{id}")]
+        public decimal? GetPoints(string id)
+        {
+            return _titleservice.GetPoints(id);
+        }
+        [HttpGet]
+        public List<TitleCreateDto> GetAllTitles()
+        {
+            return _titleservice.GetAllTitles();
         }
     }
 }

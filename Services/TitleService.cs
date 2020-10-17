@@ -22,6 +22,11 @@ namespace XforumTest.Services
             _titles = titles;
             _usertitle = usertitle;
         }
+
+        public decimal? GetPoints(string id)
+        {             
+            return _users.GetAll2().FirstOrDefault(x => x.UserId.ToString() == id).Points;
+        }
        
         public void CreateTitile(TitleCreateDto model)
         {
@@ -56,14 +61,25 @@ namespace XforumTest.Services
             throw new NotImplementedException();
         }
 
-        public void GetAllTitles()
+        public List<TitleCreateDto> GetAllTitles()
         {
-            throw new NotImplementedException();
+            return _titles.GetAll2().Select(x => new TitleCreateDto() {TitleName = x.TitleName, Price = x.Price }).ToList();
         }
-
-        public void GetHasTitles()
+        /// <summary>
+        /// 取得稱號系統
+        /// </summary>
+        public List<HasTitle> GetHasTitles(string id)
         {
-            throw new NotImplementedException();
+            var has = (from m in _usertitle.GetAll2()
+                       join t in _titles.GetAll2()
+                       on m.HasTitleId equals t.TitleId
+                       where m.UserId.ToString() == id
+                       select new HasTitle()
+                       {
+                           TitleName = t.TitleName
+                       }).ToList();                       
+            
+            return has;
         }
         /// <summary>
         /// 購買稱號系統
