@@ -45,19 +45,26 @@ namespace XforumTest
                 options.AddPolicy("CorsPolicy", policy =>
                 {
 
-                    policy.AllowAnyHeader();
-                    policy.AllowAnyMethod();
-                    policy.AllowAnyOrigin();
+                    policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
                     //.AllowCredentials();
                 });
             });
 
             services.AddControllers();
             //  services.AddControllers().AddNewtonsoftJson();
-            services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
+            
             //Connecting String
-            services.AddDbContext<MyDBContext>(opt => opt.UseSqlServer(Configuration["MyDBContext"]));
-
+            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIROMENT") == "Production")
+            {
+                services.AddDbContext<MyDBContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("ConnectionStrings:AppConfig")));
+            }
+            else
+            {
+                services.AddDbContext<MyDBContext>(opt => opt.UseSqlServer(Configuration["ConnectionStrings:AppConfig"]));
+                
+            }
+            
+            services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
             services.AddTransient<IRepository<ForumMembers>, GeneralRepository<ForumMembers>>();
             services.AddTransient<IRepository<Posts>, GeneralRepository<Posts>>();
             services.AddTransient<IRepository<ForumRoles>, GeneralRepository<ForumRoles>>();
@@ -125,25 +132,16 @@ namespace XforumTest
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
 
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
-            }
-            app.Use(async (context, next) =>
-            {
-                await next.Invoke();
-                if (context.Response.StatusCode == 404 && !context.Request.Path.Value.Contains("/api"))
-                {
-                    context.Request.Path = new PathString("/");
-                    await next.Invoke();
-                }
-            });
+            //if (env.IsDevelopment())
+            //{
+            //    app.UseDeveloperExceptionPage();
+            //}
+            //else
+            //{
+            //    app.UseExceptionHandler("/Home/Error");
+            //    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+            //    app.UseHsts();
+            //}
             app.UseHttpsRedirection();
 
             app.UseCors("CorsPolicy");
@@ -154,7 +152,7 @@ namespace XforumTest
             //        Path.Combine(Directory.GetCurrentDirectory(), "HtmlPages")),
             //    RequestPath = "/HtmlPages"
             //});
-            app.UseExceptionHandler("/api/error");
+            //app.UseExceptionHandler("/api/error");
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();
             // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
@@ -168,15 +166,16 @@ namespace XforumTest
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
-            
+
             //app.UseWhen(context => context.Request.Path.StartsWithSegments("/api"), appBuilder =>
             //{
             //app.UseMiddleware<JwtMiddleware>();
             //});
-
-
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapControllerRoute(
+                    name: "api",
+                    pattern: "api/{controller}/{action}");
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
