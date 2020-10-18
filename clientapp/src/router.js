@@ -27,7 +27,12 @@ export default new VueRouter({
       name: 'createthread',
     },
     {
-      path: '/post',
+      path: '/Rank',
+      component: () => import('./views/Rank.vue'),
+      name: 'rank',
+    },
+    {
+      path: '/Post',
       component: () => import('./views/Post.vue'),
       name: 'post',
       meta: {
@@ -77,8 +82,6 @@ export default new VueRouter({
 
               },
               {
-                // name: `${VueRouter.$route.name}`,
-                // link: `${Vue.$route.params.routeName}`,
               },
             ],
           },
@@ -88,13 +91,10 @@ export default new VueRouter({
     {
       path: '*',
       component: () => import('./views/404.vue'),
-      // meta: {
-      //   title: 'RagnarokShopV3 - 404',
-      // },
     },
     {
-      path: '/article',
+      path: '/article/:id',
       component: () => import('./views/Article.vue')
-    }
+    },
   ],
 });

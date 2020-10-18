@@ -145,7 +145,7 @@ export default {
             this.infiniteArticles.push(this.articles[this.count++]);
           }
           this.busy = false;
-        }, 500);
+        }, 10);
       }
     },
     async GetAll() {
@@ -161,10 +161,10 @@ export default {
           console.log(err);
         });
     },
-    goToArticle(id){
+    goToArticle(id) {
       let vm = this;
-      vm.$router.push(`/article/${id}`)
-    }
+      vm.$router.push(`/article/${id}`);
+    },
   },
   async created() {
     await this.GetAll();
