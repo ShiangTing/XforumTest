@@ -22,9 +22,9 @@ namespace XforumTest.ApiController
         }
 
         [HttpPost]
-        public string BuyTitle(string userid, string titleid)
+        public string BuyTitle(BuyTitle buy)
         {
-            return _titleservice.BuyTitle(userid,titleid);
+            return _titleservice.BuyTitle(buy);
         }
 
         [HttpGet("{id}")]

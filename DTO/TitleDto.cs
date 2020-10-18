@@ -20,4 +20,9 @@ namespace XforumTest.DTO
     { 
         public string TitleName { get; set; }
     }
+    public class BuyTitle
+    {
+        public string UserId { get; set; }
+        public string TitleId { get; set; }    
+    }
 }
