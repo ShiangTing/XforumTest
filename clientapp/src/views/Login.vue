@@ -88,8 +88,8 @@ export default {
               isAuthorize: true,
             };
             vm.$store.dispatch("setAuth", { token, isAuthorize });
-            vm.$router.push("/home");
-          }else if(res.status == 200 && !res.data.issuccessful){
+            vm.$router.push("/");
+          } else if (res.status == 200 && !res.data.issuccessful) {
             vm.error.isError = true;
             vm.error.message = res.data.errorMsg;
           }

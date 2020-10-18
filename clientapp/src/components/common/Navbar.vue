@@ -18,7 +18,7 @@
           <b-nav-item class="sidebarGroup">
             <SideBar />
           </b-nav-item>
-          <b-nav-item class="pl-4" to="/Rank">
+          <b-nav-item class="pl-4" v-if="isLogin" to="/Rank">
             <font-awesome-icon icon="crown" />
           </b-nav-item>
           <b-nav-item class="pl-4" to="/CreateThread">
