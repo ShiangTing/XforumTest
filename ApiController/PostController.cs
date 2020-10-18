@@ -61,7 +61,7 @@ namespace XforumTest.ApiController
         /// <summary>
         /// 取得所有的留言資訊
         /// </summary>
-      //  [Route("/")]
+        //  [Route("/")]
         [HttpGet]
         public IEnumerable<PostListDto> GetAllPosts()
         {        

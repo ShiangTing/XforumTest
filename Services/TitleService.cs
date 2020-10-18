@@ -87,10 +87,10 @@ namespace XforumTest.Services
         /// <param name="titleid"></param>
         /// <param name="userid"></param>
         /// <returns></returns>
-        public string BuyTitle(string userid, string titleid)
+        public string BuyTitle(BuyTitle buy)
         {
-            var user = _users.GetAll().FirstOrDefault(u => u.UserId.ToString() == userid);
-            var price = _titles.GetAll().FirstOrDefault(t => t.TitleId.ToString() == titleid).Price;
+            var user = _users.GetAll().FirstOrDefault(u => u.UserId.ToString() == buy.UserId);
+            var price = _titles.GetAll().FirstOrDefault(t => t.TitleId.ToString() == buy.TitleId).Price;
             if (user.Points > price)
             {
                 user.Points = user.Points - price;
@@ -99,8 +99,8 @@ namespace XforumTest.Services
 
                 var newtitle = new MemberTitle
                 {
-                    UserId = Guid.Parse(userid),
-                    HasTitleId = Guid.Parse(titleid)
+                    UserId = Guid.Parse(buy.UserId),
+                    HasTitleId = Guid.Parse(buy.TitleId)
                 };
 
                 _usertitle.Create(newtitle);

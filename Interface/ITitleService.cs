@@ -14,7 +14,7 @@ namespace XforumTest.Interface
         void DeleteTitile();
         List<TitleCreateDto> GetAllTitles();
         List<HasTitle> GetHasTitles(string id);
-        string BuyTitle(string titleid, string userid);
+        string BuyTitle(BuyTitle buy);
         void ChangeTitle();
     }
 }
