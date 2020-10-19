@@ -4,6 +4,8 @@ import App from './App.vue';
 import VueParticles from 'vue-particles';
 import BoostrapVue from 'bootstrap-vue';
 import infiniteScroll from 'vue-infinite-scroll'
+import VueSweetalert2 from 'vue-sweetalert2';
+import 'sweetalert2/dist/sweetalert2.min.css';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import {
   faShoppingCart,
@@ -85,7 +87,8 @@ Vue.prototype.$bus = new Vue();
 Vue.use(VueParticles);
 Vue.use(BoostrapVue);
 Vue.use(VueQuillEditor);
-Vue.use(infiniteScroll)
+Vue.use(infiniteScroll);
+Vue.use(VueSweetalert2);
 new Vue({
   el: '#app',
   router: Router,

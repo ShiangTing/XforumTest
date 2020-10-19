@@ -89,18 +89,23 @@ namespace XforumTest.Services
         /// <returns></returns>
         public string BuyTitle(BuyTitle buy)
         {
-            var user = _users.GetAll().FirstOrDefault(u => u.UserId.ToString() == buy.UserId);
-            var price = _titles.GetAll().FirstOrDefault(t => t.TitleId.ToString() == buy.TitleId).Price;
-            if (user.Points > price)
+            var user = _users.GetAll2().FirstOrDefault(u => u.UserId.ToString() == buy.UserId);
+            var price = _titles.GetAll2().Select(x => new TitleDto() { 
+                TitleId = x.TitleId,
+                TitleName =x.TitleName,
+                Price =decimal.Parse( x.Price.ToString())
+            
+            }).FirstOrDefault(t => t.TitleName == buy.TitleId);
+            if (user.Points > price.Price)
             {
-                user.Points = user.Points - price;
+                user.Points = user.Points - price.Price;
                 _users.Update(user);
                 _users.SaveContext();
 
                 var newtitle = new MemberTitle
                 {
                     UserId = Guid.Parse(buy.UserId),
-                    HasTitleId = Guid.Parse(buy.TitleId)
+                    HasTitleId = price.TitleId
                 };
 
                 _usertitle.Create(newtitle);

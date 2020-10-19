@@ -2,15 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+//using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using XforumTest.DTO;
 using XforumTest.Interface;
 using XforumTest.Services;
 
+
 namespace XforumTest.ApiController
 {
     [Route("api/[controller]/[action]")]
+    //[EnableCors("CorsPolicy")]
     [ApiController]
     public class TitleController : ControllerBase
     {
