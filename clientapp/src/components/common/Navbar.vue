@@ -78,7 +78,10 @@ export default {
     logout() {
       let vm = this;
       window.localStorage.clear();
-      vm.$router.go(0);
+      vm.$store.dispatch('clearAuth');
+      vm.isLogin = false;
+      vm.name = "訪客"
+      vm.$router.push('/')
     },
   },
   created() {
@@ -92,12 +95,10 @@ export default {
           url: url,
           method: "GET",
         }).then(res => {
-          console.log(res.data.data.name);
           vm.name = res.data.data.name;
+        }).catch(()=>{
+          window.localStorage.clear()
         })
-        .catch((err) => {
-          console.log(err);
-        });
     }
   },
 };

@@ -1,6 +1,6 @@
 import axios from 'axios';
 import store from '../store/index';
-import errorHandle from './https'
+import errorHandle from './errorHandle';
 // axios 配置
 axios.defaults.timeout = 5000;
 
@@ -23,7 +23,8 @@ axios.interceptors.response.use(
   (error) => {
     let err = error.response;
     if (err) {
-      errorHandle(err.status.toString(),err.data)
+      console.log(err);
+      errorHandle(err.status.toString(), err.data);
     }
     return Promise.reject(error.response.data);
   }
