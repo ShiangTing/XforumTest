@@ -3,7 +3,11 @@ import Router from './router';
 import App from './App.vue';
 import VueParticles from 'vue-particles';
 import BoostrapVue from 'bootstrap-vue';
-import infiniteScroll from 'vue-infinite-scroll';
+import infiniteScroll from 'vue-infinite-scroll'
+import VueSweetalert2 from 'vue-sweetalert2';
+import 'sweetalert2/dist/sweetalert2.min.css';
+import VueLoading from 'vue-loading-overlay'
+import 'vue-loading-overlay/dist/vue-loading.css'
 import { library } from '@fortawesome/fontawesome-svg-core';
 import {
   faShoppingCart,
@@ -63,7 +67,16 @@ extend('password', {
   },
   message: '密碼不相符',
 });
-Vue.prototype.$axios = axios;
+Vue.use(VueLoading, {
+  canCancel: false,
+  color: '#000000',
+  loader: 'dots', //spinner/dots/bars
+  width: 50,
+  height: 50,
+  backgroundColor: '#ffffff',
+  isFullPage: true,
+  opacity: 0.8
+});
 
 Vue.component('font-awesome-icon', FontAwesomeIcon); //使用kebab-case
 Vue.component('ValidationProvider', ValidationProvider);
@@ -91,6 +104,7 @@ Vue.use(VueParticles);
 Vue.use(BoostrapVue);
 Vue.use(VueQuillEditor);
 Vue.use(infiniteScroll);
+Vue.use(VueSweetalert2);
 new Vue({
   el: '#app',
   router: Router,

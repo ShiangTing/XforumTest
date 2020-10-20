@@ -120,7 +120,7 @@ mixin icon(el)
     .ferris-base--handle
 
 .ground
-  #js-button.button Start
+  #js-button.button 開始配對
     </div>
   </div>
 </template>

@@ -18,7 +18,7 @@
           <b-nav-item class="sidebarGroup">
             <SideBar />
           </b-nav-item>
-          <b-nav-item class="pl-4" to="/Rank">
+          <b-nav-item class="pl-4" v-if="isLogin" to="/Rank">
             <font-awesome-icon icon="crown" />
           </b-nav-item>
           <b-nav-item class="pl-4" to="/CreateThread">
@@ -44,7 +44,10 @@
               >註冊</b-dropdown-item
             >
             <b-dropdown-item to="/login" v-if="!isLogin">登入</b-dropdown-item>
-            <b-dropdown-item v-if="isLogin" href="javascript:;"
+            <b-dropdown-item
+              v-if="isLogin"
+              href="javascript:;"
+              @click.prevent="memberCTR"
               >會員中心</b-dropdown-item
             >
             <b-dropdown-item v-if="isLogin" @click.prevent="logout"
@@ -75,6 +78,10 @@ export default {
     };
   },
   methods: {
+    memberCTR() {
+      const vm = this;
+      vm.$router.push(`/MemberCenter`);
+    },
     logout() {
       let vm = this;
       window.localStorage.clear();
