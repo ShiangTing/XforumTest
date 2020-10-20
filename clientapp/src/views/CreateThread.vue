@@ -26,13 +26,13 @@
             placeholder="請輸入文字"
             maxlength="500"
           />
-            <upload
+            <!-- <upload
         ref="upload"
         name="files"
         :async-save-url="'custom-save-url'"
         :async-remove-url="'custom-remove-url'"
       >
-      </upload>
+      </upload> -->
         </div>
       </b-col>
       <b-col></b-col>
@@ -44,14 +44,14 @@
 
 
 <script>
-import '@progress/kendo-ui';
-import '@progress/kendo-theme-default/dist/all.css';
+// import '@progress/kendo-ui';
+// import '@progress/kendo-theme-default/dist/all.css';
 // Vue.use(UploadInstaller)
 export default {
   components: {
 
     Navbar: () => import("@/components/common/Navbar"),
-    Upload: () => import("@progress/kendo-upload-vue-wrapper"),
+    // Upload: () => import("@progress/kendo-upload-vue-wrapper"),
     // UploadInstaller: () => import("@progress/kendo-upload-vue-wrapper"),
   },
   data() {
@@ -65,8 +65,8 @@ export default {
     };
   },
   mounted: function () {
-    var upload = this.$refs.upload.kendoWidget();
-    console.log(upload);
+    // var upload = this.$refs.upload.kendoWidget();
+    // console.log(upload);
     // upload._module.postFormData = function (url, data, fileEntry, xhr) {
     //   var module = this;
     //   fileEntry.data("request", xhr);
@@ -76,9 +76,9 @@ export default {
     //   }, 1000);
     // };
 
-    upload._submitRemove = function (fileNames, eventArgs, onSuccess) {
-      onSuccess();
-    };
+    // upload._submitRemove = function (fileNames, eventArgs, onSuccess) {
+    //   onSuccess();
+    // };
   },
 
   watch: {
