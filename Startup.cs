@@ -39,6 +39,7 @@ namespace XforumTest
                 {
 
                     policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
+                    policy.WithOrigins("http://localhost:8080").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
                     //.AllowCredentials();
                 });
             });
