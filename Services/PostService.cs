@@ -26,7 +26,7 @@ namespace XforumTest.Services
         }
         public void Create(PostCreateDto model)
         {
-
+            var time = new DateTime();
                 try
                 {
                     // 時區要再調整，先測試用
@@ -38,12 +38,19 @@ namespace XforumTest.Services
                         UserId = new Guid(model.UserId),
                         Title = model.Title,
                         Description = model.Description,
-                        CreatedDate = DateTime.UtcNow,
+                        CreatedDate = time.ToLocalTime(),
                         Img = null,
                         State = true
                     };
+                    // 每PO一篇文 +50 points
+                    var user = _members.GetAll2().FirstOrDefault(x => x.UserId.ToString() == model.UserId);
+                    user.Points = user.Points + 50;
+
                     _posts.Create(po);
                     _posts.SaveContext();
+                    
+                    _members.Update(user);
+                    _members.SaveContext();
 
                 }
                 catch (Exception ex)
