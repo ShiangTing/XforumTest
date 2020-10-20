@@ -6,6 +6,8 @@ import BoostrapVue from 'bootstrap-vue';
 import infiniteScroll from 'vue-infinite-scroll'
 import VueSweetalert2 from 'vue-sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
+import VueLoading from 'vue-loading-overlay'
+import 'vue-loading-overlay/dist/vue-loading.css'
 import { library } from '@fortawesome/fontawesome-svg-core';
 import {
   faShoppingCart,
@@ -59,6 +61,16 @@ extend('password', {
     return value === target;
   },
   message: '密碼不相符'
+});
+Vue.use(VueLoading, {
+  canCancel: false,
+  color: '#000000',
+  loader: 'dots', //spinner/dots/bars
+  width: 50,
+  height: 50,
+  backgroundColor: '#ffffff',
+  isFullPage: true,
+  opacity: 0.8
 });
 
 Vue.prototype.$axios = axios

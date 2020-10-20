@@ -50,6 +50,13 @@ export default new VueRouter({
       },
     },
     {
+      path: '/MemberCenter',
+      component: () => import('./views/MemberCTR.vue'),
+      name: 'memberCTR',
+
+    },
+
+    {
       path: '/LoveWheal',
       component: () => import('./views/LoveWheal.vue')
     },
