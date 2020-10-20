@@ -137,7 +137,6 @@ export default {
   },
   async created() {
     await this.getSingleMember();
-    await
   },
 };
 </script>
