@@ -80,7 +80,7 @@ namespace XforumTest.Services
                     //預測點數為1000
                     Points = 1000,
                     //預設為單身一年
-                    TitleId = _titles.GetFirst(x => x.TitleName == "單身1年").TitleId
+                    TitleId = _titles.GetFirst(x => x.TitleName == "初心者").TitleId
                 };
                 _members.Create(user);
                 _members.SaveContext();
@@ -129,7 +129,7 @@ namespace XforumTest.Services
             var source = _members.GetAll().First(x => x.Email == userEmail);
             var result = new MemberDto
             {
-                //UserId = source.UserId,
+                UserId = source.UserId,
                 Name = source.Name,
                 Email = source.Email,
                 Password = source.Password,
