@@ -12,6 +12,10 @@ export default new VueRouter({
   routes: [
 
     {
+      path: '*',
+      redirect: { name: 'home' },
+    },
+    {
       path: '/Login',
       component: () => import('./views/Login.vue'),
       name: 'login',
@@ -49,6 +53,13 @@ export default new VueRouter({
         ],
       },
     },
+    {
+      path: '/MemberCenter',
+      component: () => import('./views/MemberCTR.vue'),
+      name: 'memberCTR',
+
+    },
+
     {
       path: '/LoveWheal',
       component: () => import('./views/LoveWheal.vue')

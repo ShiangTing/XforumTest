@@ -35,6 +35,7 @@ namespace XforumTest.Services
                 ReposiveMessages messages = new ReposiveMessages()
                 {
                     MessageId = Guid.NewGuid(),
+                    UserId = dto.UserId,
                     Context = dto.Context,
                     LikeNumber = 0,
                     DisLikeNumber = 0,
@@ -72,7 +73,7 @@ namespace XforumTest.Services
         }
         public async Task<List<RMessageDTO>> GetAllbyPostId(Guid postId)
         {
-            var mRepo = from m in _messages.GetAll()
+            var mRepo = (from m in _messages.GetAll()
                         where m.PostId == postId
                         join p in _members.GetAll()
                         on m.UserId equals p.UserId
@@ -87,7 +88,7 @@ namespace XforumTest.Services
                             UserId = (Guid)m.UserId,
                             UserName = p.Name,
                             UserImg = p.ImgLink
-                        };
+                        }).OrderBy(item => item.CreatedDate);
             return await mRepo.ToListAsync();
         }
         public void GetSingle()

@@ -45,7 +45,7 @@ namespace XforumTest
 
             services.AddControllers();
             //  services.AddControllers().AddNewtonsoftJson();
-            
+
             //Connecting String
             if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIROMENT") == "Production")
             {
@@ -54,9 +54,9 @@ namespace XforumTest
             else
             {
                 services.AddDbContext<MyDBContext>(opt => opt.UseSqlServer(Configuration["MyDBContext"]));
-                
+
             }
-            
+
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
 
 

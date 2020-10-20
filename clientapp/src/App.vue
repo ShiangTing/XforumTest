@@ -9,9 +9,6 @@ export default {
   data() {
     return {};
   },
-  created() {
-    console.log(process.env.VUE_APP_API);
-  },
 };
 </script>
 <style lang="scss">
