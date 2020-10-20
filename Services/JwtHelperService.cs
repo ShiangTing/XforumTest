@@ -76,10 +76,10 @@ namespace XforumTest.Helpers
             {
                 var user = members.Select(x => new User
                 {
+                    //RoleId = x.RoleId.GetValueOrDefault().ToString(),
                     Email = x.Email,
                     Password = x.Password,
-                    RoleId = x.RoleId.GetValueOrDefault().ToString(),
-                    ForumRoles = _forumRole.GetAll().FirstOrDefault(y => y.RoleId == x.RoleId).RoleName
+                    ForumRoles = _forumRole.GetAll().FirstOrDefault(y => y.RoleId == x.RoleId).RoleName,
                 }).SingleOrDefault(x => x.Email == login.Email && x.Password == login.Password);
 
                 //if (user == null) return null;

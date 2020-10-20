@@ -1,19 +1,13 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.FileProviders;
-using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using XforumTest.Context;
 using XforumTest.DataTable;
@@ -43,18 +37,29 @@ namespace XforumTest
 
                 options.AddPolicy("CorsPolicy", policy =>
                 {
-                    policy.WithOrigins("http://localhost:8080")
-                          .AllowAnyHeader()
-                          .AllowAnyMethod()
-                          .AllowCredentials();
+
+                    policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
+                    policy.WithOrigins("http://localhost:8080").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
+                    //.AllowCredentials();
                 });
             });
 
             services.AddControllers();
             //  services.AddControllers().AddNewtonsoftJson();
-            services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
+
             //Connecting String
-            services.AddDbContext<MyDBContext>(opt => opt.UseSqlServer(Configuration["MyDBContext"]));
+            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIROMENT") == "Production")
+            {
+                services.AddDbContext<MyDBContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("MyDBContext")));
+            }
+            else
+            {
+                services.AddDbContext<MyDBContext>(opt => opt.UseSqlServer(Configuration["MyDBContext"]));
+
+            }
+
+            services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
+
 
             services.AddTransient<IRepository<ForumMembers>, GeneralRepository<ForumMembers>>();
             services.AddTransient<IRepository<Posts>, GeneralRepository<Posts>>();
@@ -63,7 +68,7 @@ namespace XforumTest
             services.AddTransient<IRepository<Titles>, GeneralRepository<Titles>>();
             services.AddTransient<IRepository<ReposiveMessages>, GeneralRepository<ReposiveMessages>>();
             services.AddTransient<IRepository<Titles>, GeneralRepository<Titles>>();
-            services.AddTransient<IRepository<MemberTitle>,GeneralRepository<MemberTitle>>();
+            services.AddTransient<IRepository<MemberTitle>, GeneralRepository<MemberTitle>>();
 
 
             services.AddTransient<IRepository<MessageLikeDto>, GeneralRepository<MessageLikeDto>>();
@@ -74,6 +79,7 @@ namespace XforumTest
             services.AddTransient<ILikeService<MessageLikeDto>, LikeService>();
             services.AddTransient<IForumService, ForumService>();
             services.AddTransient<IPostService, PostService>();
+            services.AddTransient<ITitleService, TitleService>();
             services.AddControllers().AddNewtonsoftJson();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
@@ -124,28 +130,27 @@ namespace XforumTest
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
 
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
-            }
+            //if (env.IsDevelopment())
+            //{
+            //    app.UseDeveloperExceptionPage();
+            //}
+            //else
+            //{
+            //    app.UseExceptionHandler("/Home/Error");
+            //    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+            //    app.UseHsts();
+            //}
             app.UseHttpsRedirection();
+
             app.UseCors("CorsPolicy");
 
-            app.UseStaticFiles();
-
-            app.UseStaticFiles(new StaticFileOptions
-            {
-                FileProvider = new PhysicalFileProvider(
-                    Path.Combine(Directory.GetCurrentDirectory(), "HtmlPages")),
-                RequestPath = "/HtmlPages"
-            });
-         //   app.UseExceptionHandler("/api/error");
+            //app.UseStaticFiles(new StaticFileOptions
+            //{
+            //    FileProvider = new PhysicalFileProvider(
+            //        Path.Combine(Directory.GetCurrentDirectory(), "HtmlPages")),
+            //    RequestPath = "/HtmlPages"
+            //});
+            //app.UseExceptionHandler("/api/error");
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();
             // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
@@ -154,17 +159,21 @@ namespace XforumTest
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
             });
+
+            app.UseStaticFiles();
             app.UseRouting();
-            app.UseCors(x => x
-               .AllowAnyOrigin()
-               .AllowAnyMethod()
-               .AllowAnyHeader());
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.UseMiddleware<JwtMiddleware>();
+            //app.UseWhen(context => context.Request.Path.StartsWithSegments("/api"), appBuilder =>
+            //{
+            //app.UseMiddleware<JwtMiddleware>();
+            //});
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapControllerRoute(
+                    name: "api",
+                    pattern: "api/{controller}/{action}");
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");

@@ -2,15 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+//using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using XforumTest.DTO;
 using XforumTest.Interface;
 using XforumTest.Services;
 
+
 namespace XforumTest.ApiController
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
+    //[EnableCors("CorsPolicy")]
     [ApiController]
     public class TitleController : ControllerBase
     {
@@ -22,9 +25,26 @@ namespace XforumTest.ApiController
         }
 
         [HttpPost]
-        public string BuyTitle(string userid, string titleid)
+        public string BuyTitle(BuyTitle buy)
         {
-            return _titleservice.BuyTitle(userid,titleid);
+            return _titleservice.BuyTitle(buy);
+        }
+
+        [HttpGet("{id}")]
+        public List<HasTitle> GetHasTitles(string id)
+        {
+            return _titleservice.GetHasTitles(id);
+        }
+
+        [HttpGet("{id}")]
+        public decimal? GetPoints(string id)
+        {
+            return _titleservice.GetPoints(id);
+        }
+        [HttpGet]
+        public List<TitleCreateDto> GetAllTitles()
+        {
+            return _titleservice.GetAllTitles();
         }
     }
 }

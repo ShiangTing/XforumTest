@@ -35,9 +35,10 @@ namespace XforumTest.Services
                 ReposiveMessages messages = new ReposiveMessages()
                 {
                     MessageId = Guid.NewGuid(),
+                    UserId = dto.UserId,
                     Context = dto.Context,
-                    LikeNumber = dto.LikeNumber,
-                    DisLikeNumber = dto.DisLikeNumber,
+                    LikeNumber = 0,
+                    DisLikeNumber = 0,
                     CreatedDate = DateTime.Now,
                     PostId = dto.PostId
                 };
@@ -87,7 +88,7 @@ namespace XforumTest.Services
                             UserId = (Guid)m.UserId,
                             UserName = p.Name,
                             UserImg = p.ImgLink
-                        });
+                        }).OrderBy(item => item.CreatedDate);
             return await mRepo.ToListAsync();
         }
         public void GetSingle()

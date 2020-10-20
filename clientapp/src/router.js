@@ -10,12 +10,10 @@ VueRouter.prototype.push = function push(location) {
 export default new VueRouter({
   mode: 'hash',
   routes: [
+
     {
       path: '*',
       redirect: { name: 'home' },
-      // meta: {
-      //   title: 'RagnarokShopV3 - 404',
-      // },
     },
     {
       path: '/Login',
@@ -33,7 +31,12 @@ export default new VueRouter({
       name: 'createthread',
     },
     {
-      path: '/post',
+      path: '/Rank',
+      component: () => import('./views/Rank.vue'),
+      name: 'rank',
+    },
+    {
+      path: '/Post',
       component: () => import('./views/Post.vue'),
       name: 'post',
       meta: {
@@ -49,6 +52,17 @@ export default new VueRouter({
           },
         ],
       },
+    },
+    {
+      path: '/MemberCenter',
+      component: () => import('./views/MemberCTR.vue'),
+      name: 'memberCTR',
+
+    },
+
+    {
+      path: '/LoveWheal',
+      component: () => import('./views/LoveWheal.vue')
     },
     {
       path: '/',
@@ -79,8 +93,6 @@ export default new VueRouter({
 
               },
               {
-                // name: `${VueRouter.$route.name}`,
-                // link: `${Vue.$route.params.routeName}`,
               },
             ],
           },
@@ -88,8 +100,12 @@ export default new VueRouter({
       ],
     },
     {
+      path: '*',
+      component: () => import('./views/404.vue'),
+    },
+    {
       path: '/article/:id',
       component: () => import('./views/Article.vue')
-    }
+    },
   ],
 });
