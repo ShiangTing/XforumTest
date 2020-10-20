@@ -72,7 +72,7 @@ namespace XforumTest.Services
         }
         public async Task<List<RMessageDTO>> GetAllbyPostId(Guid postId)
         {
-            var mRepo = from m in _messages.GetAll()
+            var mRepo = (from m in _messages.GetAll()
                         where m.PostId == postId
                         join p in _members.GetAll()
                         on m.UserId equals p.UserId
@@ -87,7 +87,7 @@ namespace XforumTest.Services
                             UserId = (Guid)m.UserId,
                             UserName = p.Name,
                             UserImg = p.ImgLink
-                        };
+                        });
             return await mRepo.ToListAsync();
         }
         public void GetSingle()
