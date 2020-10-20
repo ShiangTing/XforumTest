@@ -23,8 +23,6 @@
         <span class="badge badge-info m-3 p-2">{{ item.titleName }}</span>
       </div>
       <h4><b>可以購買的稱號</b></h4>
-      <loading loader="bars" :active.sync="isLoading" :is-full-page="false">
-      </loading>
 
       <table class="table table-dark">
         <thead>

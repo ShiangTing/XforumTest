@@ -15,26 +15,53 @@
             type="email"
             required
             placeholder="Enter email"
+            readonly
           ></b-form-input>
         </b-form-group>
 
         <b-form-group id="input-group-2" label="Your Name:" label-for="input-2">
-          <b-form-input
-            id="input-2"
-            v-model="user.name"
-            required
-            placeholder="Enter name"
-          ></b-form-input>
-        </b-form-group>
+          <div class="d-flex">
+            <b-form-input
+              id="input-2"
+              v-model="user.name"
+              required
+              placeholder="Enter name"
+              :disabled="inputCanChange"
+            ></b-form-input>
 
-        <b-form-group id="input-group-3" label="Food:" label-for="input-3">
-          <b-form-select
-            id="input-3"
-            v-model="user.food"
-            :options="foods"
-            required
-          ></b-form-select>
+            <b-button
+              pill
+              variant="outline-secondary"
+              class="ml-2"
+              v-if="inputCanChange"
+              @click="inputChange"
+              >修改</b-button
+            >
+            <b-button
+              v-else
+              pill
+              variant="info"
+              class="ml-2"
+              @click="inputChange"
+              >完成修改</b-button
+            >
+          </div>
         </b-form-group>
+        <h4><b>已經擁有的稱號</b></h4>
+        <div v-for="(item, idx) in hasRank" :key="idx" class="d-inline-block">
+          <div v-if="item.titleName == user.ownerRank">
+            <font-awesome-icon icon="crown" />
+            <span class="badge badge-primary m-3 p-2">{{
+              user.ownerRank
+            }}</span>
+          </div>
+
+          <span
+            class="badge badge-info m-3 p-2 ownerRank"
+            v-text="otherRank(item.titleName)"
+            @click="changeRank(item.titleName)"
+          ></span>
+        </div>
 
         <b-form-group id="input-group-4">
           <b-form-checkbox-group v-model="user.checked" id="checkboxes-4">
@@ -59,7 +86,9 @@ export default {
   components: { Navbar },
   data() {
     return {
+      inputCanChange: true,
       user: {
+        userId: "",
         email: "",
         name: "",
         age: "",
@@ -67,9 +96,10 @@ export default {
         points: "",
         roleName: "",
         gender: "",
-        food: null,
+        ownerRank: "",
         checked: [],
       },
+      hasRank: [],
       foods: [
         { text: "Select One", value: null },
         "Carrots",
@@ -81,6 +111,20 @@ export default {
     };
   },
   methods: {
+    inputChange() {
+      return this.inputCanChange
+        ? (this.inputCanChange = false)
+        : (this.inputCanChange = true);
+    },
+    changeRank(rankName) {
+      let vm = this;
+      vm.user.ownerRank = rankName;
+    },
+    otherRank(rankName) {
+      if (rankName !== this.user.ownerRank) {
+        return rankName;
+      }
+    },
     onSubmit(evt) {
       evt.preventDefault();
       alert(JSON.stringify(this.form));
@@ -88,6 +132,7 @@ export default {
     onReset(evt) {
       evt.preventDefault();
       // Reset our form values
+
       this.user.email = "";
       this.user.name = "";
       this.user.food = null;
@@ -114,7 +159,11 @@ export default {
             console.log(res.data.data);
             vm.user.email = res.data.data.email;
             vm.user.name = res.data.data.name;
+            vm.user.userId = res.data.data.userId;
+            vm.user.ownerRank = res.data.data.titleName;
+            this.getHasRank();
           })
+
           .catch((err) => {
             console.log(err);
           });
@@ -128,6 +177,7 @@ export default {
         method: "GET",
       })
         .then((resHasRank) => {
+          console.log(resHasRank);
           resHasRank.data.forEach((element) => {
             vm.hasRank.push(element);
           });
@@ -141,5 +191,11 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss" scoped>
+input {
+  width: 20%;
+}
+.ownerRank {
+  cursor: pointer;
+}
 </style>
