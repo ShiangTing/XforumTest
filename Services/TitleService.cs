@@ -84,8 +84,7 @@ namespace XforumTest.Services
         /// <summary>
         /// 購買稱號系統
         /// </summary>
-        /// <param name="titleid"></param>
-        /// <param name="userid"></param>
+        /// <param name="buy"></param>
         /// <returns></returns>
         public string BuyTitle(BuyTitle buy)
         {

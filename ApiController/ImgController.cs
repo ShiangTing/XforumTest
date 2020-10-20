@@ -124,7 +124,6 @@ namespace XforumTest.ApiController
 
             if (dto != null)
             {
-                int a;
                 //convert base64 to byte[]
                 byte[] imageBytes = Convert.FromBase64String(dto.base64String);
 
