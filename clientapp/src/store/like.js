@@ -1,11 +1,19 @@
 
+import axios from 'axios'
 export default {
   state: {
-    isAuthorize: false,
-    token: ""
+    article:{
+      like: 0,
+      dislike: 0
+    },
+    messageLikeList: [],
+    message: {
+      like: 0,
+      dislike: 0
+    }
   },
   mutations: {
-    GET_AUTH(state, payload){
+    GET_ARTICLE(state, payload){
       state.token = payload.token;
       state.isAuthorize = payload.isAuthorize
     },

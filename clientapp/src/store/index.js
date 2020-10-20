@@ -11,9 +11,19 @@ import tokenModule from './token';
 Vue.use(Vuex);
 
 export default new Vuex.Store({
-  state: {},
-  mutations: {},
-  actions: {},
+  state: {
+    isLoading: false,
+  },
+  mutations: {
+    LOADING(state,payload){
+      state.isLoading = payload
+    } 
+  },
+  actions: {
+    isLoading (context) {
+      context.commit('LOADING', status)
+    },
+  },
   modules: {
     tokenModule,
   },

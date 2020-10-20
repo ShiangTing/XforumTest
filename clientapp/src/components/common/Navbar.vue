@@ -78,30 +78,27 @@ export default {
     logout() {
       let vm = this;
       window.localStorage.clear();
-      vm.$router.go(0);
+      vm.$store.dispatch('clearAuth');
+      vm.isLogin = false;
+      vm.name = "訪客"
+      vm.$router.push('/')
     },
   },
   created() {
     let vm = this;
     let auth = vm.$store.state.tokenModule;
     let isAuth = auth.isAuthorize;
-    let token = auth.token;
     let url = process.env.VUE_APP_API + "/api/Users/GetSingleMember";
     if (isAuth) {
       vm.isLogin = true;
-      vm.$axios({
-        url: url,
-        method: "GET",
-        headers: { Authorization: `Bearer ${token}` },
-      })
-        .then((res) => {
-          console.log(res.data.data.name);
+        vm.$axios({
+          url: url,
+          method: "GET",
+        }).then(res => {
           vm.name = res.data.data.name;
+        }).catch(()=>{
+          window.localStorage.clear()
         })
-        .catch((err) => {
-          console.log(err);
-          window.localStorage.clear();
-        });
     }
   },
 };
