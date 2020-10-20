@@ -120,7 +120,7 @@ export default {
           });
       }
     },
-     getHasRank() {
+    getHasRank() {
       let vm = this;
       const getHasRank = process.env.VUE_APP_API + "/api/Title/GetHasTitles";
       vm.$axios({
@@ -137,7 +137,6 @@ export default {
   },
   async created() {
     await this.getSingleMember();
-    await
   },
 };
 </script>
