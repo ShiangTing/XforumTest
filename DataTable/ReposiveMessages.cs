@@ -5,6 +5,11 @@ namespace XforumTest.DataTable
 {
     public partial class ReposiveMessages
     {
+        public ReposiveMessages()
+        {
+            LikeAndDislikeHistory = new HashSet<LikeAndDislikeHistory>();
+        }
+
         public Guid MessageId { get; set; }
         public Guid? PostId { get; set; }
         public string Context { get; set; }
@@ -14,5 +19,6 @@ namespace XforumTest.DataTable
         public Guid? UserId { get; set; }
 
         public virtual Posts Post { get; set; }
+        public virtual ICollection<LikeAndDislikeHistory> LikeAndDislikeHistory { get; set; }
     }
 }

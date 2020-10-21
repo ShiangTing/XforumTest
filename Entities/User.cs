@@ -12,8 +12,9 @@ namespace XforumTest.Entities
         //public string FirstName { get; set; }
         //public string LastName { get; set; }
         //public string RoleId { get; set; }
+        //public string ForumRoles { get; set; }
         public string Email { get; set; }
-        public string ForumRoles { get; set; }
+        public string RefreshToken { get; set; }
         [JsonIgnore]
         public string Password { get; set; }
     }

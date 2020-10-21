@@ -23,7 +23,8 @@ import {
   faTrash,
   faHeart,
   faBookmark,
-  faCrown
+  faCrown,
+  faCaretDown
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import VueQuillEditor from "vue-quill-editor";
@@ -77,7 +78,6 @@ Vue.use(VueLoading, {
   isFullPage: true,
   opacity: 0.8
 });
-Vue.prototype.$axios = axios;
 Vue.component('font-awesome-icon', FontAwesomeIcon); //使用kebab-case
 Vue.component('ValidationProvider', ValidationProvider);
 Vue.component('ValidationObserver', ValidationObserver);
@@ -95,10 +95,12 @@ library.add(
   faTrash,
   faBookmark,
   faHeart,
-  faCrown
+  faCrown,
+  faCaretDown
 
 );
 
+Vue.prototype.$axios = axios;
 Vue.prototype.$bus = new Vue();
 Vue.use(VueParticles);
 Vue.use(BoostrapVue);
