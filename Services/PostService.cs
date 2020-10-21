@@ -24,13 +24,10 @@ namespace XforumTest.Services
             _members = members;
             _forums = forums;
         }
-        public void Create(PostCreateDto model)
+        public string Create(PostCreateDto model)
         {
-            var time = new DateTime();
                 try
-                {
-                    // 時區要再調整，先測試用
-                    //var localtime = TimeZoneInfo.Local;  自動抓取電腦時區並作調整，但型別不同不能傳入資料庫
+                {                    
                     var po = new Posts
                     {
                         PostId = Guid.NewGuid(),
@@ -38,7 +35,7 @@ namespace XforumTest.Services
                         UserId = new Guid(model.UserId),
                         Title = model.Title,
                         Description = model.Description,
-                        CreatedDate = time.ToLocalTime(),
+                        CreatedDate = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow,TimeZoneInfo.Local),
                         Img = null,
                         State = true
                     };
@@ -51,11 +48,11 @@ namespace XforumTest.Services
                     
                     _members.Update(user);
                     _members.SaveContext();
-
+                    return "Po文成功，積分增加50點";
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine(ex.Message);
+                    return ex.Message;
                 }
 
         }
@@ -90,7 +87,7 @@ namespace XforumTest.Services
 
         public void Delete(string id)
         {
-            var delete = _posts.GetAll().FirstOrDefault(p => p.UserId.ToString() == id);
+            var delete = _posts.GetAll().FirstOrDefault(p => p.PostId.ToString() == id);
             delete.State = false;
             _posts.Update(delete);
             _posts.SaveContext();
@@ -117,6 +114,7 @@ namespace XforumTest.Services
                         on p.UserId equals u.UserId
                         join f in _forums.GetAll2()
                         on p.ForumId equals f.ForumId
+                        where p.State == true
                         orderby p.CreatedDate
                         select new PostListDto
                         {
