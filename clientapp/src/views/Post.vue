@@ -66,7 +66,7 @@ import Navbar from "../components/common/Navbar";
 import { VueEditor } from "vue2-editor";
 import { ImageDrop } from "quill-image-drop-module";
 import ImageResize from "quill-image-resize";
-
+import axios from "axios";
 export default {
   components: { Navbar, VueEditor },
   name: "App",
@@ -124,7 +124,7 @@ export default {
       formData.append("image", file);
       console.log("底下是formdata");
       console.log(formData);
-      this.$axios({
+      axios({
         url: "https://api.imgur.com/3/image",
         method: "POST",
         headers: {

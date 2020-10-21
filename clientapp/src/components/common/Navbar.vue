@@ -85,10 +85,10 @@ export default {
     logout() {
       let vm = this;
       window.localStorage.clear();
-      vm.$store.dispatch('clearAuth');
+      vm.$store.dispatch("clearAuth");
       vm.isLogin = false;
-      vm.name = "訪客"
-      vm.$router.push('/')
+      vm.name = "訪客";
+      vm.$router.push("/");
     },
   },
   created() {
@@ -98,14 +98,17 @@ export default {
     let url = process.env.VUE_APP_API + "/api/Users/GetSingleMember";
     if (isAuth) {
       vm.isLogin = true;
-        vm.$axios({
-          url: url,
-          method: "GET",
-        }).then(res => {
+      vm.$axios({
+        url: url,
+        method: "GET",
+      })
+        .then((res) => {
           vm.name = res.data.data.name;
-        }).catch(()=>{
-          window.localStorage.clear()
         })
+        .catch(() => {
+          window.localStorage.clear();
+          vm.isLogin = false;
+        });
     }
   },
 };

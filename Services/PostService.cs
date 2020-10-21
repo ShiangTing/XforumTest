@@ -26,37 +26,37 @@ namespace XforumTest.Services
         }
         public void Create(PostCreateDto model)
         {
-            var time = new DateTime();
-                try
-                {
-                    // 時區要再調整，先測試用
-                    //var localtime = TimeZoneInfo.Local;  自動抓取電腦時區並作調整，但型別不同不能傳入資料庫
-                    var po = new Posts
-                    {
-                        PostId = Guid.NewGuid(),
-                        ForumId = new Guid(model.ForumId),
-                        UserId = new Guid(model.UserId),
-                        Title = model.Title,
-                        Description = model.Description,
-                        CreatedDate = time.ToLocalTime(),
-                        Img = null,
-                        State = true
-                    };
-                    // 每PO一篇文 +50 points
-                    var user = _members.GetAll2().FirstOrDefault(x => x.UserId.ToString() == model.UserId);
-                    user.Points = user.Points + 50;
 
-                    _posts.Create(po);
-                    _posts.SaveContext();
-                    
-                    _members.Update(user);
-                    _members.SaveContext();
-
-                }
-                catch (Exception ex)
+            try
+            {
+                // 時區要再調整，先測試用
+                //var localtime = TimeZoneInfo.Local;  自動抓取電腦時區並作調整，但型別不同不能傳入資料庫
+                var po = new Posts
                 {
-                    Debug.WriteLine(ex.Message);
-                }
+                    PostId = Guid.NewGuid(),
+                    ForumId = new Guid(model.ForumId),
+                    UserId = new Guid(model.UserId),
+                    Title = model.Title,
+                    Description = model.Description,
+                    CreatedDate = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, TimeZoneInfo.Local),
+                    Img = null,
+                    State = true
+                };
+                // 每PO一篇文 +50 points
+                var user = _members.GetAll2().FirstOrDefault(x => x.UserId.ToString() == model.UserId);
+                user.Points = user.Points + 50;
+
+                _posts.Create(po);
+                _posts.SaveContext();
+
+                _members.Update(user);
+                _members.SaveContext();
+
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
 
         }
 

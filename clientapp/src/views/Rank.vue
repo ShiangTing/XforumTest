@@ -23,7 +23,6 @@
         <span class="badge badge-info m-3 p-2">{{ item.titleName }}</span>
       </div>
       <h4><b>可以購買的稱號</b></h4>
-
       <table class="table table-dark">
         <thead>
           <tr>
@@ -61,6 +60,7 @@
 
 <script>
 import Navbar from "../components/common/Navbar";
+import axios from "axios";
 export default {
   components: { Navbar },
   data() {
@@ -101,7 +101,7 @@ export default {
             const buyRankUrl = process.env.VUE_APP_API + "/api/Title/BuyTitle";
             vm.buyRankData.UserId = vm.user.userId;
             vm.buyRankData.TitleId = vm.wantedRankName;
-            vm.$axios({
+            axios({
               url: `${buyRankUrl}`,
               method: "POST",
               data: vm.buyRankData,
@@ -125,7 +125,7 @@ export default {
     getPoints() {
       let vm = this;
       const getPointsUrl = process.env.VUE_APP_API + "/api/Title/GetPoints";
-      vm.$axios
+      axios
         .get(getPointsUrl + "/" + vm.user.userId)
         .then((res) => {
           vm.user.points = res.data;
@@ -135,7 +135,7 @@ export default {
     getHasRank() {
       let vm = this;
       const getHasRank = process.env.VUE_APP_API + "/api/Title/GetHasTitles";
-      vm.$axios({
+      axios({
         url: getHasRank + "/" + vm.user.userId,
         method: "GET",
       })
@@ -149,7 +149,7 @@ export default {
     getAllRank() {
       let vm = this;
       const getAllRankUrl = process.env.VUE_APP_API + "/api/Title/GetAllTitles";
-      vm.$axios
+      axios
         .get(getAllRankUrl)
         .then((res) => {
           res.data.forEach((element) => {
@@ -169,21 +169,21 @@ export default {
       const getNameurl = process.env.VUE_APP_API + "/api/Users/GetUserName";
 
       if (isAuth) {
-        vm.$axios
+        axios
           .all([
-            vm.$axios({
+            axios({
               url: getIdUrl,
               method: "GET",
               headers: { Authorization: `Bearer ${token}` },
             }),
-            vm.$axios({
+            axios({
               url: getNameurl,
               method: "GET",
               headers: { Authorization: `Bearer ${token}` },
             }),
           ])
           .then(
-            vm.$axios.spread((resId, resName) => {
+            axios.spread((resId, resName) => {
               vm.user.userId = resId.data;
               vm.user.userName = resName.data;
               vm.getPoints();
@@ -210,11 +210,6 @@ export default {
       });
     });
   },
-  // beforecreated(){
-  // //    <b-spinner small type="grow"></b-spinner>
-  // //   Loading...
-  // // </b-button>
-  // },
   async created() {
     await this.getAllAxios();
     await this.getAllRank();

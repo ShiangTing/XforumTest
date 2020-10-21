@@ -3,50 +3,94 @@
     <Navbar />
     <div class="container">
       <b-form @submit="onSubmit" @reset="onReset" v-if="show">
-        <b-form-group
-          id="input-group-1"
-          label="Email address:"
-          label-for="input-1"
-          description="We'll never share your email with anyone else."
-        >
-          <b-form-input
-            id="input-1"
-            v-model="user.email"
-            type="email"
-            required
-            placeholder="Enter email"
-            readonly
-          ></b-form-input>
-        </b-form-group>
-
-        <b-form-group id="input-group-2" label="Your Name:" label-for="input-2">
-          <div class="d-flex">
-            <b-form-input
-              id="input-2"
-              v-model="user.name"
-              required
-              placeholder="Enter name"
-              :disabled="inputCanChange"
-            ></b-form-input>
-
-            <b-button
-              pill
-              variant="outline-secondary"
-              class="ml-2"
-              v-if="inputCanChange"
-              @click="inputChange"
-              >修改</b-button
-            >
-            <b-button
-              v-else
-              pill
-              variant="info"
-              class="ml-2"
-              @click="inputChange"
-              >完成修改</b-button
-            >
+        <div class="row mt-5">
+          <div class="col">
+            <b-form-group>
+              <h4><b>帳號名稱</b></h4>
+              <b-form-input
+                v-model="user.email"
+                type="email"
+                required
+                readonly
+              ></b-form-input>
+            </b-form-group>
           </div>
-        </b-form-group>
+          <div class="col">
+            <h4><b>暱稱</b></h4>
+            <b-form-group>
+              <div class="d-flex">
+                <b-form-input
+                  id="input-2"
+                  v-model="user.name"
+                  required
+                  placeholder="Enter name"
+                  :disabled="inputCanChange"
+                ></b-form-input>
+              </div>
+            </b-form-group>
+          </div>
+          <div class="col">
+            <h4><b>年齡</b></h4>
+            <b-form-group>
+              <div class="d-flex">
+                <b-form-input
+                  type="number"
+                  min="1"
+                  v-model="user.age"
+                  required
+                  :disabled="inputCanChange"
+                ></b-form-input>
+              </div>
+            </b-form-group>
+          </div>
+        </div>
+        <div class="row mt-5">
+          <div class="col">
+            <h4><b>性別</b></h4>
+            <b-form-group>
+              <!-- <div class="d-flex">
+                <b-form-input
+                  v-model="user.age"
+                  required
+                  :disabled="inputCanChange"
+                ></b-form-input>
+              </div> -->
+              <select
+                style="
+                  width: 51%;
+                  height: 38px;
+                  border-radius: 5px;
+                  background-color: #ddd;
+                "
+                @change="getOptionIdx($event, $event.target.selectedIndex)"
+                :disabled="inputCanChange"
+              >
+                <option disabled selected>{{ user.gender }}</option>
+                <option
+                  v-for="(item, idx) in genderList"
+                  :key="idx"
+                  :id="genderList[idx]"
+                >
+                  {{ item }}
+                </option>
+              </select>
+            </b-form-group>
+          </div>
+          <div class="col">
+            <h4><b>性別</b></h4>
+            <b-form-group>
+              <div class="d-flex">
+                <b-form-input
+                  type="number"
+                  min="1"
+                  v-model="user.age"
+                  required
+                  :disabled="inputCanChange"
+                ></b-form-input>
+              </div>
+            </b-form-group>
+          </div>
+        </div>
         <h4><b>已經擁有的稱號</b></h4>
         <div v-for="(item, idx) in hasRank" :key="idx" class="d-inline-block">
           <div v-if="item.titleName == user.ownerRank">
@@ -63,14 +107,27 @@
           ></span>
         </div>
 
-        <b-form-group id="input-group-4">
+        <div></div>
+
+        <!-- <b-form-group id="input-group-4">
           <b-form-checkbox-group v-model="user.checked" id="checkboxes-4">
-            <b-form-checkbox value="me">Check me out</b-form-checkbox>
-            <b-form-checkbox value="that">Check that out</b-form-checkbox>
+            <b-form-checkbox value="me"></b-form-checkbox>
+            <b-form-checkbox value="that"></b-form-checkbox>
           </b-form-checkbox-group>
-        </b-form-group>
+        </b-form-group> -->
 
         <b-button type="submit" variant="primary">Submit</b-button>
+        <b-button
+          pill
+          variant="outline-secondary"
+          class="ml-2"
+          v-if="inputCanChange"
+          @click="inputChange"
+          >修改會員資料</b-button
+        >
+        <b-button v-else pill variant="info" class="ml-2" @click="inputChange"
+          >完成修改</b-button
+        >
         <b-button type="reset" variant="danger">Reset</b-button>
       </b-form>
       <b-card class="mt-3" header="Form Data Result">
@@ -108,9 +165,20 @@ export default {
         "Corn",
       ],
       show: true,
+      selectGender: "",
+      genderList: ["female", "male"],
     };
   },
   methods: {
+    getOptionIdx: function (event, selectedIndex) {
+      console.log(event);
+      this.user.gender = event.target.querySelectorAll("option")[
+        selectedIndex
+      ].id;
+      // this.selectGender = event.target.querySelectorAll("option")[
+      //   selectedIndex
+      // ].id;
+    },
     inputChange() {
       return this.inputCanChange
         ? (this.inputCanChange = false)
@@ -161,6 +229,12 @@ export default {
             vm.user.name = res.data.data.name;
             vm.user.userId = res.data.data.userId;
             vm.user.ownerRank = res.data.data.titleName;
+            vm.user.age = res.data.data.age;
+            vm.user.gender = res.data.data.gender;
+            vm.user.phone = res.data.data.phone;
+            vm.user.points = res.data.data.points;
+            vm.user.roleName = res.data.data.roleName;
+
             this.getHasRank();
           })
 
@@ -177,7 +251,6 @@ export default {
         method: "GET",
       })
         .then((resHasRank) => {
-          console.log(resHasRank);
           resHasRank.data.forEach((element) => {
             vm.hasRank.push(element);
           });
@@ -193,7 +266,7 @@ export default {
 
 <style lang="scss" scoped>
 input {
-  width: 20%;
+  width: 80%;
 }
 .ownerRank {
   cursor: pointer;
