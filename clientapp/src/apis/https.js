@@ -2,9 +2,10 @@ import axios from 'axios';
 import store from '../store/index';
 import errorHandle from './errorHandle';
 // axios 配置
-axios.defaults.timeout = 5000;
+const instance = axios.create();
+instance.defaults.timeout = 5000;
 
-axios.interceptors.request.use(
+instance.interceptors.request.use(
   (config) => {
     if (store.state.tokenModule.isAuthorize) {
       config.headers.Authorization = `Bearer ${store.state.tokenModule.token}`;
@@ -16,7 +17,7 @@ axios.interceptors.request.use(
   }
 );
 
-axios.interceptors.response.use(
+instance.interceptors.response.use(
   (response) => {
     return response;
   },
@@ -30,4 +31,4 @@ axios.interceptors.response.use(
   }
 );
 
-export default axios;
+export default instance;

@@ -23,7 +23,8 @@ import {
   faTrash,
   faHeart,
   faBookmark,
-  faCrown
+  faCrown,
+  faCaretDown
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import VueQuillEditor from "vue-quill-editor";
@@ -94,7 +95,8 @@ library.add(
   faTrash,
   faBookmark,
   faHeart,
-  faCrown
+  faCrown,
+  faCaretDown
 
 );
 
