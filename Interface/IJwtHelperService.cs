@@ -10,7 +10,7 @@ namespace XforumTest.Interface
 {
     public interface IJwtHelperService
     {
-        string GenerateToken(string userName, int expireMinutes = 60);
+        string GenerateToken(string userName, int expireMinutes = 10);
         AuthenticateResponse RefreshToken(string refreshtoken);
         AuthenticateResponse ValidateUser(AuthenticateRequest login);
         IEnumerable<ForumMembers> GetMembers();

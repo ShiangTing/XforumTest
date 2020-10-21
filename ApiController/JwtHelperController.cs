@@ -41,8 +41,8 @@ namespace XforumTest.ApiController
          /// </summary>
          /// <returns></returns>
         [AllowAnonymous]
-        [HttpGet("refresh")]
-        public IActionResult RefreshToken(string refreshtoken)
+        [HttpPost("refresh")]
+        public IActionResult RefreshToken([FromBody]string refreshtoken)
         {
             //var expireTime = User.Claims.FirstOrDefault(p => p.Type == "exp").Value;
             //var releaseTime = User.Claims.FirstOrDefault(p => p.Type == "nbf").Value;
