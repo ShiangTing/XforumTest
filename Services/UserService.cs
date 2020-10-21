@@ -119,6 +119,7 @@ namespace XforumTest.Services
                 editedContext.Age = dto.Age;
                 editedContext.Phone = dto.Phone;
                 editedContext.Gender = dto.Gender;
+                editedContext.ImgLink = dto.imgLink;
                 //依據輸入的Role名稱去Role表搜RoleId並更換
                 editedContext.RoleId = _roles.GetFirst(x => x.RoleName == dto.RoleName).RoleId;
                 //依據輸入的Title名稱去Title表搜尋TitleId並更換

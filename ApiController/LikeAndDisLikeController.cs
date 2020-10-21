@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using XforumTest.DTO;
@@ -12,6 +13,7 @@ namespace XforumTest.ApiController
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
+    [Authorize]
     public class LikeAndDisLikeController : ControllerBase
     {
         private readonly ILikeService<MessageLikeDto> _mlikeService;
@@ -29,6 +31,7 @@ namespace XforumTest.ApiController
         /// <param name="Dto"></param>
         /// <returns></returns>
         [HttpPost]
+
         public ApiResult<MessageLikeDto> MsgLikeAndDisLike([FromBody]MessageLikeDto Dto)
         {
             var result = new ApiResult<MessageLikeDto>();
