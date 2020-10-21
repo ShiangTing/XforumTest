@@ -24,11 +24,13 @@ namespace XforumTest.Services
         private readonly IRepository<ForumMembers> _members;
         private readonly IRepository<ForumRoles> _roles;
         private readonly IRepository<Titles> _titles;
-        public UserService(IRepository<ForumMembers> members, IRepository<ForumRoles> roles, IRepository<Titles> titles)
+        private readonly IRepository<MemberTitle> _memberTitle;
+        public UserService(IRepository<ForumMembers> members, IRepository<ForumRoles> roles, IRepository<Titles> titles, IRepository<MemberTitle> memberTitle)
         {
             _members = members;
             _roles = roles;
             _titles = titles;
+            _memberTitle = memberTitle;
         }
 
         public IEnumerable<MemberDto> GetAll()
@@ -80,10 +82,21 @@ namespace XforumTest.Services
                     //預測點數為1000
                     Points = 1000,
                     //預設為單身一年
-                    TitleId = _titles.GetFirst(x => x.TitleName == "初心者").TitleId
+                    TitleId = _titles.GetFirst(x => x.TitleName == "初心者").TitleId,
+                    //RefreshToken,當JwtToken失效後
+                    RefreshToken = Guid.NewGuid()
                 };
                 _members.Create(user);
                 _members.SaveContext();
+
+                //加入初心者稱號至擁有的稱號
+                var usertitle = new MemberTitle()
+                {
+                    UserId = user.UserId,
+                    HasTitleId = user.TitleId
+                };
+                _memberTitle.Create(usertitle);
+                _memberTitle.SaveContext();
             }
             catch (Exception ex)
             {
@@ -186,7 +199,7 @@ namespace XforumTest.Services
 
             if (source.Any(x => x.Email == email))
             {
-                if(source.Any(x => x.Name == name))
+                if (source.Any(x => x.Name == name))
                 {
                     return new ApiResult<MemberDto>($"Email:{email} 及暱稱:{name} 皆已被使用,請更換!"); //兩者皆已存在
                 }

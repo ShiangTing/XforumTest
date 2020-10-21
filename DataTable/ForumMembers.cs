@@ -24,6 +24,7 @@ namespace XforumTest.DataTable
         public byte? EmailConformed { get; set; }
         public Guid? TitleId { get; set; }
         public string ImgLink { get; set; }
+        public Guid RefreshToken { get; set; }
 
         public virtual ForumRoles Role { get; set; }
         public virtual Titles Title { get; set; }

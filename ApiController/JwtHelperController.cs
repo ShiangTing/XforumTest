@@ -36,6 +36,18 @@ namespace XforumTest.ApiController
             //if (check == null) return BadRequest(new { message = "Username or password is incorrect!" });
             //HttpContext.Response.Cookies.Append("UserToken", check.Token);
             return Ok(check);
+        }/// <summary>
+         /// Get expiretime in Token
+         /// </summary>
+         /// <returns></returns>
+        [AllowAnonymous]
+        [HttpGet("refresh")]
+        public IActionResult RefreshToken(string refreshtoken)
+        {
+            //var expireTime = User.Claims.FirstOrDefault(p => p.Type == "exp").Value;
+            //var releaseTime = User.Claims.FirstOrDefault(p => p.Type == "nbf").Value;
+            //var refresh = _jwt.RefreshToken(User.Identity.Name, expireTime, releaseTime);
+            return Ok(_jwt.RefreshToken(refreshtoken));
         }
         /// <summary>
         /// Get all claims in Jwt Token
@@ -66,6 +78,26 @@ namespace XforumTest.ApiController
         public IActionResult GetUniqueId()
         {
             return Ok(User.Claims.FirstOrDefault(p => p.Type == "jti").Value);
+        }
+        /// <summary>
+        /// Get expiretime in Token
+        /// </summary>
+        /// <returns></returns>
+        [Authorize]
+        [HttpGet("exp")]
+        public IActionResult GetExpireTime()
+        {
+            return Ok(User.Claims.FirstOrDefault(p => p.Type == "exp").Value);
+        }
+        /// <summary>
+        /// Get expiretime in Token
+        /// </summary>
+        /// <returns></returns>
+        [Authorize]
+        [HttpGet("nbf")]
+        public IActionResult GetReleaseTime()
+        {
+            return Ok(User.Claims.FirstOrDefault(p => p.Type == "nbf").Value);
         }
         /// <summary>
         /// Get all members, convert to JSON(when authorized)
