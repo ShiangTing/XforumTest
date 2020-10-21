@@ -104,6 +104,7 @@ export default {
       })
         .then((res) => {
           vm.name = res.data.data.name;
+          vm.isLogin = false;
         })
         .catch(() => {
           window.localStorage.clear();

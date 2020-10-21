@@ -10,7 +10,7 @@
                 <div class="row justify-content-between">
                   <div class="col-6 ">
                     <h3 class="card-title">{{article.title}}</h3>
-                    <h6 class="card-subtitle mb-2 text-success">作者: {{article.author}}</h6>
+                    <h6 class="card-subtitle mb-2 text-success">作者: {{article.userName}}</h6>
                     <p class="card-date text-muted">
                       {{article.createDate.replace(/-/g, "/").replace("T"," ").replace(/\.\d+/, "")}}
                     </p>
@@ -90,8 +90,10 @@
         </div>
       </div>
     </div>
-    <b-modal id="edit" title="編輯文章" style="width:700px">
-      <vue-editor v-model="article.description"></vue-editor>
+    <b-modal id="edit" title="編輯文章" size="xl" centered ok-title="儲存" cancel-title="取消" @ok="editArticle">
+      <vue-editor id="editor" useCustomImageHandler @image-added="handleImageAdded"
+        :customModules="customModulesForEditor" :editorOptions="editorSettings" v-model="article.description">
+      </vue-editor>
     </b-modal>
   </div>
 </template>
@@ -99,21 +101,35 @@
 <script>
 import Navbar from "../components/common/Navbar"
 import { VueEditor } from "vue2-editor";
-
+import { ImageDrop } from "quill-image-drop-module";
+import ImageResize from "quill-image-resize";
+import axios from 'axios'
 export default {
   components: { Navbar, VueEditor },
   data () {
     return {
+      //編輯器
+      customModulesForEditor: [
+        { alias: "imageDrop", module: ImageDrop },
+        { alias: "imageResize", module: ImageResize },
+      ],
+      editorSettings: {
+        modules: {
+          imageDrop: true,
+          imageResize: {},
+        },
+      },
+      //文章
       article: {
+        postId: "",
         userId: "",
         title: "",
-        author: "",
+        userName: "",
         createDate: "",
         like: 0,
         dislike: 0,
-        edit: false,
-        delete: false,
-        description: ""
+        description: "",
+        state: false
       },
       messageList: [],
       reply: {
@@ -131,6 +147,29 @@ export default {
     };
   },
   methods: {
+    //編輯器
+    handleImageAdded (file, Editor, cursorLocation) {
+      const CLIENT_ID = "3d78cf6e67ed6af";
+      var formData = new FormData();
+      formData.append("image", file);
+      console.log("底下是formdata");
+      console.log(formData);
+      axios({
+        url: "https://api.imgur.com/3/image",
+        method: "POST",
+        headers: {
+          Authorization: "Client-ID " + CLIENT_ID,
+        },
+        data: formData,
+      })
+        .then((result) => {
+          let url = result.data.data.link;
+          Editor.insertEmbed(cursorLocation, "image", url);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
     getUserId () {
       let vm = this;
       let userIdUrl = process.env.VUE_APP_API + "/api/Users/getUserId";
@@ -147,13 +186,15 @@ export default {
       vm.$axios.get(url).then(res => {
         console.log("article", res.data);
         vm.article = {
+          postId: res.data.postId,
           userId: res.data.userId,
           title: res.data.title,
-          author: res.data.userName,
+          userName: res.data.userName,
           createDate: res.data.createdDate,
           description: res.data.description,
           like: res.data.likeNumber,
           dislike: res.data.disLikeNumber,
+          state: res.data.state
         }
         vm.reply.postId = res.data.postId
       })
@@ -170,6 +211,24 @@ export default {
             vm.templike.messagelikeList.push(messageItem)
           })
         }
+      })
+    },
+    editArticle () {
+      let vm = this;
+      let url = process.env.VUE_APP_API + "/api/Post/Edit";
+      let data = {
+        postId: vm.article.postId,
+        title: vm.article.title,
+        description: vm.article.description,
+        state: true
+      }
+      vm.$axios.post(url,data).then(res => {
+        console.log(res);
+        if(res.status === 200) {
+          alert("更新成功")
+        }
+      }).catch(err => {
+        alert("失敗",err)
       })
     },
     postMessage () {
@@ -274,7 +333,7 @@ export default {
     flex-direction: column;
     justify-content: space-between;
     img {
-      width: 100%;
+      max-width: 100%;
     }
   }
   a.title-btn {

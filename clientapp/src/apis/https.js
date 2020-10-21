@@ -2,7 +2,7 @@ import axios from 'axios';
 import store from '../store/index';
 import errorHandle from './errorHandle';
 // axios 配置
-const instance = axios.create();
+const instance = axios.create()
 instance.defaults.timeout = 5000;
 
 instance.interceptors.request.use(
