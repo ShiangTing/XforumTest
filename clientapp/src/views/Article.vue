@@ -16,10 +16,11 @@
                     </p>
                   </div>
                   <div class="col-3 d-flex justify-content-end align-items-center">
-                    <a v-if="article.userId === reply.userId" href="javascript:;" class="title-btn rounded-circle">
+                    <a v-if="article.userId === reply.userId" class="title-btn rounded-circle"
+                      @click="$bvModal.show('edit')">
                       <font-awesome-icon icon="pen" size="lg" />
                     </a>
-                    <a v-if="article.userId === reply.userId" href="javascript:;" class="title-btn rounded-circle">
+                    <a v-if="article.userId === reply.userId" class="title-btn rounded-circle">
                       <font-awesome-icon icon="trash" size="lg" />
                     </a>
                   </div>
@@ -29,15 +30,15 @@
                   <div v-html="article.description"></div>
                   <div class="col-6 d-flex align-items-center p-0">
                     <div class="mr-2 d-flex align-items-center">
-                      <a href="javascript:;" class="rounded-circle"
-                        :class="!templike.postlike ? 'title-btn' : 'btn-active'" @click.prevent="likeArticle">
+                      <a href="javascript:;" class="rounded-circle title-btn"
+                        :class="!templike.articleLike ? '' : 'active'" @click.prevent="likeArticle">
                         <font-awesome-icon icon="thumbs-up" size="lg" />
                       </a>
                       <span class="text-secondary px-2">{{article.like}}</span>
                     </div>
                     <div class="mr-2 d-flex align-items-center">
-                      <a href="javascript:;" class="rounded-circle"
-                        :class="!templike.postdislike ? 'title-btn' : 'btn-active'" @click.prevent="dislikeArticle">
+                      <a href="javascript:;" class="rounded-circle title-btn"
+                        :class="!templike.articleDislike ? '' : 'active'" @click.prevent="dislikeArticle">
                         <font-awesome-icon icon="thumbs-down" size="lg" />
                       </a>
                       <span class="text-secondary px-2">{{article.dislike}}</span>
@@ -46,7 +47,7 @@
                 </div>
               </div>
               <div class="reply-group border p-3">
-                <div class="reply-item row justify-content-between" v-for="message in messageList"
+                <div class="reply-item row justify-content-between" v-for="(message,index) in messageList"
                   :key="message.messageId">
                   <div class="col-12 col-md-10 d-flex">
                     <a class="user-img">
@@ -60,11 +61,15 @@
                     </div>
                   </div>
                   <div class="col-12 col-md-2 d-flex align-items-center">
-                    <a href="javascript:;" class="title-btn msg-btn border-0 rounded-circle m-1">
+                    <a href="javascript:;" class="title-btn msg-btn border-0 rounded-circle"
+                      :class="!templike.messagelikeList[index].like ? '' : 'active'"
+                      @click.prevent="likeMessage(index)">
                       <font-awesome-icon icon="thumbs-up" size="sm" />
                     </a>
                     <span class="px-2">{{message.likeNumber}}</span>
-                    <a href="javascript:;" class="title-btn msg-btn border-0 rounded-circle m-1">
+                    <a href="javascript:;" class="title-btn msg-btn border-0 rounded-circle"
+                      :class="!templike.messagelikeList[index].dislike ? '' : 'active'"
+                      @click.prevent="dislikeMessage(index)">
                       <font-awesome-icon icon="thumbs-down" size="sm" />
                     </a>
                     <span class="px-2">{{message.disLikeNumber}}</span>
@@ -81,18 +86,22 @@
                 </div>
               </div>
             </div>
-
           </div>
         </div>
       </div>
     </div>
+    <b-modal id="edit" title="編輯文章" style="width:700px">
+      <vue-editor v-model="article.description"></vue-editor>
+    </b-modal>
   </div>
 </template>
 
 <script>
 import Navbar from "../components/common/Navbar"
+import { VueEditor } from "vue2-editor";
+
 export default {
-  components: { Navbar },
+  components: { Navbar, VueEditor },
   data () {
     return {
       article: {
@@ -113,8 +122,11 @@ export default {
         userId: "",
       },
       templike: {
-        postlike: false,
-        postdislike: false,
+        articleLike: false,
+        articleDislike: false,
+        messageLike: false,
+        messageDisLike: false,
+        messagelikeList: []
       }
     };
   },
@@ -152,6 +164,11 @@ export default {
       vm.$axios.get(url).then(res => {
         if (res.data.issuccessful) {
           vm.messageList = res.data.data;
+
+          res.data.data.forEach(() => {
+            let messageItem = { like: false, dislike: false }
+            vm.templike.messagelikeList.push(messageItem)
+          })
         }
       })
     },
@@ -170,39 +187,65 @@ export default {
     },
     likeArticle () {
       let vm = this;
-      if (!vm.templike.postlike) {
-        vm.templike.postlike = true;
+      if (!vm.templike.articleLike) {
+        vm.templike.articleLike = true;
         vm.article.like += 1;
+        if (vm.templike.articleDislike) {
+          vm.templike.articleDislike = false;
+          vm.article.dislike -= 1;
+        }
       } else {
-        vm.templike.postlike = false;
+        vm.templike.articleLike = false;
         vm.article.like -= 1;
       }
     },
     dislikeArticle () {
       let vm = this;
-      if (!vm.templike.postdislike) {
-        vm.templike.postdislike = true;
+      if (!vm.templike.articleDislike) {
+        vm.templike.articleDislike = true;
         vm.article.dislike += 1;
+        if (vm.templike.articleLike) {
+          vm.templike.articleLike = false;
+          vm.article.like -= 1;
+        }
       } else {
-        vm.templike.postdislike = false;
+        vm.templike.articleDislike = false;
         vm.article.dislike -= 1;
       }
     },
-    messagelike () {
-
+    likeMessage (index) {
+      let vm = this;
+      if (!vm.templike.messagelikeList[index].like) {
+        vm.templike.messagelikeList[index].like = true
+        vm.messageList[index].likeNumber += 1
+        if (vm.templike.messagelikeList[index].dislike) {
+          vm.templike.messagelikeList[index].dislike = false;
+          vm.messageList[index].disLikeNumber -= 1
+        }
+      } else {
+        vm.templike.messagelikeList[index].like = false
+        vm.messageList[index].likeNumber -= 1
+      }
     },
-    messageunlike () {
-
+    dislikeMessage (index) {
+      let vm = this;
+      if (!vm.templike.messagelikeList[index].dislike) {
+        vm.templike.messagelikeList[index].dislike = true;
+        vm.messageList[index].disLikeNumber += 1
+        if (vm.templike.messagelikeList[index].like) {
+          vm.templike.messagelikeList[index].like = false;
+          vm.messageList[index].likeNumber -= 1
+        }
+      } else {
+        vm.templike.messagelikeList[index].dislike = false
+        vm.messageList[index].disLikeNumber -= 1
+      }
     },
   },
   async created () {
     await this.getArticle()
     await this.getMessages()
     await this.getUserId()
-    this.templike = {
-      postlike: this.article.like,
-      postdislike: this.article.dislike,
-    }
   }
 }
 </script>
@@ -242,21 +285,23 @@ export default {
     width: 40px;
     height: 40px;
     border: $border-color;
+    margin: 0 5px;
+    transition: all 0.3s;
+    &:hover {
+      border: 1px solid rgb(244, 156, 66);
+      color: rgb(244, 156, 66);
+    }
   }
 
-  .btn-active {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: #6c757d;
-    width: 40px;
-    height: 40px;
+  a.active {
     border: 1px solid rgb(244, 156, 66);
     color: rgb(244, 156, 66);
   }
+
   a.msg-btn {
     width: 25px;
     height: 25px;
+    margin: 0;
   }
   textarea.form-control {
     resize: none;

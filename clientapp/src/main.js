@@ -78,7 +78,6 @@ Vue.use(VueLoading, {
   isFullPage: true,
   opacity: 0.8
 });
-Vue.prototype.$axios = axios;
 Vue.component('font-awesome-icon', FontAwesomeIcon); //使用kebab-case
 Vue.component('ValidationProvider', ValidationProvider);
 Vue.component('ValidationObserver', ValidationObserver);
@@ -101,6 +100,7 @@ library.add(
 
 );
 
+Vue.prototype.$axios = axios;
 Vue.prototype.$bus = new Vue();
 Vue.use(VueParticles);
 Vue.use(BoostrapVue);
