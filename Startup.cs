@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Reflection;
 using System.Text;
+using Autofac;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -28,6 +29,15 @@ namespace XforumTest
 
         public IConfiguration Configuration { get; }
 
+        public void ConfigureContainer(ContainerBuilder builder)
+        {
+            //Autofac註冊泛型Repository
+            builder.RegisterGeneric(typeof(GeneralRepository<>)).As(typeof(IRepository<>));
+
+            //Autofac註冊所有Service結尾的Interface
+            builder.RegisterAssemblyTypes(typeof(Program).Assembly).Where(t => t.Name.EndsWith("Service"))
+                .AsImplementedInterfaces().InstancePerLifetimeScope();
+        }
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
@@ -60,26 +70,6 @@ namespace XforumTest
 
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
 
-
-            services.AddTransient<IRepository<ForumMembers>, GeneralRepository<ForumMembers>>();
-            services.AddTransient<IRepository<Posts>, GeneralRepository<Posts>>();
-            services.AddTransient<IRepository<ForumRoles>, GeneralRepository<ForumRoles>>();
-            services.AddTransient<IRepository<Forums>, GeneralRepository<Forums>>();
-            services.AddTransient<IRepository<Titles>, GeneralRepository<Titles>>();
-            services.AddTransient<IRepository<ReposiveMessages>, GeneralRepository<ReposiveMessages>>();
-            services.AddTransient<IRepository<Titles>, GeneralRepository<Titles>>();
-            services.AddTransient<IRepository<MemberTitle>, GeneralRepository<MemberTitle>>();
-
-
-            services.AddTransient<IRepository<MessageLikeDto>, GeneralRepository<MessageLikeDto>>();
-            services.AddTransient<IUserService, UserService>();
-            services.AddTransient<IJwtHelperService, JwtHelperService>();
-            services.AddTransient<IMessageService, RMessageService>();
-            services.AddTransient<ILikeService<PostLikeDto>, LikeService>();
-            services.AddTransient<ILikeService<MessageLikeDto>, LikeService>();
-            services.AddTransient<IForumService, ForumService>();
-            services.AddTransient<IPostService, PostService>();
-            services.AddTransient<ITitleService, TitleService>();
             services.AddControllers().AddNewtonsoftJson();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>

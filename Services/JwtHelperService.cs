@@ -97,7 +97,7 @@ namespace XforumTest.Helpers
                 }
                 else
                 {
-                    return new AuthenticateResponse($"查無此 '{refreshtoken}' refresh token!");
+                    return new AuthenticateResponse($"查無{refreshtoken}!");
                 }
             }
             catch(Exception ex)

@@ -172,13 +172,13 @@ namespace XforumTest.Services
             {
                 if (sourcre.Any(x => x.Name == name))
                 {
-                    return new ApiResult<CreateMemberDto>($"Email:{email} 及暱稱:{name} 皆已被使用,請更換!"); //兩者皆已存在
+                    return new ApiResult<CreateMemberDto>($"{email} 及 {name} 皆已被使用,請更換!"); //兩者皆已存在
                 }
-                return new ApiResult<CreateMemberDto>($"Email:{email} 已存在，請更換!"); //此Email已存在，請更換Email
+                return new ApiResult<CreateMemberDto>($"{email} 已存在，請更換!"); //此Email已存在，請更換Email
             }
             if (sourcre.Any(x => x.Name == name))
             {
-                return new ApiResult<CreateMemberDto>($"暱稱: {name}已存在，請更換!"); //此暱稱已存在，請更換暱稱
+                return new ApiResult<CreateMemberDto>($"{name} 已存在，請更換!"); //此暱稱已存在，請更換暱稱
             }
             else
             {
@@ -202,13 +202,13 @@ namespace XforumTest.Services
             {
                 if (source.Any(x => x.Name == name))
                 {
-                    return new ApiResult<MemberDto>($"Email:{email} 及暱稱:{name} 皆已被使用,請更換!"); //兩者皆已存在
+                    return new ApiResult<MemberDto>($"{email} 及 {name} 皆已被使用,請更換!"); //兩者皆已存在
                 }
-                return new ApiResult<MemberDto>($"Email:{email} 已存在，請更換!"); //此Email已存在，請更換Email
+                return new ApiResult<MemberDto>($"{email} 已存在，請更換!"); //此Email已存在，請更換Email
             }
             if (source.Any(x => x.Name == name))
             {
-                return new ApiResult<MemberDto>($"暱稱: {name}已存在，請更換!"); //此暱稱已存在，請更換暱稱
+                return new ApiResult<MemberDto>($"{name} 已存在，請更換!"); //此暱稱已存在，請更換暱稱
             }
             else
             {
