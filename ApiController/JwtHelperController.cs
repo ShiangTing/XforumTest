@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using XforumTest.DTO;
 using XforumTest.Interface;
 using XforumTest.Models;
 
@@ -40,7 +41,7 @@ namespace XforumTest.ApiController
          /// <returns></returns>
         [AllowAnonymous]
         [HttpPost("refresh")]
-        public IActionResult RefreshToken([FromBody]string refreshtoken)
+        public IActionResult RefreshToken([FromBody]RefreshTokenDTO refreshtoken)
         {
             return Ok(_jwt.RefreshToken(refreshtoken));
         }

@@ -36,7 +36,7 @@ namespace XforumTest
 
             //Autofac註冊所有Service結尾的Interface
             builder.RegisterAssemblyTypes(typeof(Program).Assembly).Where(t => t.Name.EndsWith("Service"))
-                .AsImplementedInterfaces().InstancePerLifetimeScope();
+                .AsImplementedInterfaces().InstancePerLifetimeScope(); //同一個Lifetime生成的物件是同一個例項
         }
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)

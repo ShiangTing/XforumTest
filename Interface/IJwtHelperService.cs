@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using XforumTest.DataTable;
+using XforumTest.DTO;
 using XforumTest.Models;
 
 namespace XforumTest.Interface
@@ -21,7 +22,7 @@ namespace XforumTest.Interface
         /// </summary>
         /// <param name="refreshtoken"></param>
         /// <returns></returns>
-        AuthenticateResponse RefreshToken(string refreshtoken);
+        AuthenticateResponse RefreshToken(RefreshTokenDTO refreshtoken);
         /// <summary>
         /// Verify login email and password
         /// </summary>

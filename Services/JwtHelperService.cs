@@ -68,16 +68,16 @@ namespace XforumTest.Helpers
         /// <summary>
         /// Use RefreshToken in Database to generate jwt token without relogin
         /// </summary>
-        /// <param name="refreshtoken"></param>
+        /// <param name="refToken"></param>
         /// <returns></returns>
-        public AuthenticateResponse RefreshToken(string refreshtoken)
+        public AuthenticateResponse RefreshToken(RefreshTokenDTO refToken)
         {
             try
             {
-                if (_members.GetAll().Any(x => x.RefreshToken.ToString() == refreshtoken))
+                if (_members.GetAll().Any(x => x.RefreshToken.ToString() == refToken.RefreshToken))
                 {
-                    var getUserData = _members.GetFirst(x => x.RefreshToken.ToString() == refreshtoken);
-                    var transfertoUser = new Jwtuser
+                    var getUserData = _members.GetFirst(x => x.RefreshToken.ToString() == refToken.RefreshToken);
+                    var transfertoUser = new JwtUser
                     {
                         Email = getUserData.Email,
                         Password = getUserData.Password,
@@ -92,11 +92,11 @@ namespace XforumTest.Helpers
                     transfertoUser.RefreshToken = newGUID.ToString();
                     _members.SaveContext();
 
-                    return new AuthenticateResponse(transfertoUser, GenerateToken(transfertoUser.Email, 10));
+                    return new AuthenticateResponse(transfertoUser, GenerateToken(transfertoUser.Email, 1));
                 }
                 else
                 {
-                    return new AuthenticateResponse($"Found no {refreshtoken}!");
+                    return new AuthenticateResponse($"Found no {refToken}!");
                 }
             }
             catch(Exception ex)
@@ -126,7 +126,7 @@ namespace XforumTest.Helpers
                 {
                     //先搜尋帳密符合的會員，再轉成User
                     var check = members.FirstOrDefault(x => x.Email == login.Email && x.Password == login.Password);
-                    var validuser = new Jwtuser
+                    var validuser = new JwtUser
                     {
                         Email = check.Email,
                         Password = check.Password,
@@ -143,7 +143,7 @@ namespace XforumTest.Helpers
                     //}).SingleOrDefault(x => x.Email == login.Email && x.Password == login.Password);
 
                     //if (user == null) return null;
-                    return new AuthenticateResponse(validuser, GenerateToken(validuser.Email, 10));
+                    return new AuthenticateResponse(validuser, GenerateToken(validuser.Email, 1));
                 }
             }
             catch (Exception ex)
