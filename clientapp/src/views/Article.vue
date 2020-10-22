@@ -17,10 +17,10 @@
                   </div>
                   <div class="col-3 d-flex justify-content-end align-items-center">
                     <a v-if="article.userId === reply.userId" class="title-btn rounded-circle"
-                      @click="$bvModal.show('edit')">
+                      @click="$bvModal.show('edit'); saveOrginArticle();">
                       <font-awesome-icon icon="pen" size="lg" />
                     </a>
-                    <a v-if="article.userId === reply.userId" class="title-btn rounded-circle">
+                    <a v-if="article.userId === reply.userId" class="title-btn rounded-circle" @click="deleteArticle">
                       <font-awesome-icon icon="trash" size="lg" />
                     </a>
                   </div>
@@ -90,7 +90,7 @@
         </div>
       </div>
     </div>
-    <b-modal id="edit" title="編輯文章" size="xl" centered ok-title="儲存" cancel-title="取消" @ok="editArticle">
+    <b-modal id="edit" title="編輯文章" size="lg" centered ok-title="儲存" cancel-title="取消" @ok="editArticle" @cancel="cancelEdit">
       <vue-editor id="editor" useCustomImageHandler @image-added="handleImageAdded"
         :customModules="customModulesForEditor" :editorOptions="editorSettings" v-model="article.description">
       </vue-editor>
@@ -131,6 +131,7 @@ export default {
         description: "",
         state: false
       },
+      tempDescription: "",
       messageList: [],
       reply: {
         postId: "",
@@ -152,8 +153,6 @@ export default {
       const CLIENT_ID = "3d78cf6e67ed6af";
       var formData = new FormData();
       formData.append("image", file);
-      console.log("底下是formdata");
-      console.log(formData);
       axios({
         url: "https://api.imgur.com/3/image",
         method: "POST",
@@ -173,11 +172,9 @@ export default {
     getUserId () {
       let vm = this;
       let userIdUrl = process.env.VUE_APP_API + "/api/Users/getUserId";
-
       vm.$axios.get(userIdUrl).then(res => {
         vm.reply.userId = res.data
       }).catch(() => {
-        alert("請先登入才能按讚加留言");
       })
     },
     getArticle () {
@@ -199,13 +196,20 @@ export default {
         vm.reply.postId = res.data.postId
       })
     },
+    saveOrginArticle() {
+      let vm = this;
+      vm.tempDescription = vm.article.description
+    },
+    cancelEdit() {
+      let vm = this;
+      vm.article.description = vm.tempDescription;
+    },
     getMessages () {
       let vm = this;
       let url = process.env.VUE_APP_API + "/api/RMessage/GetAllMessages/" + vm.$route.params.id;
       vm.$axios.get(url).then(res => {
         if (res.data.issuccessful) {
           vm.messageList = res.data.data;
-
           res.data.data.forEach(() => {
             let messageItem = { like: false, dislike: false }
             vm.templike.messagelikeList.push(messageItem)
@@ -222,13 +226,59 @@ export default {
         description: vm.article.description,
         state: true
       }
-      vm.$axios.post(url,data).then(res => {
+      vm.$axios.post(url, data).then(res => {
         console.log(res);
-        if(res.status === 200) {
-          alert("更新成功")
+        if (res.status === 200) {
+          vm.$swal({
+            position: 'top-end',
+            title: "編輯成功",
+            icon: "success",
+            showConfirmButton: false,
+            timer: 1000
+          })
         }
       }).catch(err => {
-        alert("失敗",err)
+        console.log(err);
+        vm.$swal({
+          position: 'top-end',
+          title: "編輯失敗" + err,
+          icon: "error",
+          showConfirmButton: false,
+          timer: 1000
+        })
+      })
+    },
+    deleteArticle () {
+      let vm = this;
+      let url = process.env.VUE_APP_API + "/api/Post/Delete";
+      let data = {
+        postId: vm.article.postId
+      };
+      vm.$swal({
+        title: `刪除文章`,
+        text: "你確定要刪除嗎",
+        type: "question",
+        showCancelButton: true,
+        confirmButtonText: "確定",
+        cancelButtonText: "取消",
+      }).then((result) => {
+        if (result.value) {
+          vm.$axios.post(url, data).then(res => {
+            console.log(res);
+            if (res.status === 200) {
+              vm.$swal({
+                position: 'top-end',
+                title: "刪除成功",
+                icon: "success",
+                showConfirmButton: false,
+                timer: 1500
+              })
+              vm.$router.push('/');
+            }
+          }).catch(err => {
+            vm.$swal("失敗", err)
+          })
+        }
       })
     },
     postMessage () {
