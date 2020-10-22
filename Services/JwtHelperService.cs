@@ -143,7 +143,7 @@ namespace XforumTest.Helpers
                     //}).SingleOrDefault(x => x.Email == login.Email && x.Password == login.Password);
 
                     //if (user == null) return null;
-                    return new AuthenticateResponse(validuser, GenerateToken(validuser.Email, 1));
+                    return new AuthenticateResponse(validuser, GenerateToken(validuser.Email, 10));
                 }
             }
             catch (Exception ex)

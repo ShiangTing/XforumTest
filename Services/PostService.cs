@@ -39,6 +39,8 @@ namespace XforumTest.Services
                     Title = model.Title,
                     Description = model.Description,
                     CreatedDate = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, TimeZoneInfo.Local),
+                    LikeNumber = 0,
+                    DisLikeNumber = 0,
                     Img = null,
                     State = true
                 };

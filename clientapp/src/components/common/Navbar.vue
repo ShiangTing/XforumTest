@@ -91,6 +91,7 @@ export default {
         })
         .catch(() => {
           window.localStorage.clear();
+          vm.$store.dispatch("clearAuth")
           vm.isLogin = false;
           vm.name = "訪客";
         });
