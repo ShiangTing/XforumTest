@@ -35,10 +35,10 @@
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.7.1" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Context\" />
+    <None Include="XforumTest.sln" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="XforumTest.sln" />
+    <Folder Include="Entities\" />
   </ItemGroup>
   <PropertyGroup>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>

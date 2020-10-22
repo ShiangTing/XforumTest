@@ -7,8 +7,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using XforumTest.Entities;
-using XforumTest.Helpers;
 using XforumTest.Interface;
 using XforumTest.Models;
 

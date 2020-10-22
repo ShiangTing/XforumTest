@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using XforumTest.DataTable;
-using XforumTest.Entities;
 using XforumTest.Models;
 
 namespace XforumTest.Interface

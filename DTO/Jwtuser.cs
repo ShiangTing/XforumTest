@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace XforumTest.Entities
+namespace XforumTest.DTO
 {
-    public class User
+    public class Jwtuser
     {
         //public int Id { get; set; }
         //public string FirstName { get; set; }

@@ -8,12 +8,11 @@ using System.Security.Claims;
 using System.Text;
 using System.IdentityModel.Tokens.Jwt;
 using XforumTest.Interface;
-using XforumTest.Entities;
-using XforumTest.Repository;
 using XforumTest.DataTable;
-using XforumTest.Context;
+
 using XforumTest.Models;
-using Microsoft.AspNetCore.Mvc;
+
+using XforumTest.DTO;
 
 namespace XforumTest.Helpers
 {
@@ -78,7 +77,7 @@ namespace XforumTest.Helpers
                 if (_members.GetAll().Any(x => x.RefreshToken.ToString() == refreshtoken))
                 {
                     var getUserData = _members.GetFirst(x => x.RefreshToken.ToString() == refreshtoken);
-                    var transfertoUser = new User
+                    var transfertoUser = new Jwtuser
                     {
                         Email = getUserData.Email,
                         Password = getUserData.Password,
@@ -127,7 +126,7 @@ namespace XforumTest.Helpers
                 {
                     //先搜尋帳密符合的會員，再轉成User
                     var check = members.FirstOrDefault(x => x.Email == login.Email && x.Password == login.Password);
-                    var validuser = new User
+                    var validuser = new Jwtuser
                     {
                         Email = check.Email,
                         Password = check.Password,

@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using XforumTest.Entities;
+using XforumTest.DTO;
+
 
 namespace XforumTest.Models
 {
@@ -20,7 +21,7 @@ namespace XforumTest.Models
         public string RefreshToken { get; set; }
         public string ReleaseTime { get; set; }
         public string ExpireTime { get; set; }
-        public AuthenticateResponse(User user, string token)
+        public AuthenticateResponse(Jwtuser user, string token)
         {
             //FirstName = user.FirstName;
             //LastName = user.LastName;

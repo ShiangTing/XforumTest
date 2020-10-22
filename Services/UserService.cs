@@ -12,7 +12,6 @@ using System.Threading.Tasks;
 using XforumTest.Context;
 using XforumTest.DataTable;
 using XforumTest.DTO;
-using XforumTest.Entities;
 using XforumTest.Helpers;
 using XforumTest.Interface;
 

@@ -4,8 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using XforumTest.DataTable;
 using XforumTest.DTO;
-using XforumTest.Entities;
-using XforumTest.Models;
 using XforumTest.Services;
 
 namespace XforumTest.Interface
