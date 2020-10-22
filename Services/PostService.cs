@@ -90,7 +90,7 @@ namespace XforumTest.Services
 
         public void Delete(string id)
         {
-            var delete = _posts.GetAll().FirstOrDefault(p => p.UserId.ToString() == id);
+            var delete = _posts.GetAll().FirstOrDefault(p => p.PostId.ToString() == id);
             delete.State = false;
             _posts.Update(delete);
             _posts.SaveContext();
@@ -117,6 +117,7 @@ namespace XforumTest.Services
                         on p.UserId equals u.UserId
                         join f in _forums.GetAll2()
                         on p.ForumId equals f.ForumId
+                        where p.State == true
                         orderby p.CreatedDate
                         select new PostListDto
                         {

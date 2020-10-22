@@ -35,9 +35,10 @@ namespace XforumTest.ApiController
 
         //軟刪除
         [HttpPost]
-        public void Delete(string id)
+        public IActionResult Delete([FromBody]PostListDto json)
         {
-            _postservice.Delete(id);
+            _postservice.Delete(json.PostId.ToString());
+            return Ok();
         }
 
         //編輯 留言資訊
