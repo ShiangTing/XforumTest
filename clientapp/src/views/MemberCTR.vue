@@ -2,6 +2,42 @@
   <div>
     <Navbar />
     <div class="container">
+      <div class="d-flex">
+        <div class="d-flex flex-column mt-5">
+          <h4><b>會員頭像</b></h4>
+          <div class="mt-3">
+            <img
+              style="border: 1px dashed wheat"
+              v-if="hasImg"
+              id="blah"
+              alt="上傳您的頭像"
+              width="100"
+              height="100"
+            />
+            <img
+              style="border: 1px dashed wheat"
+              v-else
+              id="blah"
+              src="https://i.imgur.com/gZQyxZj.png"
+              alt="上傳您的頭像"
+              width="100"
+              height="100"
+            />
+          </div>
+
+          <input
+            class="mt-5"
+            type="file"
+            onchange="document.getElementById('blah').src = window.URL.createObjectURL(this.files[0]);this.hasImg = true;"
+          />
+        </div>
+        <div class="d-flex flex-column mt-5 ml-5">
+          <h4><b>X幣</b></h4>
+          <h3>
+            <b>${{ user.points }}</b>
+          </h3>
+        </div>
+      </div>
       <b-form @submit="onSubmit" @reset="onReset" v-if="show">
         <div class="row mt-5">
           <div class="col">
@@ -48,13 +84,6 @@
           <div class="col">
             <h4><b>性別</b></h4>
             <b-form-group>
-              <!-- <div class="d-flex">
-                <b-form-input
-                  v-model="user.age"
-                  required
-                  :disabled="inputCanChange"
-                ></b-form-input>
-              </div> -->
               <select
                 style="
                   width: 51%;
@@ -77,58 +106,62 @@
             </b-form-group>
           </div>
           <div class="col">
-            <h4><b>性別</b></h4>
+            <h4><b>電話</b></h4>
             <b-form-group>
               <div class="d-flex">
                 <b-form-input
-                  type="number"
-                  min="1"
-                  v-model="user.age"
+                  type="text"
+                  v-model="user.phone"
                   required
                   :disabled="inputCanChange"
                 ></b-form-input>
               </div>
             </b-form-group>
           </div>
-        </div>
-        <h4><b>已經擁有的稱號</b></h4>
-        <div v-for="(item, idx) in hasRank" :key="idx" class="d-inline-block">
-          <div v-if="item.titleName == user.ownerRank">
-            <font-awesome-icon icon="crown" />
-            <span class="badge badge-primary m-3 p-2">{{
-              user.ownerRank
-            }}</span>
+          <div class="col">
+            <h4><b>權限</b></h4>
+            <b-form-group>
+              <div class="d-flex">
+                <b-form-input
+                  type="text"
+                  v-model="user.roleName"
+                  readonly
+                ></b-form-input>
+              </div>
+            </b-form-group>
           </div>
-
-          <span
-            class="badge badge-info m-3 p-2 ownerRank"
-            v-text="otherRank(item.titleName)"
-            @click="changeRank(item.titleName)"
-          ></span>
+        </div>
+        <h4 class="text-center my-5"><b>已經擁有的稱號</b></h4>
+        <div class="d-flex justify-content-center mb-5">
+          <div v-for="(item, idx) in hasRank" :key="idx" class="d-inline-block">
+            <div v-if="item.titleName == user.ownerRank">
+              <font-awesome-icon icon="crown" />
+              <span class="badge badge-primary m-3 p-2">{{
+                user.ownerRank
+              }}</span>
+            </div>
+            <span
+              class="badge badge-info m-3 p-2 ownerRank"
+              v-text="otherRank(item.titleName)"
+              @click="changeRank(item.titleName)"
+            ></span>
+          </div>
         </div>
 
-        <div></div>
-
-        <!-- <b-form-group id="input-group-4">
-          <b-form-checkbox-group v-model="user.checked" id="checkboxes-4">
-            <b-form-checkbox value="me"></b-form-checkbox>
-            <b-form-checkbox value="that"></b-form-checkbox>
-          </b-form-checkbox-group>
-        </b-form-group> -->
-
-        <b-button type="submit" variant="primary">Submit</b-button>
-        <b-button
-          pill
-          variant="outline-secondary"
-          class="ml-2"
-          v-if="inputCanChange"
-          @click="inputChange"
-          >修改會員資料</b-button
-        >
-        <b-button v-else pill variant="info" class="ml-2" @click="inputChange"
-          >完成修改</b-button
-        >
-        <b-button type="reset" variant="danger">Reset</b-button>
+        <div class="d-flex justify-content-center">
+          <b-button pill variant="primary">Submit</b-button>
+          <b-button
+            pill
+            variant="outline-secondary"
+            class="ml-2"
+            v-if="inputCanChange"
+            @click="inputChange"
+            >修改會員資料</b-button
+          >
+          <b-button v-else pill variant="info" class="ml-2" @click="inputChange"
+            >完成修改</b-button
+          >
+        </div>
       </b-form>
       <b-card class="mt-3" header="Form Data Result">
         <pre class="m-0">{{ user }}</pre>
@@ -139,6 +172,7 @@
 
 <script>
 import Navbar from "../components/common/Navbar";
+
 export default {
   components: { Navbar },
   data() {
@@ -167,6 +201,7 @@ export default {
       show: true,
       selectGender: "",
       genderList: ["female", "male"],
+      hasImg: false,
     };
   },
   methods: {
@@ -175,9 +210,6 @@ export default {
       this.user.gender = event.target.querySelectorAll("option")[
         selectedIndex
       ].id;
-      // this.selectGender = event.target.querySelectorAll("option")[
-      //   selectedIndex
-      // ].id;
     },
     inputChange() {
       return this.inputCanChange
