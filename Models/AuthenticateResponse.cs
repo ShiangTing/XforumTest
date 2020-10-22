@@ -35,7 +35,7 @@ namespace XforumTest.Models
             Token = token;
             RefreshToken = user.RefreshToken;
             ReleaseTime = Convert.ToInt32((DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds).ToString();
-            ExpireTime = Convert.ToInt32((DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds + 600).ToString();
+            ExpireTime = Convert.ToInt32((DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds + 60).ToString();
         }
         public AuthenticateResponse(string error)
         {
