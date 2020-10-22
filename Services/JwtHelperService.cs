@@ -96,7 +96,7 @@ namespace XforumTest.Helpers
                 }
                 else
                 {
-                    return new AuthenticateResponse($"Found no {refToken}!");
+                    return new AuthenticateResponse($"Found no {refToken.RefreshToken} refresh token!");
                 }
             }
             catch(Exception ex)
@@ -116,7 +116,7 @@ namespace XforumTest.Helpers
                 IQueryable<ForumMembers> members = _members.GetAll();
                 if (!members.Any(x => x.Email == login.Email))
                 {
-                    return new AuthenticateResponse($"Found no {login.Email}!");
+                    return new AuthenticateResponse($"Found no {login.Email} Email!");
                 }
                 if (members.Any(x => x.Email == login.Email) && members.FirstOrDefault(x => x.Email == login.Email).Password != login.Password)
                 {
