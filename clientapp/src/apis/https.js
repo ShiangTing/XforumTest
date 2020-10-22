@@ -7,8 +7,33 @@ instance.defaults.timeout = 5000;
 
 instance.interceptors.request.use(
   (config) => {
-    if (store.state.tokenModule.isAuthorize) {
+    let refreshUrl = process.env.VUE_APP_API + '/api/JwtHelper/refresh';
+    console.log(
+      parseInt(store.state.tokenModule.expireTime),
+      parseInt(Date.now() / 1000)
+    );
+    if (
+      store.state.tokenModule.isAuthorize &&
+      parseInt(store.state.tokenModule.expireTime) >=
+        parseInt(Date.now() / 1000)
+    ) {
       config.headers.Authorization = `Bearer ${store.state.tokenModule.token}`;
+    } else if (
+      parseInt(store.state.tokenModule.expireTime) <=
+      parseInt(Date.now() / 1000)
+    ) {
+      axios
+        .post(refreshUrl, store.state.tokenModule.refreshToken)
+        .then((res) => {
+          let data = {
+            refreshToken: res.data.refreshToken,
+            token: res.data.token,
+            expireTime: res.data.expireTime,
+            isAuthorize: true,
+          };
+          store.dispatch('setAuth', data);
+          config.headers.Authorization = `Bearer ${store.state.tokenModule.token}`;
+        });
     }
     return config;
   },
