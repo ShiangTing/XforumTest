@@ -1,14 +1,7 @@
 <template>
   <div class="main-nav">
-    <b-navbar
-      toggleable="lg"
-      type="dark"
-      variant="dark"
-      class="d-flex align-items-center"
-    >
-      <router-link class="title mx-5 my-2 text-white" to="/"
-        >Xforum</router-link
-      >
+    <b-navbar toggleable="lg" type="dark" variant="dark" class="d-flex align-items-center">
+      <router-link class="title mx-5 my-2 text-white" to="/">Xforum</router-link>
       <!-- <b-navbar-brand href="#">Xforum</b-navbar-brand> -->
 
       <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
@@ -40,19 +33,10 @@
               <font-awesome-icon icon="user" size="lg" />
               <span class="px-2">{{ name }}</span>
             </template>
-            <b-dropdown-item to="/register" v-if="!isLogin"
-              >註冊</b-dropdown-item
-            >
+            <b-dropdown-item to="/register" v-if="!isLogin">註冊</b-dropdown-item>
             <b-dropdown-item to="/login" v-if="!isLogin">登入</b-dropdown-item>
-            <b-dropdown-item
-              v-if="isLogin"
-              href="javascript:;"
-              @click.prevent="memberCTR"
-              >會員中心</b-dropdown-item
-            >
-            <b-dropdown-item v-if="isLogin" @click.prevent="logout"
-              >登出</b-dropdown-item
-            >
+            <b-dropdown-item v-if="isLogin" href="javascript:;" @click.prevent="memberCTR">會員中心</b-dropdown-item>
+            <b-dropdown-item v-if="isLogin" @click.prevent="logout">登出</b-dropdown-item>
           </b-nav-item-dropdown>
           <!-- Using 'button-content' slot -->
           <b-nav-form class="pl-4 py-2">
@@ -71,60 +55,64 @@ export default {
   components: {
     SideBar,
   },
-  data() {
+  data () {
     return {
       name: "訪客",
       isLogin: false,
     };
   },
   methods: {
-    memberCTR() {
+    memberCTR () {
       const vm = this;
       vm.$router.push(`/MemberCenter`);
     },
-    logout() {
+    logout () {
       let vm = this;
       window.localStorage.clear();
-      vm.$store.dispatch('clearAuth');
+      vm.$store.dispatch("clearAuth");
       vm.isLogin = false;
-      vm.name = "訪客"
-      vm.$router.push('/')
+      vm.name = "訪客";
+      vm.$router.push("/");
     },
   },
-  created() {
+  created () {
     let vm = this;
     let auth = vm.$store.state.tokenModule;
     let isAuth = auth.isAuthorize;
     let url = process.env.VUE_APP_API + "/api/Users/GetSingleMember";
     if (isAuth) {
       vm.isLogin = true;
-        vm.$axios({
-          url: url,
-          method: "GET",
-        }).then(res => {
+      vm.$axios({
+        url: url,
+        method: "GET",
+      })
+        .then((res) => {
           vm.name = res.data.data.name;
-        }).catch(()=>{
-          window.localStorage.clear()
         })
+        .catch(() => {
+          window.localStorage.clear();
+          vm.isLogin = false;
+          vm.name = "訪客";
+        });
     }
   },
 };
 </script>
 
 <style lang="scss" scoped>
-/deep/ .list-group .list-group-item {
-  background-color: #343a40;
-  border: 0;
-  span.text-primary {
-    color: rgba(255, 255, 255, 0.5) !important;
+  /deep/ .list-group .list-group-item {
+    background-color: #343a40;
+    border: 0;
+    span.text-primary {
+      color: rgba(255, 255, 255, 0.5) !important;
+    }
   }
-}
-@media screen and (min-width: 996px) {
-  .sidebarGroup {
-    display: none;
+  @media screen and (min-width: 996px) {
+    .sidebarGroup {
+      display: none;
+    }
+    :focus {
+      outline: 0px;
+    }
   }
-  :focus {
-    outline: 0px;
-  }
-}
 </style>

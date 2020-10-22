@@ -1,27 +1,35 @@
-
 export default {
   state: {
-    isAuthorize: false,
-    token: ""
+    refreshToken: '',
+    token: '',
+    expireTime: '',
+    isAuthorize: true,
   },
   mutations: {
-    GET_AUTH(state, payload){
+    SET_AUTH(state, payload) {
       state.token = payload.token;
-      state.isAuthorize = payload.isAuthorize
+      state.refreshToken = payload.refreshToken;
+      state.expireTime = payload.expireTime;
+      state.isAuthorize = payload.isAuthorize;
     },
-    CLEAR_AUTH(state){
-      state.token = "",
-      state.isAuthorize = false
-    }
+    CLEAR_AUTH(state) {
+      state.token = '';
+      state.refreshToken = '';
+      state.expireTime = '';
+      state.isAuthorize = false;
+    },
   },
   actions: {
-    setAuth(context,option){
-      context.commit("GET_AUTH", { 
+    setAuth(context, option) {
+      context.commit('SET_AUTH', {
         token: option.token,
-        isAuthorize: option.isAuthorize })
+        isAuthorize: option.isAuthorize,
+        refreshToken: option.refreshToken,
+        expireTime: option.expireTime
+      });
     },
-    clearAuth(context){
-      context.commit("CLEAR_AUTH")
-    }
+    clearAuth(context) {
+      context.commit('CLEAR_AUTH');
+    },
   },
 };

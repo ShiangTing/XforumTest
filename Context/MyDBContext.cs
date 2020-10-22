@@ -21,9 +21,13 @@ namespace XforumTest.Context
         public virtual DbSet<AspNetUserLogins> AspNetUserLogins { get; set; }
         public virtual DbSet<AspNetUserRoles> AspNetUserRoles { get; set; }
         public virtual DbSet<AspNetUsers> AspNetUsers { get; set; }
+        public virtual DbSet<Category> Category { get; set; }
+        public virtual DbSet<Chats> Chats { get; set; }
         public virtual DbSet<ForumMembers> ForumMembers { get; set; }
         public virtual DbSet<ForumRoles> ForumRoles { get; set; }
         public virtual DbSet<Forums> Forums { get; set; }
+        public virtual DbSet<History> History { get; set; }
+        public virtual DbSet<LikeAndDislikeHistory> LikeAndDislikeHistory { get; set; }
         public virtual DbSet<MemberTitle> MemberTitle { get; set; }
         public virtual DbSet<Posts> Posts { get; set; }
         public virtual DbSet<Product> Product { get; set; }
@@ -106,6 +110,25 @@ namespace XforumTest.Context
                     .HasMaxLength(256);
             });
 
+            modelBuilder.Entity<Category>(entity =>
+            {
+                entity.Property(e => e.CategoryName).HasMaxLength(50);
+
+                entity.Property(e => e.Points).HasColumnType("decimal(18, 6)");
+            });
+
+            modelBuilder.Entity<Chats>(entity =>
+            {
+                entity.HasKey(e => e.ChatId);
+
+                entity.Property(e => e.ChatId).ValueGeneratedNever();
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.Chats)
+                    .HasForeignKey(d => d.UserId)
+                    .HasConstraintName("FK_Chats_ForumMembers");
+            });
+
             modelBuilder.Entity<ForumMembers>(entity =>
             {
                 entity.HasKey(e => e.UserId)
@@ -175,6 +198,45 @@ namespace XforumTest.Context
                     .WithMany(p => p.Forums)
                     .HasForeignKey(d => d.ModeratorId)
                     .HasConstraintName("FK_Forums_ForumMembers");
+            });
+
+            modelBuilder.Entity<History>(entity =>
+            {
+                entity.Property(e => e.HistoryId).ValueGeneratedNever();
+
+                entity.Property(e => e.DateTime).HasColumnType("datetime");
+
+                entity.Property(e => e.PointChanged).HasColumnType("decimal(18, 6)");
+
+                entity.HasOne(d => d.Category)
+                    .WithMany(p => p.History)
+                    .HasForeignKey(d => d.CategoryId)
+                    .HasConstraintName("FK_History_Category");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.History)
+                    .HasForeignKey(d => d.UserId)
+                    .HasConstraintName("FK_History_ForumMembers");
+            });
+
+            modelBuilder.Entity<LikeAndDislikeHistory>(entity =>
+            {
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
+                entity.HasOne(d => d.Message)
+                    .WithMany(p => p.LikeAndDislikeHistory)
+                    .HasForeignKey(d => d.MessageId)
+                    .HasConstraintName("FK_LikeAndDislikeHistory_ReposiveMessages");
+
+                entity.HasOne(d => d.Post)
+                    .WithMany(p => p.LikeAndDislikeHistory)
+                    .HasForeignKey(d => d.PostId)
+                    .HasConstraintName("FK_LikeAndDislikeHistory_Posts");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.LikeAndDislikeHistory)
+                    .HasForeignKey(d => d.UserId)
+                    .HasConstraintName("FK_LikeAndDislikeHistory_ForumMembers");
             });
 
             modelBuilder.Entity<MemberTitle>(entity =>

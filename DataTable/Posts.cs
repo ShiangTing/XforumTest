@@ -7,6 +7,7 @@ namespace XforumTest.DataTable
     {
         public Posts()
         {
+            LikeAndDislikeHistory = new HashSet<LikeAndDislikeHistory>();
             ReposiveMessages = new HashSet<ReposiveMessages>();
         }
 
@@ -23,6 +24,7 @@ namespace XforumTest.DataTable
 
         public virtual Forums Forum { get; set; }
         public virtual ForumMembers User { get; set; }
+        public virtual ICollection<LikeAndDislikeHistory> LikeAndDislikeHistory { get; set; }
         public virtual ICollection<ReposiveMessages> ReposiveMessages { get; set; }
     }
 }

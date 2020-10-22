@@ -7,8 +7,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using XforumTest.Entities;
-using XforumTest.Helpers;
 using XforumTest.Interface;
 using XforumTest.Models;
 
@@ -32,10 +30,19 @@ namespace XforumTest.ApiController
         [HttpPost("signin")]
         public IActionResult SignIn([FromBody] AuthenticateRequest login)
         {
-            var check = _jwt.ValidateUser(login);
+            AuthenticateResponse check = _jwt.ValidateUser(login);
             //if (check == null) return BadRequest(new { message = "Username or password is incorrect!" });
             //HttpContext.Response.Cookies.Append("UserToken", check.Token);
             return Ok(check);
+        }/// <summary>
+         /// Get expiretime in Token
+         /// </summary>
+         /// <returns></returns>
+        [AllowAnonymous]
+        [HttpPost("refresh")]
+        public IActionResult RefreshToken([FromBody]string refreshtoken)
+        {
+            return Ok(_jwt.RefreshToken(refreshtoken));
         }
         /// <summary>
         /// Get all claims in Jwt Token
@@ -48,7 +55,7 @@ namespace XforumTest.ApiController
             return Ok(User.Claims.Select(p => new { p.Type, p.Value }));
         }
         /// <summary>
-        /// 取得jwt token中的role
+        /// Get role in jwt token
         /// </summary>
         /// <returns></returns>
         [Authorize]
@@ -66,6 +73,26 @@ namespace XforumTest.ApiController
         public IActionResult GetUniqueId()
         {
             return Ok(User.Claims.FirstOrDefault(p => p.Type == "jti").Value);
+        }
+        /// <summary>
+        /// Get expiretime in Token
+        /// </summary>
+        /// <returns></returns>
+        [Authorize]
+        [HttpGet("exp")]
+        public IActionResult GetExpireTime()
+        {
+            return Ok(User.Claims.FirstOrDefault(p => p.Type == "exp").Value);
+        }
+        /// <summary>
+        /// Get expiretime in Token
+        /// </summary>
+        /// <returns></returns>
+        [Authorize]
+        [HttpGet("nbf")]
+        public IActionResult GetReleaseTime()
+        {
+            return Ok(User.Claims.FirstOrDefault(p => p.Type == "nbf").Value);
         }
         /// <summary>
         /// Get all members, convert to JSON(when authorized)

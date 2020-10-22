@@ -10,17 +10,17 @@
                 <div class="row justify-content-between">
                   <div class="col-6 ">
                     <h3 class="card-title">{{article.title}}</h3>
-                    <h6 class="card-subtitle mb-2 text-success">作者: {{article.author}}</h6>
+                    <h6 class="card-subtitle mb-2 text-success">作者: {{article.userName}}</h6>
                     <p class="card-date text-muted">
                       {{article.createDate.replace(/-/g, "/").replace("T"," ").replace(/\.\d+/, "")}}
                     </p>
                   </div>
                   <div class="col-3 d-flex justify-content-end align-items-center">
                     <a v-if="article.userId === reply.userId" class="title-btn rounded-circle"
-                      @click="$bvModal.show('edit')">
+                      @click="$bvModal.show('edit'); saveOrginArticle();">
                       <font-awesome-icon icon="pen" size="lg" />
                     </a>
-                    <a v-if="article.userId === reply.userId" class="title-btn rounded-circle">
+                    <a v-if="article.userId === reply.userId" class="title-btn rounded-circle" @click="deleteArticle">
                       <font-awesome-icon icon="trash" size="lg" />
                     </a>
                   </div>
@@ -90,8 +90,10 @@
         </div>
       </div>
     </div>
-    <b-modal id="edit" title="編輯文章" style="width:700px">
-      <vue-editor v-model="article.description"></vue-editor>
+    <b-modal id="edit" title="編輯文章" size="lg" centered ok-title="儲存" cancel-title="取消" @ok="editArticle" @cancel="cancelEdit">
+      <vue-editor id="editor" useCustomImageHandler @image-added="handleImageAdded"
+        :customModules="customModulesForEditor" :editorOptions="editorSettings" v-model="article.description">
+      </vue-editor>
     </b-modal>
   </div>
 </template>
@@ -99,22 +101,37 @@
 <script>
 import Navbar from "../components/common/Navbar"
 import { VueEditor } from "vue2-editor";
-
+import { ImageDrop } from "quill-image-drop-module";
+import ImageResize from "quill-image-resize";
+import axios from 'axios'
 export default {
   components: { Navbar, VueEditor },
   data () {
     return {
+      //編輯器
+      customModulesForEditor: [
+        { alias: "imageDrop", module: ImageDrop },
+        { alias: "imageResize", module: ImageResize },
+      ],
+      editorSettings: {
+        modules: {
+          imageDrop: true,
+          imageResize: {},
+        },
+      },
+      //文章
       article: {
+        postId: "",
         userId: "",
         title: "",
-        author: "",
+        userName: "",
         createDate: "",
         like: 0,
         dislike: 0,
-        edit: false,
-        delete: false,
-        description: ""
+        description: "",
+        state: false
       },
+      tempDescription: "",
       messageList: [],
       reply: {
         postId: "",
@@ -131,14 +148,33 @@ export default {
     };
   },
   methods: {
+    //編輯器
+    handleImageAdded (file, Editor, cursorLocation) {
+      const CLIENT_ID = "3d78cf6e67ed6af";
+      var formData = new FormData();
+      formData.append("image", file);
+      axios({
+        url: "https://api.imgur.com/3/image",
+        method: "POST",
+        headers: {
+          Authorization: "Client-ID " + CLIENT_ID,
+        },
+        data: formData,
+      })
+        .then((result) => {
+          let url = result.data.data.link;
+          Editor.insertEmbed(cursorLocation, "image", url);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
     getUserId () {
       let vm = this;
       let userIdUrl = process.env.VUE_APP_API + "/api/Users/getUserId";
-
       vm.$axios.get(userIdUrl).then(res => {
         vm.reply.userId = res.data
       }).catch(() => {
-        alert("請先登入才能按讚加留言");
       })
     },
     getArticle () {
@@ -147,16 +183,26 @@ export default {
       vm.$axios.get(url).then(res => {
         console.log("article", res.data);
         vm.article = {
+          postId: res.data.postId,
           userId: res.data.userId,
           title: res.data.title,
-          author: res.data.userName,
+          userName: res.data.userName,
           createDate: res.data.createdDate,
           description: res.data.description,
           like: res.data.likeNumber,
           dislike: res.data.disLikeNumber,
+          state: res.data.state
         }
         vm.reply.postId = res.data.postId
       })
+    },
+    saveOrginArticle() {
+      let vm = this;
+      vm.tempDescription = vm.article.description
+    },
+    cancelEdit() {
+      let vm = this;
+      vm.article.description = vm.tempDescription;
     },
     getMessages () {
       let vm = this;
@@ -164,10 +210,73 @@ export default {
       vm.$axios.get(url).then(res => {
         if (res.data.issuccessful) {
           vm.messageList = res.data.data;
-
           res.data.data.forEach(() => {
             let messageItem = { like: false, dislike: false }
             vm.templike.messagelikeList.push(messageItem)
+          })
+        }
+      })
+    },
+    editArticle () {
+      let vm = this;
+      let url = process.env.VUE_APP_API + "/api/Post/Edit";
+      let data = {
+        postId: vm.article.postId,
+        title: vm.article.title,
+        description: vm.article.description,
+        state: true
+      }
+      vm.$axios.post(url, data).then(res => {
+        console.log(res);
+        if (res.status === 200) {
+          vm.$swal({
+            position: 'top-end',
+            title: "編輯成功",
+            icon: "success",
+            showConfirmButton: false,
+            timer: 1000
+          })
+        }
+      }).catch(err => {
+        console.log(err);
+        vm.$swal({
+          position: 'top-end',
+          title: "編輯失敗" + err,
+          icon: "error",
+          showConfirmButton: false,
+          timer: 1000
+        })
+      })
+    },
+    deleteArticle () {
+      let vm = this;
+      let url = process.env.VUE_APP_API + "/api/Post/Delete";
+      let data = {
+        postId: vm.article.postId
+      };
+      vm.$swal({
+        title: `刪除文章`,
+        text: "你確定要刪除嗎",
+        type: "question",
+        showCancelButton: true,
+        confirmButtonText: "確定",
+        cancelButtonText: "取消",
+      }).then((result) => {
+        if (result.value) {
+          vm.$axios.post(url, data).then(res => {
+            console.log(res);
+            if (res.status === 200) {
+              vm.$swal({
+                position: 'top-end',
+                title: "刪除成功",
+                icon: "success",
+                showConfirmButton: false,
+                timer: 1500
+              })
+              vm.$router.push('/');
+            }
+          }).catch(err => {
+            vm.$swal("失敗", err)
           })
         }
       })
@@ -274,7 +383,7 @@ export default {
     flex-direction: column;
     justify-content: space-between;
     img {
-      width: 100%;
+      max-width: 100%;
     }
   }
   a.title-btn {
