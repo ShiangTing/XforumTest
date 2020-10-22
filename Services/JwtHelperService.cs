@@ -38,35 +38,35 @@ namespace XforumTest.Helpers
         /// <returns></returns>
         public string GenerateToken(string userEmail, int expireMinutes = 10)
         {
-            var issuer = _configuration.GetValue<string>("JwtSettings:Issuer");
-            var signKey = _configuration.GetValue<string>("JwtSettings:SignKey");
-            var claims = new List<Claim>
+            string issuer = _configuration.GetValue<string>("JwtSettings:Issuer");
+            string signKey = _configuration.GetValue<string>("JwtSettings:SignKey");
+            List<Claim> claims = new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.Sub, userEmail),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
 
-            var RoleId = _members.GetAll().SingleOrDefault(x => x.Email == userEmail).RoleId.GetValueOrDefault().ToString();
-            var RoleName = _forumRole.GetAll().SingleOrDefault(x => x.RoleId.ToString() == RoleId).RoleName;
+            string RoleId = _members.GetAll().SingleOrDefault(x => x.Email == userEmail).RoleId.GetValueOrDefault().ToString();
+            string RoleName = _forumRole.GetAll().SingleOrDefault(x => x.RoleId.ToString() == RoleId).RoleName;
             claims.Add(new Claim("roles", RoleName));
 
-            var userClaimsIdentity = new ClaimsIdentity(claims);
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(signKey));
-            var signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256Signature);
-            var tokenDescriptor = new SecurityTokenDescriptor
+            ClaimsIdentity userClaimsIdentity = new ClaimsIdentity(claims);
+            SymmetricSecurityKey securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(signKey));
+            SigningCredentials signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256Signature);
+            SecurityTokenDescriptor tokenDescriptor = new SecurityTokenDescriptor
             {
                 Issuer = issuer,
                 Subject = userClaimsIdentity,
                 Expires = DateTime.Now.AddMinutes(expireMinutes),
                 SigningCredentials = signingCredentials
             };
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var securityToken = tokenHandler.CreateToken(tokenDescriptor);
-            var serializeToken = tokenHandler.WriteToken(securityToken);
+            JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
+            SecurityToken securityToken = tokenHandler.CreateToken(tokenDescriptor);
+            string serializeToken = tokenHandler.WriteToken(securityToken);
             return serializeToken;
         }
         /// <summary>
-        /// Use RefreshToken in Database to generate without relogin
+        /// Use RefreshToken in Database to generate jwt token without relogin
         /// </summary>
         /// <param name="refreshtoken"></param>
         /// <returns></returns>
@@ -85,7 +85,7 @@ namespace XforumTest.Helpers
                     };
 
                     //Update RefreshToken
-                    var newGUID = Guid.NewGuid();
+                    Guid newGUID = Guid.NewGuid();
                     //Store new refresh token to Database
                     getUserData.RefreshToken = newGUID;
                     //Show new refresh token in Response
@@ -96,7 +96,7 @@ namespace XforumTest.Helpers
                 }
                 else
                 {
-                    return new AuthenticateResponse($"查無{refreshtoken}!");
+                    return new AuthenticateResponse($"Found no {refreshtoken}!");
                 }
             }
             catch(Exception ex)
@@ -105,7 +105,7 @@ namespace XforumTest.Helpers
             }
         }
         /// <summary>
-        /// Verify user login
+        /// Verify login email and password
         /// </summary>
         /// <param name="login"></param>
         /// <returns></returns>
@@ -113,14 +113,14 @@ namespace XforumTest.Helpers
         {
             try
             {
-                var members = _members.GetAll();
+                IQueryable<ForumMembers> members = _members.GetAll();
                 if (!members.Any(x => x.Email == login.Email))
                 {
-                    return new AuthenticateResponse($"查無此 {login.Email} Email!");
+                    return new AuthenticateResponse($"Found no {login.Email}!");
                 }
                 if (members.Any(x => x.Email == login.Email) && members.FirstOrDefault(x => x.Email == login.Email).Password != login.Password)
                 {
-                    return new AuthenticateResponse($"密碼輸入錯誤!");
+                    return new AuthenticateResponse($"Incorrect password!");
                 }
                 else
                 {
@@ -152,7 +152,7 @@ namespace XforumTest.Helpers
             }
         }
         /// <summary>
-        /// Get all member data(for testing)
+        /// Get all member data
         /// </summary>
         /// <returns></returns>
         public IEnumerable<ForumMembers> GetMembers()
@@ -160,7 +160,7 @@ namespace XforumTest.Helpers
             return _members.GetAll();
         }
         /// <summary>
-        /// Get all Posts(for testing)
+        /// Get all Posts
         /// </summary>
         /// <returns></returns>
         public IEnumerable<Posts> GetPosts()

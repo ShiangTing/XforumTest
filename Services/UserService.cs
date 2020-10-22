@@ -32,26 +32,8 @@ namespace XforumTest.Services
             _memberTitle = memberTitle;
         }
 
-        public IEnumerable<MemberDto> GetAll()
-        {
-            return _members.GetAll()
-                .Select(x => new MemberDto()
-                {
-                    //UserId = x.UserId,
-                    Password = x.Password,
-                    Email = x.Email,
-                    Name = x.Name,
-                    Phone = x.Phone,
-                    RoleName = _roles.GetFirst(y => y.RoleId == x.RoleId).RoleName,
-                    Gender = x.Gender,
-                    Points = (decimal)x.Points,
-                    Age = (int)x.Age,
-                    EmailConformed = x.EmailConformed,
-                    TitleId = x.TitleId
-                });
-        }
         /// <summary>
-        /// 獲得UserId
+        /// Get UserId
         /// </summary>
         /// <param name="userEmail"></param>
         /// <returns></returns>
@@ -60,14 +42,14 @@ namespace XforumTest.Services
             return _members.GetAll().SingleOrDefault(x => x.Email == userEmail).UserId.ToString();
         }
         /// <summary>
-        /// 新增會員資料
+        /// Register
         /// </summary>
         /// <param name="dto"></param>
         public void Create(CreateMemberDto dto)
         {
             try
             {
-                var user = new ForumMembers()
+                ForumMembers user = new ForumMembers()
                 {
                     UserId = Guid.NewGuid(),
                     Password = dto.Password,
@@ -76,20 +58,22 @@ namespace XforumTest.Services
                     Gender = dto.Gender,
                     Age = dto.Age,
                     Phone = dto.Phone,
-                    //預設為一般使用者
+                    //Default Picture
+                    ImgLink = "https://i.imgur.com/gZQyxZj.png",
+                    //Set default role to "normal"
                     RoleId = _roles.GetFirst(x => x.RoleName == "一般使用者").RoleId,
-                    //預測點數為1000
+                    //Set default points to 1K
                     Points = 1000,
-                    //預設為單身一年
+                    //Set default title to "Novice"
                     TitleId = _titles.GetFirst(x => x.TitleName == "初心者").TitleId,
-                    //RefreshToken,當JwtToken失效後
+                    //RefreshToken(Use it when jwt token expired)
                     RefreshToken = Guid.NewGuid()
                 };
                 _members.Create(user);
                 _members.SaveContext();
 
-                //加入初心者稱號至擁有的稱號
-                var usertitle = new MemberTitle()
+                //Add title "Novice" to MemberTitle when register
+                MemberTitle usertitle = new MemberTitle()
                 {
                     UserId = user.UserId,
                     HasTitleId = user.TitleId
@@ -103,25 +87,22 @@ namespace XforumTest.Services
             }
         }
         /// <summary>
-        /// 編輯會員資料
+        /// Edit user info
         /// </summary>
         /// <param name="dto"></param>
         /// <param name="userEmail"></param>
-        public void Edit(MemberDto dto, string userEmail)
+        public void Edit(EditMemberDTO dto, string userEmail)
         {
             try
             {
                 var editedContext = _members.GetFirst(x => x.Email == userEmail);
                 editedContext.Name = dto.Name;
-                editedContext.Email = dto.Email;
                 editedContext.Password = dto.Password;
                 editedContext.Age = dto.Age;
                 editedContext.Phone = dto.Phone;
                 editedContext.Gender = dto.Gender;
-                editedContext.ImgLink = dto.imgLink;
-                //依據輸入的Role名稱去Role表搜RoleId並更換
-                editedContext.RoleId = _roles.GetFirst(x => x.RoleName == dto.RoleName).RoleId;
-                //依據輸入的Title名稱去Title表搜尋TitleId並更換
+                editedContext.ImgLink = dto.ImgLink;
+                //Edit TitleId base on input TitleName
                 editedContext.TitleId = _titles.GetFirst(x => x.TitleName == dto.TitleName).TitleId;
 
                 _members.Update(editedContext);
@@ -133,14 +114,14 @@ namespace XforumTest.Services
             }
         }
         /// <summary>
-        /// 取得單一會員資料
+        /// Get single member info
         /// </summary>
         /// <param name="userEmail"></param>
         /// <returns></returns>
         public MemberDto GetSingleMember(string userEmail)
         {
-            var source = _members.GetAll().First(x => x.Email == userEmail);
-            var result = new MemberDto
+            ForumMembers source = _members.GetAll().First(x => x.Email == userEmail);
+            MemberDto result = new MemberDto
             {
                 UserId = source.UserId,
                 Name = source.Name,
@@ -151,33 +132,33 @@ namespace XforumTest.Services
                 Gender = source.Gender,
                 Points = (decimal)source.Points,
                 RoleId = source.RoleId,
-                RoleName = _roles.GetFirst(x => x.RoleId == source.RoleId).RoleName,
                 TitleId = source.TitleId,
-                TitleName = _titles.GetFirst(x => x.TitleId == source.TitleId).TitleName
+                imgLink = source.ImgLink,
+                TitleName = _titles.GetFirst(x => x.TitleId == source.TitleId).TitleName,
+                RoleName = _roles.GetFirst(x => x.RoleId == source.RoleId).RoleName
             };
             return result;
         }
         /// <summary>
-        /// 註冊驗證Email,暱稱
+        /// Verify email and name when register
         /// </summary>
-        /// <param name="email"></param>
-        /// <param name="name"></param>
+        /// <param name="dto"></param>
         /// <returns></returns>
-        public ApiResult<CreateMemberDto> VerifyEmailAndNameWhenRegister(string email, string name)
+        public ApiResult<CreateMemberDto> VerifyEmailAndNameWhenRegister(CreateMemberDto dto)
         {
-            var sourcre = _members.GetAll().Where(x => x.Email == email || x.Name == name);
+            IQueryable<ForumMembers> sourcre = _members.GetAll().Where(x => x.Email == dto.Email || x.Name == dto.Name);
 
-            if (sourcre.Any(x => x.Email == email))
+            if (sourcre.Any(x => x.Email == dto.Email))
             {
-                if (sourcre.Any(x => x.Name == name))
+                if (sourcre.Any(x => x.Name == dto.Name))
                 {
-                    return new ApiResult<CreateMemberDto>($"{email} 及 {name} 皆已被使用,請更換!"); //兩者皆已存在
+                    return new ApiResult<CreateMemberDto>($"{dto.Email} and {dto.Name} already exist，choose another one!");
                 }
-                return new ApiResult<CreateMemberDto>($"{email} 已存在，請更換!"); //此Email已存在，請更換Email
+                return new ApiResult<CreateMemberDto>($"{dto.Email} already exists，choose another one!");
             }
-            if (sourcre.Any(x => x.Name == name))
+            if (sourcre.Any(x => x.Name == dto.Name))
             {
-                return new ApiResult<CreateMemberDto>($"{name} 已存在，請更換!"); //此暱稱已存在，請更換暱稱
+                return new ApiResult<CreateMemberDto>($"{dto.Name} already exists，choose another one!");
             }
             else
             {
@@ -185,29 +166,19 @@ namespace XforumTest.Services
             }
         }
         /// <summary>
-        ///編輯會員資料驗證Email,暱稱(排除自己的資料)
+        /// Verify user name when edit(exclude own data)
         /// </summary>
-        /// <param name="email"></param>
-        /// <param name="name"></param>
+        /// <param name="dto"></param>
         /// <param name="userEmail"></param>
         /// <returns></returns>
-        public ApiResult<MemberDto> VerifyEmailAndNameWhenEdit(string email, string name, string userEmail)
+        public ApiResult<MemberDto> VerifyEmailAndNameWhenEdit(EditMemberDTO dto, string userEmail)
         {
+            //Exclude own data
+            IQueryable<ForumMembers> source = _members.GetAll().Where(x => x.Email != userEmail && x.Name == dto.Name);
 
-            //排除自己資料
-            var source = _members.GetAll().Where(x => x.Email != userEmail && (x.Email == email || x.Name == name));
-
-            if (source.Any(x => x.Email == email))
+            if (source.Any(x => x.Name == dto.Name))
             {
-                if (source.Any(x => x.Name == name))
-                {
-                    return new ApiResult<MemberDto>($"{email} 及 {name} 皆已被使用,請更換!"); //兩者皆已存在
-                }
-                return new ApiResult<MemberDto>($"{email} 已存在，請更換!"); //此Email已存在，請更換Email
-            }
-            if (source.Any(x => x.Name == name))
-            {
-                return new ApiResult<MemberDto>($"{name} 已存在，請更換!"); //此暱稱已存在，請更換暱稱
+                return new ApiResult<MemberDto>($"{dto.Name} already exists，choose another one!");
             }
             else
             {

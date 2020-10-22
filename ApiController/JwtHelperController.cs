@@ -30,7 +30,7 @@ namespace XforumTest.ApiController
         [HttpPost("signin")]
         public IActionResult SignIn([FromBody] AuthenticateRequest login)
         {
-            var check = _jwt.ValidateUser(login);
+            AuthenticateResponse check = _jwt.ValidateUser(login);
             //if (check == null) return BadRequest(new { message = "Username or password is incorrect!" });
             //HttpContext.Response.Cookies.Append("UserToken", check.Token);
             return Ok(check);
@@ -42,9 +42,6 @@ namespace XforumTest.ApiController
         [HttpPost("refresh")]
         public IActionResult RefreshToken([FromBody]string refreshtoken)
         {
-            //var expireTime = User.Claims.FirstOrDefault(p => p.Type == "exp").Value;
-            //var releaseTime = User.Claims.FirstOrDefault(p => p.Type == "nbf").Value;
-            //var refresh = _jwt.RefreshToken(User.Identity.Name, expireTime, releaseTime);
             return Ok(_jwt.RefreshToken(refreshtoken));
         }
         /// <summary>
@@ -58,7 +55,7 @@ namespace XforumTest.ApiController
             return Ok(User.Claims.Select(p => new { p.Type, p.Value }));
         }
         /// <summary>
-        /// 取得jwt token中的role
+        /// Get role in jwt token
         /// </summary>
         /// <returns></returns>
         [Authorize]

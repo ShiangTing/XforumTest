@@ -10,19 +10,46 @@ namespace XforumTest.Interface
 {
     public interface IUserService
     {
-        //註冊
+        /// <summary>
+        /// Register
+        /// </summary>
+        /// <param name="dto"></param>
         void Create(CreateMemberDto dto);
-        //拿到單一會員資料
+
+        /// <summary>
+        /// Get single member info
+        /// </summary>
+        /// <param name="userEmail"></param>
+        /// <returns></returns>
         MemberDto GetSingleMember(string userEmail);
 
-        //編輯會員資料
-        void Edit(MemberDto dto, string userEmail);
+        /// <summary>
+        /// Edit user info
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <param name="userEmail"></param>
+        void Edit(EditMemberDTO dto, string userEmail);
 
-        //註冊驗證Email, 暱稱
-        ApiResult<CreateMemberDto> VerifyEmailAndNameWhenRegister(string email, string name);
-        //編輯會員資料驗證Email, 暱稱(排除自己的資料)
-        ApiResult<MemberDto> VerifyEmailAndNameWhenEdit(string email, string name, string userEmail);
-        //獲得登入者UserId
+        /// <summary>
+        /// Verify user Email and name
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        ApiResult<CreateMemberDto> VerifyEmailAndNameWhenRegister(CreateMemberDto dto);
+
+        /// <summary>
+        /// Verify user name when edit(exclude own data)
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <param name="userEmail"></param>
+        /// <returns></returns>
+        ApiResult<MemberDto> VerifyEmailAndNameWhenEdit(EditMemberDTO dto, string userEmail);
+
+        /// <summary>
+        /// Get UserId
+        /// </summary>
+        /// <param name="userEmail"></param>
+        /// <returns></returns>
         string GetUserId(string userEmail);
     }
 }
