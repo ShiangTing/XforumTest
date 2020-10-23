@@ -60,14 +60,14 @@ namespace XforumTest.Services
         /// <summary>
         ///取得單一PO文
         /// </summary>
-        public PostListDto GetSingle(GetSingle get)
+        public PostListDto GetSingle(string id)
         {
             PostListDto single = (from p in _posts.GetAll2()
                          join u in _members.GetAll2()
                          on p.UserId equals u.UserId
                          join f in _forums.GetAll2()
                          on p.ForumId equals f.ForumId
-                         where p.PostId.ToString() == get.Id
+                         where p.PostId.ToString() == id
                          select new PostListDto
                          {
                              ForumName = f.ForumName,
@@ -85,9 +85,9 @@ namespace XforumTest.Services
             return single;
         }
 
-        public void Delete(GetSingle get)
+        public void Delete(string id)
         {
-            Posts delete = _posts.GetAll().FirstOrDefault(p => p.PostId.ToString() == get.Id);
+            Posts delete = _posts.GetAll().FirstOrDefault(p => p.PostId.ToString() == id);
             delete.State = false;
             _posts.Update(delete);
             _posts.SaveContext();
@@ -132,14 +132,14 @@ namespace XforumTest.Services
             return pList;
         }
 
-        public IEnumerable<PostListDto> GetForum(GetSingle get)
+        public IEnumerable<PostListDto> GetForum(string id)
         {
             IEnumerable<PostListDto> singleforum = from p in _posts.GetAll()
                                                   join u in _members.GetAll()
                                                   on p.UserId equals u.UserId
                                                   join f in _forums.GetAll()
                                                   on p.ForumId equals f.ForumId
-                                                  where f.RouteName == get.Id
+                                                  where f.RouteName == id
                                                   orderby p.CreatedDate
                                                   select new PostListDto
                                                   {

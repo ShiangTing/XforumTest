@@ -12,8 +12,8 @@ namespace XforumTest.Interface
     {
         void Create(ForumCreate create);
         IEnumerable<ForumGetAllDTO> GetAll();
-        ForumGetSingleDto GetSingle(GetSingle get);   
-        void Delete(GetSingle get);
+        ForumGetSingleDto GetSingle(string id);   
+        void Delete(string id);
         void Edit(ForumCreate json);
     }
 }

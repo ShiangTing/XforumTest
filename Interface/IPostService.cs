@@ -10,9 +10,9 @@ namespace XforumTest.Interface
     {
         string Create(PostCreateDto po);
         IEnumerable<PostListDto> GetAll();
-        PostListDto GetSingle(GetSingle get);
-        IEnumerable<PostListDto> GetForum(GetSingle get);
-        void Delete(GetSingle get);
+        PostListDto GetSingle(string id);
+        IEnumerable<PostListDto> GetForum(string id);
+        void Delete(string id);
         void Edit(PostListDto json);
       
     }

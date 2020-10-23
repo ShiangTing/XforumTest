@@ -23,9 +23,9 @@ namespace XforumTest.Services
             _usertitle = usertitle;
         }
 
-        public decimal? GetPoints(GetSingle get)
+        public decimal? GetPoints(string id)
         {             
-            return _users.GetAll2().FirstOrDefault(x => x.UserId.ToString() == get.Id).Points;
+            return _users.GetAll2().FirstOrDefault(x => x.UserId.ToString() == id).Points;
         }
        
         public void CreateTitile(TitleCreateDto model)
@@ -55,9 +55,9 @@ namespace XforumTest.Services
             throw new NotImplementedException();
         }
 
-        public void EditTitle(GetSingle get)
+        public void EditTitle(string id)
         {
-            Titles title = _titles.GetAll().FirstOrDefault(t => t.TitleId.ToString() == get.Id);
+            Titles title = _titles.GetAll().FirstOrDefault(t => t.TitleId.ToString() == id);
             throw new NotImplementedException();
         }
 
@@ -68,12 +68,12 @@ namespace XforumTest.Services
         /// <summary>
         /// 取得稱號系統
         /// </summary>
-        public List<HasTitle> GetHasTitles(GetSingle get)
+        public List<HasTitle> GetHasTitles(string id)
         {
             List<HasTitle> has = (from m in _usertitle.GetAll2()
                                  join t in _titles.GetAll2()
                                  on m.HasTitleId equals t.TitleId
-                                 where m.UserId.ToString() == get.Id
+                                 where m.UserId.ToString() == id
                                  select new HasTitle()
                                  {
                                       TitleName = t.TitleName
