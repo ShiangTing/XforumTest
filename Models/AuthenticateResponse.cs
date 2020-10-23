@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using XforumTest.Entities;
+using XforumTest.DTO;
+
 
 namespace XforumTest.Models
 {
@@ -20,7 +21,7 @@ namespace XforumTest.Models
         public string RefreshToken { get; set; }
         public string ReleaseTime { get; set; }
         public string ExpireTime { get; set; }
-        public AuthenticateResponse(User user, string token)
+        public AuthenticateResponse(JwtUser user, string token)
         {
             //FirstName = user.FirstName;
             //LastName = user.LastName;
@@ -34,7 +35,7 @@ namespace XforumTest.Models
             Token = token;
             RefreshToken = user.RefreshToken;
             ReleaseTime = Convert.ToInt32((DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds).ToString();
-            ExpireTime = Convert.ToInt32((DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds + 3600).ToString();
+            ExpireTime = Convert.ToInt32((DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds + 60).ToString();
         }
         public AuthenticateResponse(string error)
         {

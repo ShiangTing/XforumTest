@@ -83,11 +83,13 @@ export default {
         .post(url, vm.loginData)
         .then((res) => {
           if (res.status == 200 && res.data.issuccessful) {
-            let { token, isAuthorize } = {
+            let data = {
+              refreshToken: res.data.refreshToken,
               token: res.data.token,
-              isAuthorize: true,
+              expireTime: res.data.expireTime,
+              isAuthorize: true
             };
-            vm.$store.dispatch("setAuth", { token, isAuthorize });
+            vm.$store.dispatch("setAuth", data);
             vm.$router.push("/");
           } else if (res.status == 200 && !res.data.issuccessful) {
             vm.error.isError = true;
