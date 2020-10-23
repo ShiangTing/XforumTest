@@ -28,7 +28,7 @@ namespace XforumTest.Services
         {
                 try
                 {                    
-                    var po = new Posts
+                    Posts po = new Posts
                     {
                         PostId = Guid.NewGuid(),
                         ForumId = new Guid(model.ForumId),
@@ -40,7 +40,7 @@ namespace XforumTest.Services
                         State = true
                     };
                     // 每PO一篇文 +50 points
-                    var user = _members.GetAll2().FirstOrDefault(x => x.UserId.ToString() == model.UserId);
+                    ForumMembers user = _members.GetAll2().FirstOrDefault(x => x.UserId.ToString() == model.UserId);
                     user.Points = user.Points + 50;
 
                     _posts.Create(po);
@@ -62,7 +62,7 @@ namespace XforumTest.Services
         /// </summary>
         public PostListDto GetSingle(string postid)
         {
-            var single = from p in _posts.GetAll2()
+            PostListDto single = (from p in _posts.GetAll2()
                          join u in _members.GetAll2()
                          on p.UserId equals u.UserId
                          join f in _forums.GetAll2()
@@ -80,14 +80,14 @@ namespace XforumTest.Services
                              LikeNumber = p.LikeNumber,
                              DisLikeNumber = p.DisLikeNumber,
                              State = p.State
-                         };
+                         }).FirstOrDefault();
 
-            return single.FirstOrDefault();
+            return single;
         }
 
         public void Delete(string id)
         {
-            var delete = _posts.GetAll().FirstOrDefault(p => p.PostId.ToString() == id);
+            Posts delete = _posts.GetAll().FirstOrDefault(p => p.PostId.ToString() == id);
             delete.State = false;
             _posts.Update(delete);
             _posts.SaveContext();
@@ -96,7 +96,7 @@ namespace XforumTest.Services
 
         public void Edit(PostListDto json)
         {
-            var edit = _posts.GetAll().FirstOrDefault(p => p.PostId == json.PostId);
+            Posts edit = _posts.GetAll().FirstOrDefault(p => p.PostId == json.PostId);
             edit.Title = json.Title;
             edit.Description = json.Description;
             edit.State = json.State;
@@ -109,51 +109,51 @@ namespace XforumTest.Services
         /// </summary>
         public IEnumerable<PostListDto> GetAll()
         {
-            var pList = from p in _posts.GetAll2()
-                        join u in _members.GetAll2()
-                        on p.UserId equals u.UserId
-                        join f in _forums.GetAll2()
-                        on p.ForumId equals f.ForumId
-                        where p.State == true
-                        orderby p.CreatedDate
-                        select new PostListDto
-                        {
-                            ForumName = f.ForumName,
-                            PostId = p.PostId,
-                            Title = p.Title,
-                            Description = p.Description,
-                            CreatedDate = p.CreatedDate,
-                            UserId = p.UserId,
-                            UserName = u.Name,
-                            LikeNumber = p.LikeNumber,
-                            DisLikeNumber = p.DisLikeNumber,
-                            State = p.State
-                        };
+            IEnumerable<PostListDto> pList = from p in _posts.GetAll2()
+                                            join u in _members.GetAll2()
+                                            on p.UserId equals u.UserId
+                                            join f in _forums.GetAll2()
+                                            on p.ForumId equals f.ForumId
+                                            where p.State == true
+                                            orderby p.CreatedDate
+                                            select new PostListDto
+                                            {
+                                                ForumName = f.ForumName,
+                                                PostId = p.PostId,
+                                                Title = p.Title,
+                                                Description = p.Description,
+                                                CreatedDate = p.CreatedDate,
+                                                UserId = p.UserId,
+                                                UserName = u.Name,
+                                                LikeNumber = p.LikeNumber,
+                                                DisLikeNumber = p.DisLikeNumber,
+                                                State = p.State
+                                            };
             return pList;
         }
 
         public IEnumerable<PostListDto> GetForum(string routename)
         {
-            var singleforum = from p in _posts.GetAll()
-                              join u in _members.GetAll()
-                              on p.UserId equals u.UserId
-                              join f in _forums.GetAll()
-                              on p.ForumId equals f.ForumId
-                              where f.RouteName == routename
-                              orderby p.CreatedDate
-                              select new PostListDto
-                              {
-                                  ForumName = f.ForumName,
-                                  PostId = p.PostId,
-                                  Title = p.Title,
-                                  Description = p.Description,
-                                  CreatedDate = p.CreatedDate,
-                                  UserId = p.UserId,
-                                  UserName = u.Name,
-                                  LikeNumber = p.LikeNumber,
-                                  DisLikeNumber = p.DisLikeNumber,
-                                  State = p.State
-                              };
+            IEnumerable<PostListDto> singleforum = from p in _posts.GetAll()
+                                                  join u in _members.GetAll()
+                                                  on p.UserId equals u.UserId
+                                                  join f in _forums.GetAll()
+                                                  on p.ForumId equals f.ForumId
+                                                  where f.RouteName == routename
+                                                  orderby p.CreatedDate
+                                                  select new PostListDto
+                                                  {
+                                                      ForumName = f.ForumName,
+                                                      PostId = p.PostId,
+                                                      Title = p.Title,
+                                                      Description = p.Description,
+                                                      CreatedDate = p.CreatedDate,
+                                                      UserId = p.UserId,
+                                                      UserName = u.Name,
+                                                      LikeNumber = p.LikeNumber,
+                                                      DisLikeNumber = p.DisLikeNumber,
+                                                      State = p.State
+                                                  };
 
             return singleforum.ToList();
         }

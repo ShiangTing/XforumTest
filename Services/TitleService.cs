@@ -32,7 +32,7 @@ namespace XforumTest.Services
         {
             try
             {
-                var create = new Titles
+                Titles create = new Titles
                 {
                     TitleId = Guid.NewGuid(),
                     TitleName = model.TitleName,
@@ -57,7 +57,7 @@ namespace XforumTest.Services
 
         public void EditTitle(string titleid)
         {
-            var title = _titles.GetAll().FirstOrDefault(t => t.TitleId.ToString() == titleid);
+            Titles title = _titles.GetAll().FirstOrDefault(t => t.TitleId.ToString() == titleid);
             throw new NotImplementedException();
         }
 
@@ -70,14 +70,14 @@ namespace XforumTest.Services
         /// </summary>
         public List<HasTitle> GetHasTitles(string id)
         {
-            var has = (from m in _usertitle.GetAll2()
-                       join t in _titles.GetAll2()
-                       on m.HasTitleId equals t.TitleId
-                       where m.UserId.ToString() == id
-                       select new HasTitle()
-                       {
-                           TitleName = t.TitleName
-                       }).ToList();                       
+            List<HasTitle> has = (from m in _usertitle.GetAll2()
+                                 join t in _titles.GetAll2()
+                                 on m.HasTitleId equals t.TitleId
+                                 where m.UserId.ToString() == id
+                                 select new HasTitle()
+                                 {
+                                      TitleName = t.TitleName
+                                 }).ToList();                       
             
             return has;
         }
@@ -88,20 +88,20 @@ namespace XforumTest.Services
         /// <returns></returns>
         public string BuyTitle(BuyTitle buy)
         {
-            var user = _users.GetAll2().FirstOrDefault(u => u.UserId.ToString() == buy.UserId);
-            var price = _titles.GetAll2().Select(x => new TitleDto() { 
+            ForumMembers user = _users.GetAll2().FirstOrDefault(u => u.UserId.ToString() == buy.UserId);
+            TitleDto price = _titles.GetAll2().Select(x => new TitleDto() { 
                 TitleId = x.TitleId,
                 TitleName =x.TitleName,
-                Price =decimal.Parse( x.Price.ToString())
-            
+                Price =decimal.Parse( x.Price.ToString())            
             }).FirstOrDefault(t => t.TitleName == buy.TitleId);
+
             if (user.Points > price.Price)
             {
                 user.Points = user.Points - price.Price;
                 _users.Update(user);
                 _users.SaveContext();
 
-                var newtitle = new MemberTitle
+                MemberTitle newtitle = new MemberTitle
                 {
                     UserId = Guid.Parse(buy.UserId),
                     HasTitleId = price.TitleId
