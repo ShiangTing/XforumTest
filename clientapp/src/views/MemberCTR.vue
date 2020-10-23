@@ -2,7 +2,46 @@
   <div>
     <Navbar />
     <div class="container">
-      <b-form @submit="onSubmit" @reset="onReset" v-if="show">
+      <div class="d-flex">
+        <div class="d-flex flex-column mt-5">
+          <h4><b>會員頭像</b></h4>
+          <div class="mt-3">
+            <img
+              style="border: 1px dashed wheat"
+              v-if="hasImg"
+              id="blah"
+              alt="上傳您的頭像"
+              width="100"
+              height="100"
+              :src="user.imgLink"
+            />
+            <img
+              style="border: 1px dashed wheat"
+              v-else
+              id="blah"
+              :src="user.imgLink"
+              alt="上傳您的頭像"
+              width="100"
+              height="100"
+            />
+          </div>
+
+          <input
+            class="mt-3"
+            type="file"
+            name="file"
+            ref="file"
+            @change="handleFileUpload"
+          />
+        </div>
+        <div class="d-flex flex-column mt-5 ml-5">
+          <h4><b>X幣</b></h4>
+          <h3>
+            <b>${{ user.points }}</b>
+          </h3>
+        </div>
+      </div>
+      <b-form>
         <div class="row mt-5">
           <div class="col">
             <b-form-group>
@@ -48,13 +87,6 @@
           <div class="col">
             <h4><b>性別</b></h4>
             <b-form-group>
-              <!-- <div class="d-flex">
-                <b-form-input
-                  v-model="user.age"
-                  required
-                  :disabled="inputCanChange"
-                ></b-form-input>
-              </div> -->
               <select
                 style="
                   width: 51%;
@@ -77,76 +109,83 @@
             </b-form-group>
           </div>
           <div class="col">
-            <h4><b>性別</b></h4>
+            <h4><b>電話</b></h4>
             <b-form-group>
               <div class="d-flex">
                 <b-form-input
-                  type="number"
-                  min="1"
-                  v-model="user.age"
+                  type="text"
+                  v-model="user.phone"
                   required
                   :disabled="inputCanChange"
                 ></b-form-input>
               </div>
             </b-form-group>
           </div>
-        </div>
-        <h4><b>已經擁有的稱號</b></h4>
-        <div v-for="(item, idx) in hasRank" :key="idx" class="d-inline-block">
-          <div v-if="item.titleName == user.ownerRank">
-            <font-awesome-icon icon="crown" />
-            <span class="badge badge-primary m-3 p-2">{{
-              user.ownerRank
-            }}</span>
+          <div class="col">
+            <h4><b>權限</b></h4>
+            <b-form-group>
+              <div class="d-flex">
+                <b-form-input
+                  type="text"
+                  v-model="user.roleName"
+                  readonly
+                ></b-form-input>
+              </div>
+            </b-form-group>
           </div>
-
-          <span
-            class="badge badge-info m-3 p-2 ownerRank"
-            v-text="otherRank(item.titleName)"
-            @click="changeRank(item.titleName)"
-          ></span>
+        </div>
+        <h4 class="text-center my-5"><b>已經擁有的稱號</b></h4>
+        <div class="d-flex justify-content-center mb-5">
+          <div v-for="(item, idx) in hasRank" :key="idx" class="d-inline-block">
+            <div v-if="item.titleName == user.ownerRank">
+              <font-awesome-icon icon="crown" />
+              <span class="badge badge-primary m-3 p-2">{{
+                user.ownerRank
+              }}</span>
+            </div>
+            <span
+              class="badge badge-info m-3 p-2 ownerRank"
+              v-text="otherRank(item.titleName)"
+              @click="changeRank(item.titleName)"
+            ></span>
+          </div>
         </div>
 
-        <div></div>
-
-        <!-- <b-form-group id="input-group-4">
-          <b-form-checkbox-group v-model="user.checked" id="checkboxes-4">
-            <b-form-checkbox value="me"></b-form-checkbox>
-            <b-form-checkbox value="that"></b-form-checkbox>
-          </b-form-checkbox-group>
-        </b-form-group> -->
-
-        <b-button type="submit" variant="primary">Submit</b-button>
-        <b-button
-          pill
-          variant="outline-secondary"
-          class="ml-2"
-          v-if="inputCanChange"
-          @click="inputChange"
-          >修改會員資料</b-button
-        >
-        <b-button v-else pill variant="info" class="ml-2" @click="inputChange"
-          >完成修改</b-button
-        >
-        <b-button type="reset" variant="danger">Reset</b-button>
+        <div class="d-flex justify-content-center">
+          <b-button pill variant="primary" @click="updateMember"
+            >提交修改</b-button
+          >
+          <b-button
+            pill
+            variant="outline-secondary"
+            class="ml-2"
+            v-if="inputCanChange"
+            @click="inputChange"
+            >修改會員資料</b-button
+          >
+          <b-button v-else pill variant="info" class="ml-2" @click="inputChange"
+            >完成修改</b-button
+          >
+        </div>
       </b-form>
-      <b-card class="mt-3" header="Form Data Result">
-        <pre class="m-0">{{ user }}</pre>
-      </b-card>
     </div>
   </div>
 </template>
 
 <script>
 import Navbar from "../components/common/Navbar";
+import axios from "axios";
 export default {
   components: { Navbar },
   data() {
     return {
+      file: "",
+      //////////////////////
       inputCanChange: true,
       user: {
         userId: "",
         email: "",
+        password: "",
         name: "",
         age: "",
         phone: "",
@@ -154,30 +193,73 @@ export default {
         roleName: "",
         gender: "",
         ownerRank: "",
-        checked: [],
+        imgLink: "",
+      },
+      updateData: {
+        name: "",
+        password: "",
+        age: "",
+        phone: "",
+        gender: "",
+        titleName: "",
+        imgLink: "",
       },
       hasRank: [],
-      foods: [
-        { text: "Select One", value: null },
-        "Carrots",
-        "Beans",
-        "Tomatoes",
-        "Corn",
-      ],
       show: true,
       selectGender: "",
       genderList: ["female", "male"],
+      hasImg: false,
     };
   },
   methods: {
+    handleFileUpload() {
+      this.file = this.$refs.file.files[0];
+      const CLIENT_ID = "3d78cf6e67ed6af";
+      var formData = new FormData();
+      formData.append("image", this.file);
+      axios({
+        url: "https://api.imgur.com/3/image",
+        method: "POST",
+        headers: {
+          Authorization: "Client-ID " + CLIENT_ID,
+        },
+        data: formData,
+      })
+        .then((result) => {
+          let url = result.data.data.link;
+          this.user.imgLink = url;
+          this.hasImg = true;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    updateMember() {
+      let vm = this;
+      vm.updateData.name = vm.user.name;
+      vm.updateData.password = vm.user.password;
+      vm.updateData.age = vm.user.age;
+      vm.updateData.phone = vm.user.phone;
+      vm.updateData.gender = vm.user.gender;
+      vm.updateData.titleName = vm.user.ownerRank;
+      vm.updateData.imgLink = vm.user.imgLink;
+      this.$axios
+        .patch(
+          process.env.VUE_APP_API + "/api/Users/UpdateMember",
+          vm.updateData
+        )
+        .then(() => {
+          console.log("成功");
+          vm.$router.go(0);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
     getOptionIdx: function (event, selectedIndex) {
-      console.log(event);
       this.user.gender = event.target.querySelectorAll("option")[
         selectedIndex
       ].id;
-      // this.selectGender = event.target.querySelectorAll("option")[
-      //   selectedIndex
-      // ].id;
     },
     inputChange() {
       return this.inputCanChange
@@ -193,24 +275,6 @@ export default {
         return rankName;
       }
     },
-    onSubmit(evt) {
-      evt.preventDefault();
-      alert(JSON.stringify(this.form));
-    },
-    onReset(evt) {
-      evt.preventDefault();
-      // Reset our form values
-
-      this.user.email = "";
-      this.user.name = "";
-      this.user.food = null;
-      this.user.checked = [];
-      // Trick to reset/clear native browser form validation state
-      this.show = false;
-      this.$nextTick(() => {
-        this.show = true;
-      });
-    },
     getSingleMember() {
       let vm = this;
       let auth = vm.$store.state.tokenModule;
@@ -224,7 +288,6 @@ export default {
           headers: { Authorization: `Bearer ${token}` },
         })
           .then((res) => {
-            console.log(res.data.data);
             vm.user.email = res.data.data.email;
             vm.user.name = res.data.data.name;
             vm.user.userId = res.data.data.userId;
@@ -234,6 +297,8 @@ export default {
             vm.user.phone = res.data.data.phone;
             vm.user.points = res.data.data.points;
             vm.user.roleName = res.data.data.roleName;
+            vm.user.imgLink = res.data.data.imgLink;
+            vm.user.password = res.data.data.password;
 
             this.getHasRank();
           })

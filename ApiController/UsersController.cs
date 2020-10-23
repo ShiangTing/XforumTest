@@ -42,7 +42,7 @@ namespace XforumTest.Controllers
             return Ok(User.Identity.Name);
         }
         /// <summary>
-        /// 註冊會員功能 輸入model 若email與暱稱有重複erroMsg會顯示"此Email/暱稱已存在，請換一組Email"
+        /// Verify email and name when register
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
@@ -51,7 +51,7 @@ namespace XforumTest.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = _userService.VerifyEmailAndNameWhenRegister(dto.Email, dto.Name);
+                ApiResult<CreateMemberDto> result = _userService.VerifyEmailAndNameWhenRegister(dto);
                 if (result.Issuccessful) { _userService.Create(dto); }
                 return result;
             }
@@ -61,31 +61,31 @@ namespace XforumTest.Controllers
             }
         }
         /// <summary>
-        ///  取得單一會員資料
+        /// Get single member info
         /// </summary>
         /// <returns></returns>
         [Authorize]
         [HttpGet]
         public ApiResult<MemberDto> GetSingleMember()
         {
-            var result = new ApiResult<MemberDto>
+            ApiResult<MemberDto> result = new ApiResult<MemberDto>
             {
                 Data = _userService.GetSingleMember(User.Identity.Name)
             };
             return result;
         }
         /// <summary>
-        /// 更新會員資料
+        /// Edit User info
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
         [Authorize]
-        [HttpPut]
-        public ApiResult<MemberDto> UpdateMember([FromBody] MemberDto dto)
+        [HttpPatch]
+        public ApiResult<MemberDto> UpdateMember([FromBody] EditMemberDTO dto)
         {
             if (ModelState.IsValid)
             {
-                var result = _userService.VerifyEmailAndNameWhenEdit(dto.Email, dto.Name, User.Identity.Name);
+                ApiResult<MemberDto> result = _userService.VerifyEmailAndNameWhenEdit(dto, User.Identity.Name);
                 if (result.Issuccessful) { _userService.Edit(dto, User.Identity.Name); }
                 return result;
             }
