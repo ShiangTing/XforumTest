@@ -69,7 +69,8 @@ namespace XforumTest
             services.AddTransient<IRepository<ReposiveMessages>, GeneralRepository<ReposiveMessages>>();
             services.AddTransient<IRepository<Titles>, GeneralRepository<Titles>>();
             services.AddTransient<IRepository<MemberTitle>, GeneralRepository<MemberTitle>>();
-
+            services.AddTransient<IRepository<History>, GeneralRepository<History>>();
+            services.AddTransient<IRepository<Category>, GeneralRepository<Category>>();
 
             services.AddTransient<IRepository<MessageLikeDto>, GeneralRepository<MessageLikeDto>>();
             services.AddTransient<IUserService, UserService>();
@@ -80,6 +81,7 @@ namespace XforumTest
             services.AddTransient<IForumService, ForumService>();
             services.AddTransient<IPostService, PostService>();
             services.AddTransient<ITitleService, TitleService>();
+            services.AddTransient<IHistoryService, HistoryService>();
             services.AddControllers().AddNewtonsoftJson();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
