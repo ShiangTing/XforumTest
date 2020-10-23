@@ -10,7 +10,7 @@ namespace XforumTest.Interface
     {
         decimal? GetPoints(string id);
         void CreateTitile(TitleCreateDto model);
-        void EditTitle(string titleid);
+        void EditTitle(string id);
         void DeleteTitile();
         List<TitleCreateDto> GetAllTitles();
         List<HasTitle> GetHasTitles(string id);

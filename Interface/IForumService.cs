@@ -12,7 +12,7 @@ namespace XforumTest.Interface
     {
         void Create(ForumCreate create);
         IEnumerable<ForumGetAllDTO> GetAll();
-        ForumGetSingleDto GetSingle(string forumid);   
+        ForumGetSingleDto GetSingle(string id);   
         void Delete(string id);
         void Edit(ForumCreate json);
     }

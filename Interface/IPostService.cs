@@ -8,7 +8,7 @@ namespace XforumTest.Interface
 {
     public interface IPostService
     {
-        void Create(PostCreateDto po);
+        string Create(PostCreateDto po);
         IEnumerable<PostListDto> GetAll();
         PostListDto GetSingle(string id);
         IEnumerable<PostListDto> GetForum(string id);

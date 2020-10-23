@@ -39,4 +39,8 @@ namespace XforumTest.DTO
         public bool? State { get; set; }
 
     }
+    public class GetSingle
+    { 
+        public string Id { get; set; }
+    }
 }
