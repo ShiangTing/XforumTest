@@ -80,7 +80,7 @@ namespace XforumTest.Controllers
         /// <param name="dto"></param>
         /// <returns></returns>
         [Authorize]
-        [HttpPut]
+        [HttpPatch]
         public ApiResult<MemberDto> UpdateMember([FromBody] EditMemberDTO dto)
         {
             if (ModelState.IsValid)
