@@ -69,7 +69,6 @@ namespace XforumTest
             }
 
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
-
             services.AddControllers().AddNewtonsoftJson();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>

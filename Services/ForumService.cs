@@ -24,7 +24,7 @@ namespace XforumTest.Services
     
             try
             {
-                var createforum = new Forums
+                Forums createforum = new Forums
                 {
                     ForumId = Guid.NewGuid(),
                     CreatedDate = create.CreatedDate,
@@ -48,7 +48,7 @@ namespace XforumTest.Services
         /// <param name="id"></param>
         public void Delete(string id)
         {
-            var delete = _Forums.GetAll().FirstOrDefault(f => f.ForumId.ToString() == id);
+            Forums delete = _Forums.GetAll().FirstOrDefault(f => f.ForumId.ToString() == id);
             delete.State = false;
             _Forums.Update(delete);
             _Forums.SaveContext();
@@ -79,7 +79,7 @@ namespace XforumTest.Services
         public void Edit(ForumCreate json)
         {
             //var json = JsonConvert.DeserializeObject<ForumCreate>(data);
-            var oldforum = _Forums.GetAll().FirstOrDefault(f => f.ModeratorId == json.ModeratorId);
+            Forums oldforum = _Forums.GetAll().FirstOrDefault(f => f.ModeratorId == json.ModeratorId);
             oldforum.Img = json.Img;
             oldforum.ModeratorId = json.ModeratorId;
             oldforum.Description = json.Description;
@@ -95,7 +95,7 @@ namespace XforumTest.Services
         /// <returns></returns>
         public IEnumerable<ForumGetAllDTO> GetAll()
         {
-            var getall = from fm in _Forums.GetAll2()
+            IEnumerable<ForumGetAllDTO> getall = from fm in _Forums.GetAll2()
                          where fm.State == true
                          select new ForumGetAllDTO
                          {
