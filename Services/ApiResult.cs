@@ -40,7 +40,10 @@ namespace XforumTest.Services
             ErrorMsg = $"{error}" ;
         }
 
- 
+        public enum ErrorMessage
+        {
+            Error =0 ,Error2
+        }
            
 
     }
