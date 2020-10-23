@@ -9,9 +9,7 @@ using System.Text;
 using System.IdentityModel.Tokens.Jwt;
 using XforumTest.Interface;
 using XforumTest.DataTable;
-
 using XforumTest.Models;
-
 using XforumTest.DTO;
 
 namespace XforumTest.Helpers
@@ -22,12 +20,14 @@ namespace XforumTest.Helpers
         private readonly IRepository<ForumMembers> _members;
         private readonly IRepository<Posts> _posts;
         private readonly IRepository<ForumRoles> _forumRole;
-        public JwtHelperService(IConfiguration configuration, IRepository<ForumMembers> members, IRepository<Posts> posts, IRepository<ForumRoles> ForumRoles)
+        private readonly IEncryptService _encrypt;
+        public JwtHelperService(IConfiguration configuration, IRepository<ForumMembers> members, IRepository<Posts> posts, IRepository<ForumRoles> ForumRoles, IEncryptService encrypt)
         {
             _configuration = configuration;
             _members = members;
             _posts = posts;
             _forumRole = ForumRoles;
+            _encrypt = encrypt;
         }
 
         /// <summary>
@@ -118,14 +118,14 @@ namespace XforumTest.Helpers
                 {
                     return new AuthenticateResponse($"Found no {login.Email} Email!");
                 }
-                if (members.Any(x => x.Email == login.Email) && members.FirstOrDefault(x => x.Email == login.Email).Password != login.Password)
+                if (members.Any(x => x.Email == login.Email) && members.FirstOrDefault(x => x.Email == login.Email).Password != _encrypt.ToMD5(login.Password))
                 {
                     return new AuthenticateResponse($"Incorrect password!");
                 }
                 else
                 {
                     //先搜尋帳密符合的會員，再轉成User
-                    var check = members.FirstOrDefault(x => x.Email == login.Email && x.Password == login.Password);
+                    var check = members.FirstOrDefault(x => x.Email == login.Email && x.Password == _encrypt.ToMD5(login.Password));
                     var validuser = new JwtUser
                     {
                         Email = check.Email,

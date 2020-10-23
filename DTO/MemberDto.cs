@@ -31,6 +31,6 @@ namespace XforumTest.DTO
         public Guid? TitleId { get; set; }
         public string TitleName { get; set; }
 
-        public string imgLink { get; set; }
+        public string ImgLink { get; set; }
     }
 }

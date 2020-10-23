@@ -21,7 +21,7 @@ namespace XforumTest.Interface
         /// </summary>
         /// <param name="userEmail"></param>
         /// <returns></returns>
-        MemberDto GetSingleMember(string userEmail);
+        ReadMemberDTO GetSingleMember(string userEmail);
 
         /// <summary>
         /// Edit user info
@@ -43,7 +43,7 @@ namespace XforumTest.Interface
         /// <param name="dto"></param>
         /// <param name="userEmail"></param>
         /// <returns></returns>
-        ApiResult<MemberDto> VerifyEmailAndNameWhenEdit(EditMemberDTO dto, string userEmail);
+        ApiResult<EditMemberDTO> VerifyEmailAndNameWhenEdit(EditMemberDTO dto, string userEmail);
 
         /// <summary>
         /// Get UserId
