@@ -60,17 +60,17 @@ namespace XforumTest.Services
         /// <returns></returns>
         public ForumGetSingleDto GetSingle(string forumid)
         {
-            var forum = from f in _Forums.GetAll().AsEnumerable()
-                        where f.ForumId == Guid.Parse(forumid)
-                        select new ForumGetSingleDto
-                        {
-                            ForumName = f.ForumName,
-                            Description = f.Description,
-                            ModeratorId = f.ModeratorId,                            
-                            CreatedDate = f.CreatedDate,
-                            State = f.State
-                        };
-            return forum.FirstOrDefault();
+            ForumGetSingleDto forum = (from f in _Forums.GetAll().AsEnumerable()
+                                        where f.ForumId == Guid.Parse(forumid)
+                                        select new ForumGetSingleDto
+                                        {
+                                            ForumName = f.ForumName,
+                                            Description = f.Description,
+                                            ModeratorId = f.ModeratorId,                            
+                                            CreatedDate = f.CreatedDate,
+                                            State = f.State
+                                        }).FirstOrDefault();
+            return forum;
         }
         /// <summary>
         /// 編輯看板資料、回復軟刪除狀態
