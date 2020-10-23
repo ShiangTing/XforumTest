@@ -13,6 +13,7 @@
               alt="上傳您的頭像"
               width="100"
               height="100"
+              :src="user.imgLink"
             />
             <img
               style="border: 1px dashed wheat"
@@ -26,9 +27,11 @@
           </div>
 
           <input
-            class="mt-5"
+            class="mt-3"
             type="file"
-            onchange="document.getElementById('blah').src = window.URL.createObjectURL(this.files[0]);this.hasImg = true;"
+            name="file"
+            ref="file"
+            @change="handleFileUpload"
           />
         </div>
         <div class="d-flex flex-column mt-5 ml-5">
@@ -38,7 +41,7 @@
           </h3>
         </div>
       </div>
-      <b-form @submit="onSubmit" @reset="onReset" v-if="show">
+      <b-form>
         <div class="row mt-5">
           <div class="col">
             <b-form-group>
@@ -150,7 +153,7 @@
 
         <div class="d-flex justify-content-center">
           <b-button pill variant="primary" @click="updateMember"
-            >Submit</b-button
+            >提交修改</b-button
           >
           <b-button
             pill
@@ -165,20 +168,19 @@
           >
         </div>
       </b-form>
-      <b-card class="mt-3" header="Form Data Result">
-        <pre class="m-0">{{ user }}</pre>
-      </b-card>
     </div>
   </div>
 </template>
 
 <script>
 import Navbar from "../components/common/Navbar";
-
+import axios from "axios";
 export default {
   components: { Navbar },
   data() {
     return {
+      file: "",
+      //////////////////////
       inputCanChange: true,
       user: {
         userId: "",
@@ -191,7 +193,6 @@ export default {
         roleName: "",
         gender: "",
         ownerRank: "",
-        checked: [],
         imgLink: "",
       },
       updateData: {
@@ -204,13 +205,6 @@ export default {
         imgLink: "",
       },
       hasRank: [],
-      foods: [
-        { text: "Select One", value: null },
-        "Carrots",
-        "Beans",
-        "Tomatoes",
-        "Corn",
-      ],
       show: true,
       selectGender: "",
       genderList: ["female", "male"],
@@ -218,41 +212,51 @@ export default {
     };
   },
   methods: {
+    handleFileUpload() {
+      this.file = this.$refs.file.files[0];
+      const CLIENT_ID = "3d78cf6e67ed6af";
+      var formData = new FormData();
+      formData.append("image", this.file);
+      axios({
+        url: "https://api.imgur.com/3/image",
+        method: "POST",
+        headers: {
+          Authorization: "Client-ID " + CLIENT_ID,
+        },
+        data: formData,
+      })
+        .then((result) => {
+          let url = result.data.data.link;
+          this.user.imgLink = url;
+          this.hasImg = true;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
     updateMember() {
-      let updateImg = document.getElementById("blah").src;
-
-      console.log(updateImg.length);
-
-      // let mySrc;
-      // const reader = new FileReader();
-      // reader.readAsDataURL(updateImg);
-      // reader.onloadend = function () {
-      //   // result includes identifier 'data:image/png;base64,' plus the base64 data
-      //   mySrc = reader.result;
-      //   console.log(mySrc);
-      // };
-      // updateImg = vm.user.imgLink;
-      // let vm = this;
-      // vm.updateData.name = vm.user.name;
-      // vm.updateData.password = vm.user.password;
-      // vm.updateData.age = vm.user.age;
-      // vm.updateData.phone = vm.user.phone;
-      // vm.updateData.gender = vm.user.gender;
-      // vm.updateData.titleName = vm.user.ownerRank;
-      // vm.updateData.imgLink = updateImg;
-      // this.$axios
-      //   .put(process.env.VUE_APP_API + "/api/Users/UpdateMember", vm.updateData)
-      //   .then((response) => {
-      //     console.log(response.data);
-      //     console.log("成功Po文");
-      //     vm.$router.push("/");
-      //   })
-      //   .catch((err) => {
-      //     console.log(err);
-      //   });
+      let vm = this;
+      vm.updateData.name = vm.user.name;
+      vm.updateData.password = vm.user.password;
+      vm.updateData.age = vm.user.age;
+      vm.updateData.phone = vm.user.phone;
+      vm.updateData.gender = vm.user.gender;
+      vm.updateData.titleName = vm.user.ownerRank;
+      vm.updateData.imgLink = vm.user.imgLink;
+      this.$axios
+        .patch(
+          process.env.VUE_APP_API + "/api/Users/UpdateMember",
+          vm.updateData
+        )
+        .then(() => {
+          console.log("成功");
+          vm.$router.go(0);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
     getOptionIdx: function (event, selectedIndex) {
-      console.log(event);
       this.user.gender = event.target.querySelectorAll("option")[
         selectedIndex
       ].id;
@@ -271,24 +275,6 @@ export default {
         return rankName;
       }
     },
-    onSubmit(evt) {
-      evt.preventDefault();
-      alert(JSON.stringify(this.form));
-    },
-    onReset(evt) {
-      evt.preventDefault();
-      // Reset our form values
-
-      this.user.email = "";
-      this.user.name = "";
-      this.user.food = null;
-      this.user.checked = [];
-      // Trick to reset/clear native browser form validation state
-      this.show = false;
-      this.$nextTick(() => {
-        this.show = true;
-      });
-    },
     getSingleMember() {
       let vm = this;
       let auth = vm.$store.state.tokenModule;
@@ -302,7 +288,6 @@ export default {
           headers: { Authorization: `Bearer ${token}` },
         })
           .then((res) => {
-            console.log(res.data.data);
             vm.user.email = res.data.data.email;
             vm.user.name = res.data.data.name;
             vm.user.userId = res.data.data.userId;
