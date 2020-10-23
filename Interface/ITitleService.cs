@@ -8,12 +8,12 @@ namespace XforumTest.Interface
 {
     public interface ITitleService
     {
-        decimal? GetPoints(string id);
+        decimal? GetPoints(GetSingle get);
         void CreateTitile(TitleCreateDto model);
-        void EditTitle(string titleid);
+        void EditTitle(GetSingle get);
         void DeleteTitile();
         List<TitleCreateDto> GetAllTitles();
-        List<HasTitle> GetHasTitles(string id);
+        List<HasTitle> GetHasTitles(GetSingle get);
         string BuyTitle(BuyTitle buy);
         void ChangeTitle();
     }

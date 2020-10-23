@@ -46,9 +46,9 @@ namespace XforumTest.Services
         /// 使用軟刪除 修改State 為 false
         /// </summary>
         /// <param name="id"></param>
-        public void Delete(string id)
+        public void Delete(GetSingle get)
         {
-            Forums delete = _Forums.GetAll().FirstOrDefault(f => f.ForumId.ToString() == id);
+            Forums delete = _Forums.GetAll().FirstOrDefault(f => f.ForumId.ToString() == get.Id);
             delete.State = false;
             _Forums.Update(delete);
             _Forums.SaveContext();
@@ -58,10 +58,10 @@ namespace XforumTest.Services
         /// </summary>
         /// <param name="forumid"></param>
         /// <returns></returns>
-        public ForumGetSingleDto GetSingle(string forumid)
+        public ForumGetSingleDto GetSingle(GetSingle get)
         {
             ForumGetSingleDto forum = (from f in _Forums.GetAll().AsEnumerable()
-                                        where f.ForumId == Guid.Parse(forumid)
+                                        where f.ForumId == Guid.Parse(get.Id)
                                         select new ForumGetSingleDto
                                         {
                                             ForumName = f.ForumName,
