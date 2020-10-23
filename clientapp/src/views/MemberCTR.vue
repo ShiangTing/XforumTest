@@ -18,7 +18,7 @@
               style="border: 1px dashed wheat"
               v-else
               id="blah"
-              src="https://i.imgur.com/gZQyxZj.png"
+              :src="user.imgLink"
               alt="上傳您的頭像"
               width="100"
               height="100"
@@ -149,7 +149,9 @@
         </div>
 
         <div class="d-flex justify-content-center">
-          <b-button pill variant="primary">Submit</b-button>
+          <b-button pill variant="primary" @click="updateMember"
+            >Submit</b-button
+          >
           <b-button
             pill
             variant="outline-secondary"
@@ -181,6 +183,7 @@ export default {
       user: {
         userId: "",
         email: "",
+        password: "",
         name: "",
         age: "",
         phone: "",
@@ -189,6 +192,16 @@ export default {
         gender: "",
         ownerRank: "",
         checked: [],
+        imgLink: "",
+      },
+      updateData: {
+        name: "",
+        password: "",
+        age: "",
+        phone: "",
+        gender: "",
+        titleName: "",
+        imgLink: "",
       },
       hasRank: [],
       foods: [
@@ -205,6 +218,39 @@ export default {
     };
   },
   methods: {
+    updateMember() {
+      let updateImg = document.getElementById("blah").src;
+
+      console.log(updateImg.length);
+
+      // let mySrc;
+      // const reader = new FileReader();
+      // reader.readAsDataURL(updateImg);
+      // reader.onloadend = function () {
+      //   // result includes identifier 'data:image/png;base64,' plus the base64 data
+      //   mySrc = reader.result;
+      //   console.log(mySrc);
+      // };
+      // updateImg = vm.user.imgLink;
+      // let vm = this;
+      // vm.updateData.name = vm.user.name;
+      // vm.updateData.password = vm.user.password;
+      // vm.updateData.age = vm.user.age;
+      // vm.updateData.phone = vm.user.phone;
+      // vm.updateData.gender = vm.user.gender;
+      // vm.updateData.titleName = vm.user.ownerRank;
+      // vm.updateData.imgLink = updateImg;
+      // this.$axios
+      //   .put(process.env.VUE_APP_API + "/api/Users/UpdateMember", vm.updateData)
+      //   .then((response) => {
+      //     console.log(response.data);
+      //     console.log("成功Po文");
+      //     vm.$router.push("/");
+      //   })
+      //   .catch((err) => {
+      //     console.log(err);
+      //   });
+    },
     getOptionIdx: function (event, selectedIndex) {
       console.log(event);
       this.user.gender = event.target.querySelectorAll("option")[
@@ -266,6 +312,8 @@ export default {
             vm.user.phone = res.data.data.phone;
             vm.user.points = res.data.data.points;
             vm.user.roleName = res.data.data.roleName;
+            vm.user.imgLink = res.data.data.imgLink;
+            vm.user.password = res.data.data.password;
 
             this.getHasRank();
           })
