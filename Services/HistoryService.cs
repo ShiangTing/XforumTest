@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using XforumTest.Interface;
 using XforumTest.DTO;
 using XforumTest.DataTable;
+using System.Diagnostics;
 
 namespace XforumTest.Services
 {
@@ -61,8 +62,8 @@ namespace XforumTest.Services
                 _users.SaveContext();
             }
             catch (Exception ex)
-            { 
-                
+            {
+                Debug.WriteLine(ex);
             }
 
         }

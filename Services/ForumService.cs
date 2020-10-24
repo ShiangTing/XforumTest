@@ -56,7 +56,7 @@ namespace XforumTest.Services
         /// <summary>
         /// 取的單一看板資料
         /// </summary>
-        /// <param name="forumid"></param>
+        /// <param name="id"></param>
         /// <returns></returns>
         public ForumGetSingleDto GetSingle(string id)
         {
