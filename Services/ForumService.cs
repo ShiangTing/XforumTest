@@ -19,7 +19,7 @@ namespace XforumTest.Services
             _Forums = Forums;
             _members = members;
         }
-        public void Create(ForumCreate create)
+        public void Create(ForumCreateDto create)
         {
     
             try
@@ -27,12 +27,14 @@ namespace XforumTest.Services
                 Forums createforum = new Forums
                 {
                     ForumId = Guid.NewGuid(),
-                    CreatedDate = create.CreatedDate,
-                    Img = create.Img,
-                    ModeratorId = create.ModeratorId,
-                    Description = create.Description,
                     ForumName = create.ForumName,
-                    State =true
+                    RouteName = create.RouteName,
+                    CreatedDate = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow,TimeZoneInfo.Local),                    
+                    //ModeratorId = Guid.Parse(create.ModeratorId),
+                    ModeratorId = null,
+                    Description = create.Description,
+                    Img = create.ImgLink,
+                    State = false
                 };
                 _Forums.Create(createforum);
                 _Forums.SaveContext();
@@ -76,15 +78,15 @@ namespace XforumTest.Services
         /// 編輯看板資料、回復軟刪除狀態
         /// </summary>
         /// <param name="json"></param>
-        public void Edit(ForumCreate json)
+        public void Edit(ForumCreateDto json)
         {
             //var json = JsonConvert.DeserializeObject<ForumCreate>(data);
-            Forums oldforum = _Forums.GetAll().FirstOrDefault(f => f.ModeratorId == json.ModeratorId);
-            oldforum.Img = json.Img;
-            oldforum.ModeratorId = json.ModeratorId;
+            Forums oldforum = _Forums.GetAll().FirstOrDefault(f => f.RouteName == json.RouteName);
+            oldforum.Img = json.ImgLink;
+            oldforum.ForumName = json.ForumName;
+            //oldforum.ModeratorId = json.ModeratorId;
             oldforum.Description = json.Description;
             oldforum.ForumName = json.ForumName;
-            oldforum.State = json.State;
 
             _Forums.Update(oldforum);
             _Forums.SaveContext();
