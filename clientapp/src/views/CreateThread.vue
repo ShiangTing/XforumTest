@@ -2,8 +2,8 @@
   <div>
     <Navbar />
     <b-row>
-      <b-col></b-col>
-      <b-col cols="8">
+      <div class="col-3"></div>
+      <div class="col-6">
         <div class="d-flex my-2 align-items-center">
           <label class="mr-3 col-2" for="Title">看板名稱:</label>
           <b-input
@@ -71,8 +71,8 @@
         <div class="d-flex justify-content-end">
           <button class="btn btn-primary p-1 my-5" @click="createForum">創版申請</button>
         </div>
-      </b-col>
-      <b-col></b-col>
+      </div>
+      <div class="col-3"></div>
     </b-row>
   </div>
 </template>
@@ -132,14 +132,10 @@ export default {
     },
     createForum(){
       if(this.forum.ForumName != "" && this.forum.RouteName != "" && this.forum.Description != "" && this.forum.ImgLink != ""){
-        axios({
-          url: "https://api.imgur.com/3/image",
-            method: "POST",        
-            data: this.forum,
-        })
+        axios.post("https://localhost:5001/api/Forum/Create",this.forum)
         .then((result) => {
           console.log(result)
-          console.log('創板成功')
+          alert('看板創建成功，待審核後上架')
         })
         .catch((err)=> {
           console.log(err);
