@@ -90,7 +90,8 @@
         </div>
       </div>
     </div>
-    <b-modal id="edit" title="編輯文章" size="lg" centered ok-title="儲存" cancel-title="取消" @ok="editArticle" @cancel="cancelEdit">
+    <b-modal id="edit" title="編輯文章" size="lg" centered ok-title="儲存" cancel-title="取消" @ok="editArticle"
+      @cancel="cancelEdit">
       <vue-editor id="editor" useCustomImageHandler @image-added="handleImageAdded"
         :customModules="customModulesForEditor" :editorOptions="editorSettings" v-model="article.description">
       </vue-editor>
@@ -148,7 +149,7 @@ export default {
     };
   },
   methods: {
-    //編輯器
+    //圖片編輯器
     handleImageAdded (file, Editor, cursorLocation) {
       const CLIENT_ID = "3d78cf6e67ed6af";
       var formData = new FormData();
@@ -169,19 +170,20 @@ export default {
           console.log(err);
         });
     },
-    getUserId () {
+    getUserInfo () {
       let vm = this;
-      let userIdUrl = process.env.VUE_APP_API + "/api/Users/getUserId";
+      let userIdUrl = process.env.VUE_APP_API + "/api/Users/getSingleMember";
       vm.$axios.get(userIdUrl).then(res => {
-        vm.reply.userId = res.data
-      }).catch(() => {
+        vm.reply.userId = res.data.userId
+      }).catch(err => {
+        console.log(err);
       })
     },
     getArticle () {
       let vm = this;
       let url = process.env.VUE_APP_API + "/api/Post/getSingle/" + vm.$route.params.id;
       vm.$axios.get(url).then(res => {
-        console.log("article", res.data);
+        console.log(res.data);
         vm.article = {
           postId: res.data.postId,
           userId: res.data.userId,
@@ -196,11 +198,11 @@ export default {
         vm.reply.postId = res.data.postId
       })
     },
-    saveOrginArticle() {
+    saveOrginArticle () {
       let vm = this;
       vm.tempDescription = vm.article.description
     },
-    cancelEdit() {
+    cancelEdit () {
       let vm = this;
       vm.article.description = vm.tempDescription;
     },
@@ -210,8 +212,13 @@ export default {
       vm.$axios.get(url).then(res => {
         if (res.data.issuccessful) {
           vm.messageList = res.data.data;
-          res.data.data.forEach(() => {
-            let messageItem = { like: false, dislike: false }
+          res.data.data.forEach((item) => {
+            let messageItem =
+            {
+              postId: item.postId,
+              like: false,
+              dislike: false
+            }
             vm.templike.messagelikeList.push(messageItem)
           })
         }
@@ -350,12 +357,55 @@ export default {
         vm.messageList[index].disLikeNumber -= 1
       }
     },
+    async saveLikeData () {
+      let vm = this;
+      let article = {
+        url: process.env.VUE_APP_API + "/api/LikeAndDisLike/PostLikeAndDislike",
+        data: {
+          postId: vm.article.postId,
+          likeNumber: vm.article.like,
+          disLikeNumber: vm.article.dislike
+        },
+        post: function () {
+          return vm.$axios.put(article.url, article.data).then(res => {
+            console.log(res);
+          }).catch(err => console.log(err))
+        }
+      }
+
+      let message = {
+        url: process.env.VUE_APP_API + "/api/LikeAndDisLike/MsgLikeAndDislike",
+        data: [],
+        post: function () {
+          return message.data.forEach(item => {
+            console.log(item);
+            vm.$axios.post(message.url, item).then(res => {
+              console.log(res);
+            }).catch(err => console.log(err))
+          }
+          )
+        }
+      }
+      vm.messageList.forEach(item => {
+        let msgData = {
+          messageId: item.messageId,
+          likeNumber: item.likeNumber,
+          disLikeNumber: item.disLikeNumber
+        }
+        message.data.push(msgData)
+      })
+      await article.post();
+      await message.post();
+    }
   },
   async created () {
     await this.getArticle()
     await this.getMessages()
-    await this.getUserId()
-  }
+    await this.getUserInfo()
+  },
+  beforeDestroy () {
+    this.saveLikeData()
+  },
 }
 </script>
 <style lang="scss" scoped>

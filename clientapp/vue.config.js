@@ -3,6 +3,8 @@
 const webpack = require('webpack');
 
 module.exports = {
+    outputDir: '../wwwroot',
+    publicPath: './',
     configureWebpack: {
         plugins: [
             new webpack.ProvidePlugin({

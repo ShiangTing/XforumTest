@@ -11,8 +11,10 @@ namespace XforumTest.Services
     public class LikeService : ILikeService<MessageLikeDto> ,ILikeService<PostLikeDto>
     {
         private readonly IRepository<ReposiveMessages> _messages;
-        public LikeService(IRepository<ReposiveMessages> messages)
+        private readonly IRepository<Posts> _posts;
+        public LikeService(IRepository<ReposiveMessages> messages,IRepository<Posts> posts)
         {
+            _posts = posts;
             _messages = messages;
         }
      
@@ -45,11 +47,11 @@ namespace XforumTest.Services
         {
             try
             {
-                var mRepo = _messages.GetFirst(x => x.MessageId == entity.PostId);
+                var mRepo = _posts.GetFirst(x => x.PostId == entity.PostId);
                 mRepo.LikeNumber = entity.LikeNumber;
                 mRepo.DisLikeNumber = entity.DisLikeNumber;
-                _messages.Update(mRepo);
-                _messages.SaveContext();
+                _posts.Update(mRepo);
+                _posts.SaveContext();
             }
             catch (Exception ex)
             {
