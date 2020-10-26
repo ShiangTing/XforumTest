@@ -23,14 +23,13 @@ namespace XforumTest.ApiController
         }
 
         [HttpPost]
-        public IActionResult Create(PostCreateDto createpost)
+        public string Create(PostCreateDto createpost)
         {
             if (ModelState.IsValid)
             {
-                _postservice.Create(createpost);
-                return Ok();
+                return _postservice.Create(createpost);
             }
-            return Ok();
+            return "Po文失敗";
         }
 
         //軟刪除

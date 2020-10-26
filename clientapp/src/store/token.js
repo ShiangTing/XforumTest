@@ -3,7 +3,7 @@ export default {
     refreshToken: '',
     token: '',
     expireTime: '',
-    isAuthorize: true,
+    isAuthorize: false,
   },
   mutations: {
     SET_AUTH(state, payload) {

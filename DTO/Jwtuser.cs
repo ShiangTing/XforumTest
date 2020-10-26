@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace XforumTest.DTO
 {
-    public class Jwtuser
+    public class JwtUser
     {
         //public int Id { get; set; }
         //public string FirstName { get; set; }

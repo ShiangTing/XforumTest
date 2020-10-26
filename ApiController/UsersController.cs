@@ -66,9 +66,9 @@ namespace XforumTest.Controllers
         /// <returns></returns>
         [Authorize]
         [HttpGet]
-        public ApiResult<MemberDto> GetSingleMember()
+        public ApiResult<ReadMemberDTO> GetSingleMember()
         {
-            ApiResult<MemberDto> result = new ApiResult<MemberDto>
+            ApiResult<ReadMemberDTO> result = new ApiResult<ReadMemberDTO>
             {
                 Data = _userService.GetSingleMember(User.Identity.Name)
             };
@@ -80,18 +80,18 @@ namespace XforumTest.Controllers
         /// <param name="dto"></param>
         /// <returns></returns>
         [Authorize]
-        [HttpPut]
-        public ApiResult<MemberDto> UpdateMember([FromBody] EditMemberDTO dto)
+        [HttpPatch]
+        public ApiResult<EditMemberDTO> UpdateMember([FromBody] EditMemberDTO dto)
         {
             if (ModelState.IsValid)
             {
-                ApiResult<MemberDto> result = _userService.VerifyEmailAndNameWhenEdit(dto, User.Identity.Name);
+                ApiResult<EditMemberDTO> result = _userService.VerifyEmailAndNameWhenEdit(dto, User.Identity.Name);
                 if (result.Issuccessful) { _userService.Edit(dto, User.Identity.Name); }
                 return result;
             }
             else
             {
-                return new ApiResult<MemberDto>("id is null");
+                return new ApiResult<EditMemberDTO>("id is null");
             }
         }
     }

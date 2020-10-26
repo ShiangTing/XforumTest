@@ -21,11 +21,12 @@ namespace XforumTest.DTO
     //    public Guid? ForumId { get; set; }
         public string ForumName { get; set; }
         public Guid? PostId { get; set; }
-        public string Title { get; set; }
+        public string PostTitle { get; set; }
         public string Description { get; set; }
         public DateTime? CreatedDate { get; set; }
         public Guid? UserId { get; set; }
         public string UserName { get; set; }
+        public string UserTitle { get; set; }
         public int? LikeNumber { get; set; }
         public int? DisLikeNumber { get; set; }
         public bool? State { get; set; }

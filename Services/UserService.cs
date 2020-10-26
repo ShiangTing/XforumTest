@@ -24,12 +24,14 @@ namespace XforumTest.Services
         private readonly IRepository<ForumRoles> _roles;
         private readonly IRepository<Titles> _titles;
         private readonly IRepository<MemberTitle> _memberTitle;
-        public UserService(IRepository<ForumMembers> members, IRepository<ForumRoles> roles, IRepository<Titles> titles, IRepository<MemberTitle> memberTitle)
+        private readonly IEncryptService _encrypt;
+        public UserService(IRepository<ForumMembers> members, IRepository<ForumRoles> roles, IRepository<Titles> titles, IRepository<MemberTitle> memberTitle, IEncryptService encrypt)
         {
             _members = members;
             _roles = roles;
             _titles = titles;
             _memberTitle = memberTitle;
+            _encrypt = encrypt;
         }
 
         /// <summary>
@@ -52,7 +54,7 @@ namespace XforumTest.Services
                 ForumMembers user = new ForumMembers()
                 {
                     UserId = Guid.NewGuid(),
-                    Password = dto.Password,
+                    Password = _encrypt.ToMD5(dto.Password),
                     Email = dto.Email,
                     Name = dto.Name,
                     Gender = dto.Gender,
@@ -97,7 +99,7 @@ namespace XforumTest.Services
             {
                 var editedContext = _members.GetFirst(x => x.Email == userEmail);
                 editedContext.Name = dto.Name;
-                editedContext.Password = dto.Password;
+                editedContext.Password = _encrypt.ToMD5(dto.Password);
                 editedContext.Age = dto.Age;
                 editedContext.Phone = dto.Phone;
                 editedContext.Gender = dto.Gender;
@@ -118,22 +120,20 @@ namespace XforumTest.Services
         /// </summary>
         /// <param name="userEmail"></param>
         /// <returns></returns>
-        public MemberDto GetSingleMember(string userEmail)
+        public ReadMemberDTO GetSingleMember(string userEmail)
         {
             ForumMembers source = _members.GetAll().First(x => x.Email == userEmail);
-            MemberDto result = new MemberDto
+            ReadMemberDTO result = new ReadMemberDTO
             {
-                UserId = source.UserId,
+                UserId = source.UserId.ToString(),
                 Name = source.Name,
                 Email = source.Email,
-                Password = source.Password,
                 Age = (int)source.Age,
                 Phone = source.Phone,
                 Gender = source.Gender,
                 Points = (decimal)source.Points,
-                RoleId = source.RoleId,
-                TitleId = source.TitleId,
-                imgLink = source.ImgLink,
+                ImgLink = source.ImgLink,
+                Password = source.Password,
                 TitleName = _titles.GetFirst(x => x.TitleId == source.TitleId).TitleName,
                 RoleName = _roles.GetFirst(x => x.RoleId == source.RoleId).RoleName
             };
@@ -171,18 +171,18 @@ namespace XforumTest.Services
         /// <param name="dto"></param>
         /// <param name="userEmail"></param>
         /// <returns></returns>
-        public ApiResult<MemberDto> VerifyEmailAndNameWhenEdit(EditMemberDTO dto, string userEmail)
+        public ApiResult<EditMemberDTO> VerifyEmailAndNameWhenEdit(EditMemberDTO dto, string userEmail)
         {
             //Exclude own data
             IQueryable<ForumMembers> source = _members.GetAll().Where(x => x.Email != userEmail && x.Name == dto.Name);
 
             if (source.Any(x => x.Name == dto.Name))
             {
-                return new ApiResult<MemberDto>($"{dto.Name} already exists，choose another one!");
+                return new ApiResult<EditMemberDTO>($"{dto.Name} already exists，choose another one!");
             }
             else
             {
-                return new ApiResult<MemberDto>();
+                return new ApiResult<EditMemberDTO>();
             }
         }
     }

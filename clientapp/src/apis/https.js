@@ -7,23 +7,22 @@ instance.defaults.timeout = 5000;
 
 instance.interceptors.request.use(
   (config) => {
-    let refreshUrl = process.env.VUE_APP_API + '/api/JwtHelper/refresh';
-    console.log(
-      parseInt(store.state.tokenModule.expireTime),
-      parseInt(Date.now() / 1000)
-    );
-    if (
-      store.state.tokenModule.isAuthorize &&
-      parseInt(store.state.tokenModule.expireTime) >=
-        parseInt(Date.now() / 1000)
-    ) {
+    let expireTime = store.state.tokenModule.expireTime;
+    if (store.state.tokenModule.isAuthorize) {
       config.headers.Authorization = `Bearer ${store.state.tokenModule.token}`;
-    } else if (
-      parseInt(store.state.tokenModule.expireTime) <=
-      parseInt(Date.now() / 1000)
+    }
+    if (
+      config.url.indexOf('/refresh') >= 0 ||
+      config.url.indexOf('/login') >= 0
     ) {
+      return config;
+    }
+
+    if (parseInt(expireTime) <= parseInt(Date.now() / 1000)) {
+      let refreshUrl = process.env.VUE_APP_API + '/api/JwtHelper/refresh';
+      let refreshToken = store.state.tokenModule.refreshToken;
       axios
-        .post(refreshUrl, store.state.tokenModule.refreshToken)
+        .post(refreshUrl, { refreshToken: refreshToken })
         .then((res) => {
           let data = {
             refreshToken: res.data.refreshToken,
@@ -33,8 +32,12 @@ instance.interceptors.request.use(
           };
           store.dispatch('setAuth', data);
           config.headers.Authorization = `Bearer ${store.state.tokenModule.token}`;
+        })
+        .catch((err) => {
+          console.err(err);
         });
     }
+
     return config;
   },
   (err) => {
@@ -48,8 +51,7 @@ instance.interceptors.response.use(
   },
   (error) => {
     let err = error.response;
-    if (err) {
-      console.log(err);
+    if (err.status) {
       errorHandle(err.status.toString(), err.data);
     }
     return Promise.reject(error.response.data);

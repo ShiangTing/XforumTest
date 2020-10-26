@@ -19,6 +19,16 @@ namespace XforumTest.DTO
  
     }
 
+    public class ForumCreateDto
+    {
+        public string ForumName { get; set; }
+        public string RouteName { get; set; }
+        public string Description { get; set; }
+        //public string ModeratorId { get; set; }
+        //public string Contnet { get; set; }
+        public string ImgLink { get; set; }
+    }
+
     public class ForumCreate: BaseFourmDto
     {
 
@@ -38,5 +48,9 @@ namespace XforumTest.DTO
         public DateTime? CreatedDate { get; set; }
         public bool? State { get; set; }
 
+    }
+    public class GetSingle
+    { 
+        public string Id { get; set; }
     }
 }

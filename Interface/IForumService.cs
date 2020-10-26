@@ -10,10 +10,10 @@ namespace XforumTest.Interface
 {
     public interface IForumService
     {
-        void Create(ForumCreate create);
+        void Create(ForumCreateDto create);
         IEnumerable<ForumGetAllDTO> GetAll();
-        ForumGetSingleDto GetSingle(string forumid);   
+        ForumGetSingleDto GetSingle(string id);   
         void Delete(string id);
-        void Edit(ForumCreate json);
+        void Edit(ForumCreateDto json);
     }
 }
