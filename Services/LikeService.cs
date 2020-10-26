@@ -29,35 +29,48 @@ namespace XforumTest.Services
         public void PostLikeAndDisLike(MessageLikeDto entity)
         {
             
-            try
-            {             
+            //try
+          //  {             
                
                 var mRepo = _messages.GetFirst(x => x.MessageId == entity.MessageId);
                // var msgUser = _history.GetFirst(x => x.UserId == entity.UserId);
                 var msg = _history.GetFirst(x => x.MessageId == entity.MessageId && x.UserId == entity.UserId);
-                if(msg != null)
+
+                if (msg != null)
                 {
                     _history.Delete(msg);
+     
                     _history.SaveContext();
        
                 }
                 if (mRepo != null)
                 {
-                    mRepo.LikeNumber = entity.LikeNumber;
-                    mRepo.DisLikeNumber = entity.DisLikeNumber;
-                    _messages.Update(mRepo);
-                    _messages.SaveContext();
+               
+                    LikeAndDislikeHistory history = new LikeAndDislikeHistory()
+                    {
+                        Id = Guid.NewGuid(),
+                        MessageId = entity.MessageId,
+                        UserId = entity.UserId
+                    
+                    };
+                     _history.Create(history);
+                     _history.SaveContext();
+                     mRepo.LikeNumber = entity.LikeNumber;
+                     mRepo.DisLikeNumber = entity.DisLikeNumber;
+
+                     _messages.Update(mRepo);
+                     _messages.SaveContext();
                 }
                 else
                 {
                     //HttpStatusCode()
                 }
                 
-            }         
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.Message);
-            }         
+          //  }         
+          //  catch (Exception ex)
+           // {
+              //  Debug.WriteLine(ex.Message);
+           // }         
         }
 
         /// <summary>
@@ -78,6 +91,18 @@ namespace XforumTest.Services
                 }
                 if (mRepo != null)
                 {
+
+                    LikeAndDislikeHistory history = new LikeAndDislikeHistory()
+                    {
+                        Id = Guid.NewGuid(),
+                        PostId = entity.PostId,
+                        UserId = entity.UserId
+
+                    };
+                    _history.Create(history);
+                    _history.SaveContext();
+                    
+                    
                     mRepo.LikeNumber = entity.LikeNumber;
                     mRepo.DisLikeNumber = entity.DisLikeNumber;
                     _messages.Update(mRepo);
@@ -95,6 +120,31 @@ namespace XforumTest.Services
         }
 
 
-        
+        //private void CountLikeandDisLike()
+        //{
+        //    switch 
+        //        case: 
+        //}
+
+        //    public enum Quadrant
+        //{
+        //    Unknown,
+        //    Origin,
+        //    One,
+        //    Two,
+        //    Three,
+        //    Four,
+        //    OnBorder
+        //}
+        //static Quadrant GetQuadrant(Point point) => point switch
+        //{
+        //    (0, 0) => Quadrant.Origin,
+        //    var (x, y) when x > 0 && y > 0 => Quadrant.One,
+        //    var (x, y) when x < 0 && y > 0 => Quadrant.Two,
+        //    var (x, y) when x < 0 && y < 0 => Quadrant.Three,
+        //    var (x, y) when x > 0 && y < 0 => Quadrant.Four,
+        //    var (_, _) => Quadrant.OnBorder,
+        //    _ => Quadrant.Unknown
+        //};
     }
 }

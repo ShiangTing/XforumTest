@@ -35,7 +35,7 @@ namespace XforumTest.ApiController
         public ApiResult<MessageLikeDto> MsgLikeAndDisLike([FromBody]MessageLikeDto Dto)
         {
             var result = new ApiResult<MessageLikeDto>();
-
+            System.Diagnostics.Debug.WriteLine("test");
             if (ModelState.IsValid)
             {
               //  var service = new LikeService();

@@ -16,6 +16,7 @@ namespace XforumTest.ApiController
     [ApiController]
     public class ErrorController : ControllerBase
     {
+        [HttpPost]
         public ActionResult<ErrorReponseModel> Error()
         {
             var ex = HttpContext.Features.Get<IExceptionHandlerFeature>();
