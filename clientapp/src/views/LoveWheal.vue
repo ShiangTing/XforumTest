@@ -128,13 +128,71 @@ mixin icon(el)
 <script>
 import Navbar from "../components/common/Navbar";
 import $ from "jquery";
+// import axios from "axios";
 export default {
   components: { Navbar },
+  data() {
+    return {
+      user: {
+        name: "",
+        ownerRank: "",
+        age: "",
+        gender: "",
+        imgLink: "",
+      },
+    };
+  },
   mounted() {
     let carousel = $("#js-ferris-wheel");
     $("#js-button").on("click", function () {
       carousel.toggleClass("is-open");
+
+      // getSingleMember
+      // let vm = this;
+      // const url = process.env.VUE_APP_API + "/api/Users/GetSingleMember";
+      // axios({
+      //   url: url,
+      //   method: "GET",
+      // })
+      //   .then((res) => {
+      //     console.log(res);
+      //     // vm.user.name = res.data.data.name;
+      //     // vm.user.ownerRank = res.data.data.titleName;
+      //     // vm.user.age = res.data.data.age;
+      //     // vm.user.gender = res.data.data.gender;
+      //     // vm.user.imgLink = res.data.data.imgLink;
+      //   })
+      //   .catch((err) => {
+      //     console.log(err);
+      //   });
     });
+  },
+  methods: {
+    getSingleMember() {
+      let vm = this;
+      let auth = vm.$store.state.tokenModule;
+      let isAuth = auth.isAuthorize;
+      let token = auth.token;
+      const url = process.env.VUE_APP_API + "/api/Users/GetSingleMember";
+      if (isAuth) {
+        vm.$axios({
+          url: url,
+          method: "GET",
+          headers: { Authorization: `Bearer ${token}` },
+        })
+          .then((res) => {
+            vm.user.name = res.data.data.name;
+            vm.user.ownerRank = res.data.data.titleName;
+            vm.user.age = res.data.data.age;
+            vm.user.gender = res.data.data.gender;
+            vm.user.imgLink = res.data.data.imgLink;
+          })
+
+          .catch((err) => {
+            console.log(err);
+          });
+      }
+    },
   },
 };
 </script>

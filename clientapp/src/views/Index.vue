@@ -45,6 +45,9 @@
                     <font-awesome-icon icon="user" size="lg" />
                     <div class="user">
                       <span class="userName">{{ article.userName }}</span>
+                      <span class="userName"
+                        ><b>{{ article.rank }}</b></span
+                      >
                       <span>{{ article.forumName }}</span>
                     </div>
 
@@ -71,7 +74,7 @@
                 <span class="mr-5 text-primary">載入中請稍等哦!!</span>
                 <b-spinner label="Loading..."></b-spinner>
               </div>
-              <div v-else class="text-center mt-3 text-primary">載入完畢!!</div>
+              <!-- <div v-else class="text-center mt-3 text-primary">載入完畢!!</div> -->
             </div>
           </div>
         </b-col>
@@ -153,6 +156,7 @@ export default {
       await this.$axios
         .get(url)
         .then((response) => {
+          console.log(response.data);
           response.data.reverse().forEach((item) => {
             this.articles.push(item);
           });
