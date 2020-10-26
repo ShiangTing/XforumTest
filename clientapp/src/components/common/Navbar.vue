@@ -21,7 +21,7 @@
           <b-nav-item class="pl-4" v-if="isLogin" to="/Rank">
             <font-awesome-icon icon="crown" />
           </b-nav-item>
-          <b-nav-item class="pl-4" v-if="isLogin" to="/CreateThread">
+          <b-nav-item class="pl-4" v-if="isLogin && rolename == '版主' || rolename == '管理者' " to="/CreateThread">
             <font-awesome-icon icon="bookmark" />
           </b-nav-item>
           <b-nav-item class="pl-4" v-if="isLogin" to="/Post">
@@ -84,6 +84,7 @@ export default {
       vm.$store.dispatch("clearAuth");
       vm.isLogin = false;
       vm.name = "訪客";
+      vm.rolename = "";
       vm.$router.push("/");
     },
   },
@@ -99,8 +100,9 @@ export default {
         method: "GET",
       })
         .then((res) => {
+          console.log(res.data)
           vm.name = res.data.data.name;
-          console.log(res);
+          vm.rolename = res.data.data.roleName;
         })
         .catch(() => {
           window.localStorage.clear();
