@@ -110,9 +110,9 @@ namespace XforumTest.Services
         /// <summary>
         /// 取得所有的發文
         /// </summary>
-        public IEnumerable<PostListDto> GetAll()
+        public List<PostListDto> GetAll()
         {
-            IEnumerable<PostListDto> pList = from p in _posts.GetAll2()
+            List<PostListDto> pList = (from p in _posts.GetAll2()
                                             join u in _members.GetAll2()
                                             on p.UserId equals u.UserId
                                             join f in _forums.GetAll2()
@@ -132,16 +132,16 @@ namespace XforumTest.Services
                                                 LikeNumber = p.LikeNumber,
                                                 DisLikeNumber = p.DisLikeNumber,
                                                 State = p.State
-                                            };
+                                            }).ToList();
             return pList;
         }
 
-        public IEnumerable<PostListDto> GetForum(string id)
+        public List<PostListDto> GetForum(string id)
         {
-            IEnumerable<PostListDto> singleforum = from p in _posts.GetAll()
-                                                  join u in _members.GetAll()
+             List<PostListDto> singleforum = (from p in _posts.GetAll2()
+                                                  join u in _members.GetAll2()
                                                   on p.UserId equals u.UserId
-                                                  join f in _forums.GetAll()
+                                                  join f in _forums.GetAll2()
                                                   on p.ForumId equals f.ForumId
                                                   where f.RouteName == id
                                                   orderby p.CreatedDate
@@ -158,9 +158,9 @@ namespace XforumTest.Services
                                                       LikeNumber = p.LikeNumber,
                                                       DisLikeNumber = p.DisLikeNumber,
                                                       State = p.State
-                                                  };
+                                                  }).ToList();
 
-            return singleforum.ToList();
+            return singleforum;
         }
     }
 }
