@@ -17,7 +17,7 @@ instance.interceptors.request.use(
     ) {
       return config;
     }
-
+    
     if (parseInt(expireTime) <= parseInt(Date.now() / 1000)) {
       let refreshUrl = process.env.VUE_APP_API + '/api/JwtHelper/refresh';
       let refreshToken = store.state.tokenModule.refreshToken;
@@ -52,7 +52,7 @@ instance.interceptors.response.use(
   (error) => {
     let err = error.response;
     if (err.status) {
-      errorHandle(err.status.toString(), err.data);
+      errorHandle(err.status.toString(), err.config.url);
     }
     return Promise.reject(error.response.data);
   }
