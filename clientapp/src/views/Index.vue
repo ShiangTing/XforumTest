@@ -71,7 +71,7 @@
                 <span class="mr-5 text-primary">載入中請稍等哦!!</span>
                 <b-spinner label="Loading..."></b-spinner>
               </div>
-              <div v-else class="text-center mt-3 text-primary">載入完畢!!</div>
+              <!-- <div v-else class="text-center mt-3 text-primary">載入完畢!!</div> -->
             </div>
           </div>
         </b-col>
