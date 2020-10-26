@@ -53,4 +53,12 @@ namespace XforumTest.DTO
     { 
         public string Id { get; set; }
     }
+    public class GetUnauditedForum
+    { 
+        public string ForumName { get; set; }
+        public string RouteName { get; set; }
+        public string Description { get; set; }
+        public DateTime? CreatedDate { get; set; }
+
+    }
 }

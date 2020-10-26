@@ -15,5 +15,6 @@ namespace XforumTest.Interface
         ForumGetSingleDto GetSingle(string id);   
         void Delete(string id);
         void Edit(ForumCreateDto json);
+
     }
 }
