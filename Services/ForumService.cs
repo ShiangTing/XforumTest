@@ -47,7 +47,7 @@ namespace XforumTest.Services
         /// <summary>
         /// 使用軟刪除 修改State 為 false
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="model"></param>
         public void ChangeForumState(ChangeForumState model)
         {
             Forums forum = _Forums.GetAll().FirstOrDefault(f => f.RouteName == model.RouteName);
