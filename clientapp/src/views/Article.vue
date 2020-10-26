@@ -187,7 +187,7 @@ export default {
         vm.article = {
           postId: res.data.postId,
           userId: res.data.userId,
-          title: res.data.postTitle,
+          title: res.data.title,
           userName: res.data.userName,
           createDate: res.data.createdDate,
           description: res.data.description,
