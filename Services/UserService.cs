@@ -99,7 +99,7 @@ namespace XforumTest.Services
             {
                 var editedContext = _members.GetFirst(x => x.Email == userEmail);
                 editedContext.Name = dto.Name;
-                editedContext.Password = _encrypt.ToMD5(dto.Password);
+                editedContext.Password = dto.Password;
                 editedContext.Age = dto.Age;
                 editedContext.Phone = dto.Phone;
                 editedContext.Gender = dto.Gender;
