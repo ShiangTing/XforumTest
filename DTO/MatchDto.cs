@@ -5,17 +5,9 @@ using System.Threading.Tasks;
 
 namespace XforumTest.DTO
 {
-    public class MessageLikeDto
+    public class MatchDto
     {
-
-
-        public Guid? MessageId { get; set; }
-
-
-        public int? LikeNumber { get; set; }
-        public int? DisLikeNumber { get; set; }
-
         public Guid? UserId { get; set; }
-
+        public Guid? MatchedUserId { get; set; }
     }
 }

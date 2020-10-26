@@ -10,5 +10,7 @@ namespace XforumTest.DTO
         public Guid? PostId { get; set; }
         public int? LikeNumber { get; set; }
         public int? DisLikeNumber { get; set; }
+
+        public Guid? UserId { get; set; }
     }
 }

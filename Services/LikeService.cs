@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore.Internal;
+using System;
 using System.Diagnostics;
+using System.Net;
 using XforumTest.Context;
 using XforumTest.DataTable;
 using XforumTest.DTO;
@@ -11,9 +13,12 @@ namespace XforumTest.Services
     public class LikeService : ILikeService<MessageLikeDto> ,ILikeService<PostLikeDto>
     {
         private readonly IRepository<ReposiveMessages> _messages;
-        public LikeService(IRepository<ReposiveMessages> messages)
+        private readonly IRepository<LikeAndDislikeHistory> _history;
+    
+        public LikeService(IRepository<ReposiveMessages> messages, IRepository<LikeAndDislikeHistory> history)
         {
             _messages = messages;
+            _history = history;
         }
      
         /// <summary>
@@ -23,13 +28,31 @@ namespace XforumTest.Services
         /// 
         public void PostLikeAndDisLike(MessageLikeDto entity)
         {
+            
             try
             {             
+               
                 var mRepo = _messages.GetFirst(x => x.MessageId == entity.MessageId);
-                mRepo.LikeNumber = entity.LikeNumber;
-                mRepo.DisLikeNumber = entity.DisLikeNumber;
-                _messages.Update(mRepo);
-                _messages.SaveContext();
+               // var msgUser = _history.GetFirst(x => x.UserId == entity.UserId);
+                var msg = _history.GetFirst(x => x.MessageId == entity.MessageId && x.UserId == entity.UserId);
+                if(msg != null)
+                {
+                    _history.Delete(msg);
+                    _history.SaveContext();
+       
+                }
+                if (mRepo != null)
+                {
+                    mRepo.LikeNumber = entity.LikeNumber;
+                    mRepo.DisLikeNumber = entity.DisLikeNumber;
+                    _messages.Update(mRepo);
+                    _messages.SaveContext();
+                }
+                else
+                {
+                    //HttpStatusCode()
+                }
+                
             }         
             catch (Exception ex)
             {
@@ -38,7 +61,7 @@ namespace XforumTest.Services
         }
 
         /// <summary>
-        /// PostLikeandDisLike 傳入發文Id和按讚數
+        /// PostLikeandDisLike 傳入Po文Id和按讚數
         /// </summary>
         /// <param name="entity"></param>
         public void PostLikeAndDisLike(PostLikeDto entity)
@@ -46,15 +69,32 @@ namespace XforumTest.Services
             try
             {
                 var mRepo = _messages.GetFirst(x => x.MessageId == entity.PostId);
-                mRepo.LikeNumber = entity.LikeNumber;
-                mRepo.DisLikeNumber = entity.DisLikeNumber;
-                _messages.Update(mRepo);
-                _messages.SaveContext();
+                var post = _history.GetFirst(x => x.PostId== entity.PostId && x.UserId == entity.UserId);
+                if (post != null)
+                {
+                    _history.Delete(post);
+                    _history.SaveContext();
+
+                }
+                if (mRepo != null)
+                {
+                    mRepo.LikeNumber = entity.LikeNumber;
+                    mRepo.DisLikeNumber = entity.DisLikeNumber;
+                    _messages.Update(mRepo);
+                    _messages.SaveContext();
+                }
+                else
+                {
+
+                }
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex.Message);
             }
         }
+
+
+        
     }
 }
