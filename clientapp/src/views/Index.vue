@@ -46,7 +46,7 @@
                     <div class="user">
                       <span class="userName">{{ article.userName }}</span>
                       <span class="userName"
-                        ><b>{{ article.userTitle }}</b></span
+                        ><b>{{ article.rank }}</b></span
                       >
                       <span>{{ article.forumName }}</span>
                     </div>
@@ -156,6 +156,7 @@ export default {
       await this.$axios
         .get(url)
         .then((response) => {
+          console.log(response.data);
           response.data.reverse().forEach((item) => {
             this.articles.push(item);
           });
