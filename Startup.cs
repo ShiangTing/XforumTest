@@ -31,12 +31,12 @@ namespace XforumTest
 
         public void ConfigureContainer(ContainerBuilder builder)
         {
-            //Autofac註冊泛型Repository
+            //Autofac嚙踝蕭嚙磊嚙綞嚙踝蕭Repository
             builder.RegisterGeneric(typeof(GeneralRepository<>)).As(typeof(IRepository<>));
 
-            //Autofac註冊所有Service結尾的Interface
+            //Autofac嚙踝蕭嚙磊嚙課佗蕭Service嚙踝蕭嚙踝蕭嚙踝蕭Interface
             builder.RegisterAssemblyTypes(typeof(Program).Assembly).Where(t => t.Name.EndsWith("Service"))
-                .AsImplementedInterfaces().InstancePerLifetimeScope(); //同一個Lifetime生成的物件是同一個例項
+                .AsImplementedInterfaces().InstancePerLifetimeScope(); //嚙瞑嚙瑾嚙踝蕭Lifetime嚙談佗蕭嚙踝蕭嚙踝蕭嚙踝蕭O嚙瞑嚙瑾嚙諉例塚蕭
         }
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -58,7 +58,7 @@ namespace XforumTest
             //  services.AddControllers().AddNewtonsoftJson();
 
             //Connecting String
-            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIROMENT") == "Production")
+            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production")
             {
                 services.AddDbContext<MyDBContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("MyDBContext")));
             }
@@ -118,45 +118,23 @@ namespace XforumTest
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-
-            //if (env.IsDevelopment())
-            //{
-            //    app.UseDeveloperExceptionPage();
-            //}
-            //else
-            //{
-            //    app.UseExceptionHandler("/Home/Error");
-            //    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-            //    app.UseHsts();
-            //}
             app.Use(async (context, next) =>
             {
                 await next();
 
-                if (context.Response.StatusCode == 404 &&                       // 該資源不存在
-                    !System.IO.Path.HasExtension(context.Request.Path.Value) && // 網址最後沒有帶副檔名
-                    !context.Request.Path.Value.StartsWith("/api"))             // 網址不是 /api 開頭（不是發送 API 需求）
+                if (context.Response.StatusCode == 404 &&                       
+                    !System.IO.Path.HasExtension(context.Request.Path.Value) && 
+                    !context.Request.Path.Value.StartsWith("/api"))             
                 {
-                    context.Request.Path = "/index.html";                       // 將網址改成 /index.html
-                    context.Response.StatusCode = 200;                          // 並將 HTTP 狀態碼修改為 200 成功
+                    context.Request.Path = "/index.html";                       
+                    context.Response.StatusCode = 200;                          
 
                     await next();
                 }
-
-
-
             });
             app.UseHttpsRedirection();
 
             app.UseCors("CorsPolicy");
-
-            //app.UseStaticFiles(new StaticFileOptions
-            //{
-            //    FileProvider = new PhysicalFileProvider(
-            //        Path.Combine(Directory.GetCurrentDirectory(), "HtmlPages")),
-            //    RequestPath = "/HtmlPages"
-            //});
-            //app.UseExceptionHandler("/api/error");
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();
             // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
@@ -170,11 +148,6 @@ namespace XforumTest
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
-
-            //app.UseWhen(context => context.Request.Path.StartsWithSegments("/api"), appBuilder =>
-            //{
-            //app.UseMiddleware<JwtMiddleware>();
-            //});
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
