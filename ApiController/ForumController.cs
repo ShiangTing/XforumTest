@@ -23,7 +23,7 @@ namespace XforumTest.ApiController
         /// <param name="create"></param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult Create([FromBody]ForumCreate create)
+        public IActionResult Create(ForumCreateDto create)
         {
 
             if (ModelState.IsValid)
@@ -50,7 +50,7 @@ namespace XforumTest.ApiController
         /// </summary>
         /// <param name="json"></param>
         [HttpPost]
-        public IActionResult Edit(ForumCreate json)
+        public IActionResult Edit(ForumCreateDto json)
         {
             if (ModelState.IsValid)
             {
