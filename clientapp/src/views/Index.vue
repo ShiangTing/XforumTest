@@ -45,6 +45,9 @@
                     <font-awesome-icon icon="user" size="lg" />
                     <div class="user">
                       <span class="userName">{{ article.userName }}</span>
+                      <span class="userName"
+                        ><b>{{ article.userTitle }}</b></span
+                      >
                       <span>{{ article.forumName }}</span>
                     </div>
 

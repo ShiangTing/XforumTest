@@ -57,6 +57,7 @@
                     <div class="user">
                       <span class="userName">{{ article.userName }}</span>
                     </div>
+
                     <p
                       v-text="createDate(article.createdDate)"
                       class="pt-2"

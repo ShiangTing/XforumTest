@@ -66,7 +66,7 @@ import Navbar from "../components/common/Navbar";
 import { VueEditor } from "vue2-editor";
 import { ImageDrop } from "quill-image-drop-module";
 import ImageResize from "quill-image-resize";
-import axios from 'axios'
+import axios from "axios";
 
 export default {
   components: { Navbar, VueEditor },

@@ -138,10 +138,10 @@ namespace XforumTest.Services
 
         public IEnumerable<PostListDto> GetForum(string id)
         {
-            IEnumerable<PostListDto> singleforum = from p in _posts.GetAll()
-                                                  join u in _members.GetAll()
+            IEnumerable<PostListDto> singleforum = from p in _posts.GetAll().AsEnumerable()
+                                                  join u in _members.GetAll().AsEnumerable()
                                                   on p.UserId equals u.UserId
-                                                  join f in _forums.GetAll()
+                                                  join f in _forums.GetAll().AsEnumerable()
                                                   on p.ForumId equals f.ForumId
                                                   where f.RouteName == id
                                                   orderby p.CreatedDate
