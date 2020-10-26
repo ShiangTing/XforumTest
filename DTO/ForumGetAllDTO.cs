@@ -59,6 +59,13 @@ namespace XforumTest.DTO
         public string RouteName { get; set; }
         public string Description { get; set; }
         public DateTime? CreatedDate { get; set; }
+        public string ImgLink { get; set; }
 
+    }
+
+    public class ChangeForumState
+    { 
+        public string RouteName { get; set; }
+        public bool State { get; set; }
     }
 }
