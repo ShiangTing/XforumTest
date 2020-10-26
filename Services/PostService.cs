@@ -39,6 +39,8 @@ namespace XforumTest.Services
                         Description = model.Description,
                         CreatedDate = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow,TimeZoneInfo.Local),
                         Img = null,
+                        LikeNumber = 0,
+                        DisLikeNumber = 0,
                         State = true
                     };
                     // 每PO一篇文 +50 points
