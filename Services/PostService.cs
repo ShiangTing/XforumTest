@@ -74,12 +74,12 @@ namespace XforumTest.Services
                          {
                              ForumName = f.ForumName,
                              PostId = p.PostId,
-                             PostTitle = p.Title,
+                             Title = p.Title,
                              Description = p.Description,
                              CreatedDate = p.CreatedDate,
                              UserId = p.UserId,
                              UserName = u.Name,
-                             UserTitle = _titles.GetAll2().FirstOrDefault(x => x.TitleId == u.TitleId).TitleName,
+                             Rank = _titles.GetAll2().FirstOrDefault(x => x.TitleId == u.TitleId).TitleName,
                              LikeNumber = p.LikeNumber,
                              DisLikeNumber = p.DisLikeNumber,
                              State = p.State
@@ -100,7 +100,7 @@ namespace XforumTest.Services
         public void Edit(PostListDto json)
         {
             Posts edit = _posts.GetAll().FirstOrDefault(p => p.PostId == json.PostId);
-            edit.Title = json.PostTitle;
+            edit.Title = json.Title;
             edit.Description = json.Description;
             edit.State = json.State;
             _posts.Update(edit);
@@ -123,12 +123,12 @@ namespace XforumTest.Services
                                             {
                                                 ForumName = f.ForumName,
                                                 PostId = p.PostId,
-                                                PostTitle = p.Title,
+                                                Title = p.Title,
                                                 Description = p.Description,
                                                 CreatedDate = p.CreatedDate,
                                                 UserId = p.UserId,
                                                 UserName = u.Name,
-                                                UserTitle = _titles.GetAll2().FirstOrDefault(x => x.TitleId == u.TitleId).TitleName,
+                                                Rank = _titles.GetAll2().FirstOrDefault(x => x.TitleId == u.TitleId).TitleName,
                                                 LikeNumber = p.LikeNumber,
                                                 DisLikeNumber = p.DisLikeNumber,
                                                 State = p.State
@@ -149,12 +149,12 @@ namespace XforumTest.Services
                                                   {
                                                       ForumName = f.ForumName,
                                                       PostId = p.PostId,
-                                                      PostTitle = p.Title,
+                                                      Title = p.Title,
                                                       Description = p.Description,
                                                       CreatedDate = p.CreatedDate,
                                                       UserId = p.UserId,
                                                       UserName = u.Name,
-                                                      UserTitle = _titles.GetAll2().FirstOrDefault(x => x.TitleId == u.TitleId).TitleName,
+                                                      Rank = _titles.GetAll2().FirstOrDefault(x => x.TitleId == u.TitleId).TitleName,
                                                       LikeNumber = p.LikeNumber,
                                                       DisLikeNumber = p.DisLikeNumber,
                                                       State = p.State

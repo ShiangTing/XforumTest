@@ -21,7 +21,7 @@
           <b-nav-item class="pl-4" v-if="isLogin" to="/Rank">
             <font-awesome-icon icon="crown" />
           </b-nav-item>
-          <b-nav-item class="pl-4" to="/CreateThread">
+          <b-nav-item class="pl-4" v-if="isLogin" to="/CreateThread">
             <font-awesome-icon icon="bookmark" />
           </b-nav-item>
           <b-nav-item class="pl-4" v-if="isLogin" to="/Post">
@@ -70,6 +70,7 @@ export default {
     return {
       name: "訪客",
       isLogin: false,
+      rolename:""
     };
   },
   methods: {
@@ -99,6 +100,7 @@ export default {
       })
         .then((res) => {
           vm.name = res.data.data.name;
+          console.log(res);
         })
         .catch(() => {
           window.localStorage.clear();
