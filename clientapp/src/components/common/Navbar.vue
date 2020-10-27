@@ -37,7 +37,7 @@
             <font-awesome-icon icon="heart" />
           </b-nav-item>
           <!-- <router-link class="mx-5 my-2" to="/post">Po文!</router-link> -->
-          <b-nav-item-dropdown class="pl-4" no-caret>
+          <b-nav-item-dropdown class="pl-4" no-caret right>
             <!-- Using 'button-content' slot -->
             <template v-slot:button-content>
               <font-awesome-icon icon="user" size="lg" />

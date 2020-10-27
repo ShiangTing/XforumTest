@@ -24,7 +24,7 @@ namespace XforumTest.DTO
         public string ForumName { get; set; }
         public string RouteName { get; set; }
         public string Description { get; set; }
-        //public string ModeratorId { get; set; }
+        public string ModeratorId { get; set; }
         //public string Contnet { get; set; }
         public string ImgLink { get; set; }
     }
@@ -59,6 +59,7 @@ namespace XforumTest.DTO
         public string RouteName { get; set; }
         public string Description { get; set; }
         public string CreatedDate { get; set; }
+        public string ModeratorId { get; set; }
         public string ImgLink { get; set; }
 
     }

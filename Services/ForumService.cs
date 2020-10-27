@@ -29,9 +29,9 @@ namespace XforumTest.Services
                     ForumId = Guid.NewGuid(),
                     ForumName = create.ForumName,
                     RouteName = create.RouteName,
-                    CreatedDate = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, TimeZoneInfo.Local),
-                    //ModeratorId = Guid.Parse(create.ModeratorId),
-                    ModeratorId = null,
+                    CreatedDate = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow,TimeZoneInfo.Local),                    
+                    ModeratorId = Guid.Parse(create.ModeratorId),
+                    //ModeratorId = null,
                     Description = create.Description,
                     Img = create.ImgLink,
                     State = false
@@ -112,15 +112,16 @@ namespace XforumTest.Services
         public IEnumerable<GetUnauditedForum> GetUnauditedForum()
         {
             IEnumerable<GetUnauditedForum> Unaudited = (from f in _Forums.GetAll2()
-                                                        where f.State == false
-                                                        select new GetUnauditedForum()
-                                                        {
-                                                            ForumName = f.ForumName,
-                                                            RouteName = f.RouteName,
-                                                            Description = f.Description,
-                                                            ImgLink = f.Img,
-                                                            CreatedDate = f.CreatedDate.GetValueOrDefault().ToUniversalTime().AddHours(8).ToString()
-                                                        }).ToList();
+                                                     where f.State == false
+                                                     select new GetUnauditedForum()
+                                                     {
+                                                         ForumName = f.ForumName,
+                                                         RouteName = f.RouteName,
+                                                         Description =f.Description,
+                                                         ModeratorId = _members.GetAll2().FirstOrDefault(x => x.UserId == f.ModeratorId ).Name,
+                                                         ImgLink = f.Img,
+                                                         CreatedDate = f.CreatedDate.GetValueOrDefault().ToUniversalTime().AddHours(8).ToString()
+                                                     }).ToList();
             return Unaudited;
         }
     }
