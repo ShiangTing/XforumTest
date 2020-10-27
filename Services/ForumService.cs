@@ -30,8 +30,8 @@ namespace XforumTest.Services
                     ForumName = create.ForumName,
                     RouteName = create.RouteName,
                     CreatedDate = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow,TimeZoneInfo.Local),                    
-                    //ModeratorId = Guid.Parse(create.ModeratorId),
-                    ModeratorId = null,
+                    ModeratorId = Guid.Parse(create.ModeratorId),
+                    //ModeratorId = null,
                     Description = create.Description,
                     Img = create.ImgLink,
                     State = false
@@ -118,6 +118,7 @@ namespace XforumTest.Services
                                                          ForumName = f.ForumName,
                                                          RouteName = f.RouteName,
                                                          Description =f.Description,
+                                                         ModeratorId = _members.GetAll2().FirstOrDefault(x => x.UserId == f.ModeratorId ).Name,
                                                          ImgLink = f.Img,
                                                          CreatedDate = f.CreatedDate
                                                      }).ToList();
