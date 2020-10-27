@@ -112,6 +112,7 @@ export default {
               })
               .catch((err) => console.log(err.response));
           } else {
+
             console.log("購買失敗");
           }
         });
