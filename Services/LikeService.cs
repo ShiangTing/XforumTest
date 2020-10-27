@@ -14,7 +14,8 @@ namespace XforumTest.Services
     {
         private readonly IRepository<ReposiveMessages> _messages;
         private readonly IRepository<Posts> _posts;
-        public LikeService(IRepository<ReposiveMessages> messages, IRepository<Posts> posts)
+        private readonly IRepository<LikeAndDislikeHistory> _history;
+        public LikeService(IRepository<ReposiveMessages> messages, IRepository<Posts> posts, IRepository<LikeAndDislikeHistory> history)
         {
             _posts = posts;
             _messages = messages;
@@ -144,12 +145,12 @@ namespace XforumTest.Services
                 {
                     //HttpStatusCode()
                 }
-                
-          //  }         
-          //  catch (Exception ex)
-           // {
-              //  Debug.WriteLine(ex.Message);
-           // }         
+
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
         }
 
         /// <summary>
