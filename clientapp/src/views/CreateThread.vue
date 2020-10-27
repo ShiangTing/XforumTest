@@ -93,7 +93,7 @@ export default {
         ForumName:"",
         RouteName:"",
         Description:"",
-        // ModeratorId:"",
+        ModeratorId:"",
         // content:"",
         ImgLink:"",
       },
@@ -107,6 +107,20 @@ export default {
   mounted: {    
   },
   methods:{
+    getUserId: function () {
+      let vm = this;      
+      const url =process.env.VUE_APP_API + "/api/Users/GetUserId";     
+        vm.$axios({
+          url: url,
+          method: "GET",
+        })
+          .then((res) => {
+            console.log('在下面');
+            console.log(res);
+            vm.forum.ModeratorId = res.data;
+          })
+          .catch((err) => console.log(err.response));      
+    },
     handleFileUpload() {
       this.file = this.$refs.file.files[0];
       console.log(this.$refs.file.files[0])
@@ -132,7 +146,8 @@ export default {
     },
     createForum(){
       if(this.forum.ForumName != "" && this.forum.RouteName != "" && this.forum.Description != "" && this.forum.ImgLink != ""){
-        axios.post("https://localhost:5001/api/Forum/Create",this.forum)
+        const url = process.env.VUE_APP_API + "/api/Forum/Create";
+        axios.post( url ,this.forum)
         .then((result) => {
           console.log(result)
           alert('看板創建成功，待審核後上架')
@@ -166,6 +181,9 @@ export default {
         },
       },
     },
+  },
+  async created() {
+    await this.getUserId();    
   },
 };
 </script>
