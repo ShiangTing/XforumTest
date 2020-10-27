@@ -59,7 +59,7 @@ namespace XforumTest.DTO
         public string RouteName { get; set; }
         public string Description { get; set; }
         public string CreatedDate { get; set; }
-        public string ModeratorId { get; set; }
+        public string ModeratorName { get; set; }
         public string ImgLink { get; set; }
 
     }

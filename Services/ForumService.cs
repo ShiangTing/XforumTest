@@ -86,16 +86,16 @@ namespace XforumTest.Services
         public IEnumerable<ForumGetAllDTO> GetAll()
         {
             IEnumerable<ForumGetAllDTO> getall = from fm in _Forums.GetAll2()
-                         where fm.State == true
-                         select new ForumGetAllDTO
-                         {
-                             ForumName = fm.ForumName,
-                             ForumId = fm.ForumId,
-                             RouteName = fm.RouteName,
-                             Description = fm.Description,
-                             ImgLink = fm.Img
-                         };
-            return  getall;
+                                                 where fm.State == true
+                                                 select new ForumGetAllDTO
+                                                 {
+                                                     ForumName = fm.ForumName,
+                                                     ForumId = fm.ForumId,
+                                                     RouteName = fm.RouteName,
+                                                     Description = fm.Description,
+                                                     ImgLink = fm.Img
+                                                 };
+            return getall;
         }
         /// <summary>
         /// 取得state = false的待創版審核之版面
@@ -110,10 +110,9 @@ namespace XforumTest.Services
                                                             ForumName = f.ForumName,
                                                             RouteName = f.RouteName,
                                                             Description = f.Description,
-                                                            ModeratorId = _members.GetAll2().FirstOrDefault(x => x.UserId == f.ModeratorId).Name,
+                                                            ModeratorName = _members.GetAll2().FirstOrDefault(x => x.UserId == f.ModeratorId).Name,
                                                             ImgLink = f.Img,
-                                                            //Transfer to TW time
-                                                            CreatedDate = f.CreatedDate.GetValueOrDefault().ToUniversalTime().AddHours(8).ToString()
+                                                            CreatedDate = f.CreatedDate.ToString()
                                                         }).ToList();
             return Unaudited;
         }
