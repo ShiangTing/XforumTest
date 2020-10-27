@@ -8,16 +8,16 @@ using XforumTest.Interface;
 
 namespace XforumTest.Services
 {
-    public class LikeService : ILikeService<MessageLikeDto> ,ILikeService<PostLikeDto>
+    public class LikeService : ILikeService<MessageLikeDto>, ILikeService<PostLikeDto>
     {
         private readonly IRepository<ReposiveMessages> _messages;
         private readonly IRepository<Posts> _posts;
-        public LikeService(IRepository<ReposiveMessages> messages,IRepository<Posts> posts)
+        public LikeService(IRepository<ReposiveMessages> messages, IRepository<Posts> posts)
         {
             _posts = posts;
             _messages = messages;
         }
-     
+
         /// <summary>
         /// PostLikeandDisLike 傳入留言Id和按讚數
         /// </summary>
@@ -26,17 +26,17 @@ namespace XforumTest.Services
         public void PostLikeAndDisLike(MessageLikeDto entity)
         {
             try
-            {             
+            {
                 var mRepo = _messages.GetFirst(x => x.MessageId == entity.MessageId);
                 mRepo.LikeNumber = entity.LikeNumber;
                 mRepo.DisLikeNumber = entity.DisLikeNumber;
                 _messages.Update(mRepo);
                 _messages.SaveContext();
-            }         
+            }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex.Message);
-            }         
+            }
         }
 
         /// <summary>

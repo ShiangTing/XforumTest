@@ -32,13 +32,13 @@ namespace XforumTest.ApiController
         /// <returns></returns>
         [HttpPost]
 
-        public ApiResult<MessageLikeDto> MsgLikeAndDisLike([FromBody]MessageLikeDto Dto)
+        public ApiResult<MessageLikeDto> MsgLikeAndDisLike([FromBody] MessageLikeDto Dto)
         {
             var result = new ApiResult<MessageLikeDto>();
 
             if (ModelState.IsValid)
             {
-              //  var service = new LikeService();
+                //  var service = new LikeService();
                 _mlikeService.PostLikeAndDisLike(Dto);
                 return result;
             }

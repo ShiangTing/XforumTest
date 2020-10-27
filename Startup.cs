@@ -31,10 +31,10 @@ namespace XforumTest
 
         public void ConfigureContainer(ContainerBuilder builder)
         {
-            //Autofac���U�x��Repository
+            //Autofac Set Repository
             builder.RegisterGeneric(typeof(GeneralRepository<>)).As(typeof(IRepository<>));
 
-            //Autofac���U�Ҧ�Service������Interface
+            //Autofac Interface end with -Service
             builder.RegisterAssemblyTypes(typeof(Program).Assembly).Where(t => t.Name.EndsWith("Service"))
                 .AsImplementedInterfaces().InstancePerLifetimeScope(); //�P�@��Lifetime�ͦ�������O�P�@�ӨҶ�
         }
@@ -47,9 +47,7 @@ namespace XforumTest
 
                 options.AddPolicy("CorsPolicy", policy =>
                 {
-
-                    policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
-                    policy.WithOrigins("http://localhost:8080").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
+                    policy.WithOrigins("http://localhost:8080").AllowAnyHeader().AllowAnyMethod().AllowCredentials().AllowAnyOrigin();
                     //.AllowCredentials();
                 });
             });
@@ -122,12 +120,12 @@ namespace XforumTest
             {
                 await next();
 
-                if (context.Response.StatusCode == 404 &&                       
-                    !System.IO.Path.HasExtension(context.Request.Path.Value) && 
-                    !context.Request.Path.Value.StartsWith("/api"))             
+                if (context.Response.StatusCode == 404 &&
+                    !System.IO.Path.HasExtension(context.Request.Path.Value) &&
+                    !context.Request.Path.Value.StartsWith("/api"))
                 {
-                    context.Request.Path = "/index.html";                       
-                    context.Response.StatusCode = 200;                          
+                    context.Request.Path = "/index.html";
+                    context.Response.StatusCode = 200;
 
                     await next();
                 }

@@ -12,7 +12,7 @@ namespace XforumTest.Interface
     {
         void Create(ForumCreateDto model);
         IEnumerable<ForumGetAllDTO> GetAll();
-        ForumGetSingleDto GetSingle(string id);   
+        ForumGetSingleDto GetSingle(string id);
         void ChangeForumState(ChangeForumState model);
         void Edit(ForumCreateDto model);
         IEnumerable<GetUnauditedForum> GetUnauditedForum();

@@ -9,6 +9,8 @@ namespace XforumTest.DataTable
         public Guid? PostId { get; set; }
         public Guid? MessageId { get; set; }
         public Guid Id { get; set; }
+        public bool? IsLike { get; set; }
+        public bool? IsDisLike { get; set; }
 
         public virtual ReposiveMessages Message { get; set; }
         public virtual Posts Post { get; set; }

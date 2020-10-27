@@ -18,6 +18,7 @@ namespace XforumTest.DataTable
         public string ForumName { get; set; }
         public string RouteName { get; set; }
         public bool? State { get; set; }
+        public string RejectMsg { get; set; }
 
         public virtual ForumMembers Moderator { get; set; }
         public virtual ICollection<Posts> Posts { get; set; }
