@@ -93,7 +93,8 @@ namespace XforumTest.Services
                                                      ForumName = fm.ForumName,
                                                      ForumId = fm.ForumId,
                                                      RouteName = fm.RouteName,
-                                                     Description = fm.Description
+                                                     Description = fm.Description,
+                                                     ImgLink = fm.Img
                                                  };
             return getall;
         }
@@ -127,6 +128,11 @@ namespace XforumTest.Services
             forum.State = model.State;
             _Forums.Update(forum);
             _Forums.SaveContext();
+        }
+
+        public string GetImgLink(string id)
+        {
+            return _Forums.GetAll2().FirstOrDefault(x => x.RouteName == id).Img;
         }
     }
 }

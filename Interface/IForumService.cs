@@ -16,5 +16,6 @@ namespace XforumTest.Interface
         void ChangeForumState(ChangeForumState model);
         void Edit(ForumCreateDto model);
         IEnumerable<GetUnauditedForum> GetUnauditedForum();
+        string GetImgLink(string id);
     }
 }

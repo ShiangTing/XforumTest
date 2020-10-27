@@ -16,7 +16,7 @@ namespace XforumTest.DTO
     }
     public class ForumGetAllDTO : BaseFourmDto
     {
-
+        public string ImgLink { get; set; }
     }
 
     public class ForumCreateDto
