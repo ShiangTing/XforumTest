@@ -9,7 +9,7 @@ namespace XforumTest.Interface
     public interface IMatchService
     {
         //隨機抓人
-        void Match(MatchDto dto);
+        MatchOutput Match(MatchDto dto);
 
     }
 }
