@@ -26,8 +26,9 @@
             </vue-particles>
 
             <b-card-img
+              v-if="ImgLink !== ''"
               class="threadLogo"
-              :src="require(`@/assets/img/${routeName}.jpg`)"
+              :src="ImgLink"
               width="50"
               height="350"
             ></b-card-img>
@@ -56,8 +57,8 @@
                     <font-awesome-icon icon="user" size="lg" />
                     <div class="user">
                       <span class="userName">{{ article.userName }}</span>
-                      <span
-                        ><b>{{ article.rank }}</b></span
+                      <span style="color: rgba(255, 210, 0)"
+                        ><b>『{{ article.rank }}』</b></span
                       >
                     </div>
 
@@ -111,6 +112,7 @@ export default {
       articles: [], //全部的資料
       routeName: this.$route.params.routeName,
       forumName: "",
+      ImgLink: "",
     };
   },
   methods: {
@@ -167,14 +169,26 @@ export default {
     },
     getThreadData() {
       const url = process.env.VUE_APP_API + "/api/Post/GetForum";
-
       this.$axios
         .get(url + "/" + this.$route.params.routeName)
         .then((response) => {
           response.data.reverse().forEach((item) => {
             this.forumName = item.forumName;
+
             this.articles.push(item);
           });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    getThreadImg() {
+      const url = process.env.VUE_APP_API + "/api/Forum/GetImgLink";
+
+      this.$axios
+        .get(url + "?id=" + this.$route.params.routeName)
+        .then((response) => {
+          this.ImgLink = response.data;
         })
         .catch((err) => {
           console.log(err);
@@ -189,6 +203,7 @@ export default {
   beforeDestroy() {},
   async created() {
     await this.getThreadData();
+    await this.getThreadImg();
   },
 };
 </script>

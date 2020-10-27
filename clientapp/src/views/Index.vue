@@ -45,9 +45,10 @@
                     <font-awesome-icon icon="user" size="lg" />
                     <div class="user">
                       <span class="userName">{{ article.userName }}</span>
-                      <span class="userName"
-                        ><b>{{ article.rank }}</b></span
+                      <span class="userName" style="color: rgba(255, 210, 0)"
+                        ><b>『{{ article.rank }}』</b></span
                       >
+
                       <span>{{ article.forumName }}</span>
                     </div>
 

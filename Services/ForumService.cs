@@ -127,5 +127,10 @@ namespace XforumTest.Services
             _Forums.Update(forum);
             _Forums.SaveContext();
         }
+
+        public string GetImgLink(string id)
+        {
+            return _Forums.GetAll2().FirstOrDefault(x => x.RouteName == id).Img;
+        }
     }
 }
