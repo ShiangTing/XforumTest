@@ -64,9 +64,9 @@ namespace XforumTest.ApiController
         /// </summary>
         /// <returns></returns>
         [HttpPost]
-        public void Delete(string id)
+        public void ChangeForumState(ChangeForumState model)
         {
-            _forumservice.Delete(id);
+            _forumservice.ChangeForumState(model);
         }
 
 
@@ -79,6 +79,11 @@ namespace XforumTest.ApiController
         {
             //var getall = new ForumService().GetAll();
             return  _forumservice.GetAll();
-        }        
+        }
+        [HttpGet]
+        public IEnumerable<GetUnauditedForum> GetUnauditedForum()
+        {
+            return _forumservice.GetUnauditedForum();
+        }
     }
 }

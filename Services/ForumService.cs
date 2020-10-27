@@ -47,12 +47,12 @@ namespace XforumTest.Services
         /// <summary>
         /// 使用軟刪除 修改State 為 false
         /// </summary>
-        /// <param name="id"></param>
-        public void Delete(string id)
+        /// <param name="model"></param>
+        public void ChangeForumState(ChangeForumState model)
         {
-            Forums delete = _Forums.GetAll().FirstOrDefault(f => f.ForumId.ToString() == id);
-            delete.State = false;
-            _Forums.Update(delete);
+            Forums forum = _Forums.GetAll().FirstOrDefault(f => f.RouteName == model.RouteName);
+            forum.State = model.State;
+            _Forums.Update(forum);
             _Forums.SaveContext();
         }
         /// <summary>
@@ -109,5 +109,19 @@ namespace XforumTest.Services
             return  getall;
         }
 
+        public IEnumerable<GetUnauditedForum> GetUnauditedForum()
+        {
+            IEnumerable<GetUnauditedForum> Unaudited = (from f in _Forums.GetAll2()
+                                                     where f.State == false
+                                                     select new GetUnauditedForum()
+                                                     {
+                                                         ForumName = f.ForumName,
+                                                         RouteName = f.RouteName,
+                                                         Description =f.Description,
+                                                         ImgLink = f.Img,
+                                                         CreatedDate = f.CreatedDate
+                                                     }).ToList();
+            return Unaudited;
+        }
     }
 }
