@@ -1,14 +1,7 @@
 <template>
   <div class="main-nav">
-    <b-navbar
-      toggleable="lg"
-      type="dark"
-      variant="dark"
-      class="d-flex align-items-center"
-    >
-      <router-link class="title mx-5 my-2 text-white" to="/"
-        >Xforum</router-link
-      >
+    <b-navbar toggleable="lg" type="dark" variant="dark" class="d-flex align-items-center">
+      <router-link class="title mx-5 my-2 text-white" to="/">Xforum</router-link>
       <!-- <b-navbar-brand href="#">Xforum</b-navbar-brand> -->
 
       <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
@@ -18,7 +11,7 @@
           <b-nav-item class="sidebarGroup">
             <SideBar />
           </b-nav-item>
-            <b-nav-item class="pl-4" v-if="isLogin && rolename =='管理者' " to="/VerifyThread">
+          <b-nav-item class="pl-4" v-if="isLogin && rolename =='管理者' " to="/VerifyThread">
             <font-awesome-icon icon="clipboard-check" />
           </b-nav-item>
           <b-nav-item class="pl-4" v-if="isLogin" to="/Rank">
@@ -40,22 +33,17 @@
           <b-nav-item-dropdown class="pl-4" no-caret right>
             <!-- Using 'button-content' slot -->
             <template v-slot:button-content>
-              <font-awesome-icon icon="user" size="lg" />
+              <font-awesome-icon icon="user" size="lg" v-if="!isLogin" />
+              <a class="member-icon" v-else>
+                <img :src="memberImg">
+              </a>
               <span class="px-2">{{ name }}</span>
             </template>
-            <b-dropdown-item to="/register" v-if="!isLogin"
-              >註冊</b-dropdown-item
-            >
+
+            <b-dropdown-item to="/register" v-if="!isLogin">註冊</b-dropdown-item>
             <b-dropdown-item to="/login" v-if="!isLogin">登入</b-dropdown-item>
-            <b-dropdown-item
-              v-if="isLogin"
-              href="javascript:;"
-              @click.prevent="memberCTR"
-              >會員中心</b-dropdown-item
-            >
-            <b-dropdown-item v-if="isLogin" @click.prevent="logout"
-              >登出</b-dropdown-item
-            >
+            <b-dropdown-item v-if="isLogin" href="javascript:;" @click.prevent="memberCTR">會員中心</b-dropdown-item>
+            <b-dropdown-item v-if="isLogin" @click.prevent="logout">登出</b-dropdown-item>
           </b-nav-item-dropdown>
         </b-navbar-nav>
       </b-collapse>
@@ -69,19 +57,20 @@ export default {
   components: {
     SideBar,
   },
-  data() {
+  data () {
     return {
       name: "訪客",
       isLogin: false,
-      rolename:""
+      memberImg: "",
+      rolename: ""
     };
   },
   methods: {
-    memberCTR() {
+    memberCTR () {
       const vm = this;
       vm.$router.push(`/MemberCenter`);
     },
-    logout() {
+    logout () {
       let vm = this;
       window.localStorage.clear();
       vm.$store.dispatch("clearAuth");
@@ -91,13 +80,12 @@ export default {
       vm.$router.push("/");
     },
   },
-  created() {
+  created () {
     let vm = this;
     let auth = vm.$store.state.tokenModule;
     let isAuth = auth.isAuthorize;
     let url = process.env.VUE_APP_API + "/api/Users/GetSingleMember";
     if (isAuth) {
-      vm.isLogin = true;
       vm.$axios({
         url: url,
         method: "GET",
@@ -106,12 +94,15 @@ export default {
           console.log(res.data)
           vm.name = res.data.data.name;
           vm.rolename = res.data.data.roleName;
+          vm.memberImg = res.data.data.imgLink
+          
+          vm.isLogin = true;
         })
         .catch(() => {
           window.localStorage.clear();
           vm.$store.dispatch("clearAuth");
-          vm.isLogin = false;
           vm.name = "訪客";
+          vm.isLogin = false;
         });
     }
   },
@@ -119,19 +110,30 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-/deep/ .list-group .list-group-item {
-  background-color: #343a40;
-  border: 0;
-  span.text-primary {
-    color: rgba(255, 255, 255, 0.5) !important;
+  /deep/ .list-group .list-group-item {
+    background-color: #343a40;
+    border: 0;
+    span.text-primary {
+      color: rgba(255, 255, 255, 0.5) !important;
+    }
   }
-}
-@media screen and (min-width: 996px) {
-  .sidebarGroup {
-    display: none;
+  /deep/.member-icon {
+    display: inline-block;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    > img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+    }
   }
-  :focus {
-    outline: 0px;
+  @media screen and (min-width: 996px) {
+    .sidebarGroup {
+      display: none;
+    }
+    :focus {
+      outline: 0px;
+    }
   }
-}
 </style>
