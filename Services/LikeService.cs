@@ -27,7 +27,7 @@ namespace XforumTest.Services
         private void Click(MessageLikeDto entity)
         {
             var mRepo = _messages.GetFirst(x => x.MessageId == entity.MessageId);
-            // var msgUser = _history.GetFirst(x => x.UserId == entity.UserId);
+    
             var msg = _history.GetFirst(x => x.MessageId == entity.MessageId && x.UserId == entity.UserId);
             //當user已經按讚或按倒讚
             if (msg != null && mRepo != null)
@@ -44,42 +44,42 @@ namespace XforumTest.Services
                 _history.Update(msg);
                 _history.SaveContext();
 
-                if (msg.IsLike == true && entity.IsDisLike == true)
-                {
-                    msg.IsLike = entity.IsLike;
-                    msg.IsDisLike = entity.IsDisLike;
-                    mRepo.LikeNumber = mRepo.LikeNumber--;
-                    mRepo.DisLikeNumber = mRepo.DisLikeNumber++;
-                }
-                else if (msg.IsDisLike == true && entity.IsLike == true)
-                {
-                    msg.IsLike = entity.IsLike;
-                    msg.IsDisLike = entity.IsDisLike;
-                    mRepo.LikeNumber = mRepo.LikeNumber++;
-                    mRepo.DisLikeNumber = mRepo.DisLikeNumber--;
-                }
-                else if ((entity.IsDisLike == false && entity.IsLike == false))
-                {
-                    if (msg.IsDisLike == true)
-                    {
-                        msg.IsLike = entity.IsLike;
-                        msg.IsDisLike = entity.IsDisLike;
-                        mRepo.DisLikeNumber--;
-                    }
-                    else
-                    {
-                        msg.IsLike = entity.IsLike;
-                        msg.IsDisLike = entity.IsDisLike;
-                        mRepo.LikeNumber--;
-                    }
-                }
-                // _history.Delete(msg);
+                //if (msg.IsLike == true && entity.IsDisLike == true)
+                //{
+                //    msg.IsLike = entity.IsLike;
+                //    msg.IsDisLike = entity.IsDisLike;
+                //    mRepo.LikeNumber = mRepo.LikeNumber--;
+                //    mRepo.DisLikeNumber = mRepo.DisLikeNumber++;
+                //}
+                //else if (msg.IsDisLike == true && entity.IsLike == true)
+                //{
+                //    msg.IsLike = entity.IsLike;
+                //    msg.IsDisLike = entity.IsDisLike;
+                //    mRepo.LikeNumber = mRepo.LikeNumber++;
+                //    mRepo.DisLikeNumber = mRepo.DisLikeNumber--;
+                //}
+                //else if ((entity.IsDisLike == false && entity.IsLike == false))
+                //{
+                //    if (msg.IsDisLike == true)
+                //    {
+                //        msg.IsLike = entity.IsLike;
+                //        msg.IsDisLike = entity.IsDisLike;
+                //        mRepo.DisLikeNumber--;
+                //    }
+                //    else
+                //    {
+                //        msg.IsLike = entity.IsLike;
+                //        msg.IsDisLike = entity.IsDisLike;
+                //        mRepo.LikeNumber--;
+                //    }
+                //}
+                //// _history.Delete(msg);
 
-                _messages.Update(mRepo);
-                _messages.SaveContext();
+                //_messages.Update(mRepo);
+                //_messages.SaveContext();
 
-                _history.Update(msg);
-                _history.SaveContext();
+                //_history.Update(msg);
+                //_history.SaveContext();
 
             }
             else if (mRepo != null)
@@ -96,15 +96,16 @@ namespace XforumTest.Services
                 _history.Create(history);
                 _history.SaveContext();
 
-                if (entity.IsDisLike)
-                {
-                    mRepo.DisLikeNumber++;
-                }
-                else
-                {
-                    mRepo.LikeNumber++;
-                }
-
+                //if (entity.IsDisLike)
+                //{
+                //    mRepo.DisLikeNumber++;
+                //}
+                //else
+                //{
+                //    mRepo.LikeNumber++;
+                //}
+                mRepo.LikeNumber = mRepo.LikeNumber + entity.LikeNumber;
+                mRepo.DisLikeNumber = mRepo.DisLikeNumber + entity.DisLikeNumber;
 
                 _messages.Update(mRepo);
                 _messages.SaveContext();
@@ -122,47 +123,66 @@ namespace XforumTest.Services
         /// 
         public void PostLikeAndDisLike(MessageLikeDto entity)
         {
-            try
-            {
-                var mRepo = _messages.GetFirst(x => x.MessageId == entity.MessageId);
-               // var msgUser = _history.GetFirst(x => x.UserId == entity.UserId);
-                var msg = _history.GetFirst(x => x.MessageId == entity.MessageId && x.UserId == entity.UserId);
+            //var dbContext = new MyDBContext();
+           // using (var transaction = dbContext.Database.BeginTransaction())
+           // {
+                try
+                {
+                    var mRepo = _messages.GetFirst(x => x.MessageId == entity.MessageId);
+                   // var msgUser = _history.GetFirst(x => x.UserId == entity.UserId);
+                    var msg = _history.GetFirst(x => x.MessageId == entity.MessageId && x.UserId == entity.UserId);
 
-                if (msg != null)
-                {
-                    _history.Delete(msg);
-     
-                    _history.SaveContext();
-       
-                }
-                if (mRepo != null)
-                {
-               
-                    LikeAndDislikeHistory history = new LikeAndDislikeHistory()
+                    if (msg != null && mRepo != null)
                     {
-                        Id = Guid.NewGuid(),
-                        MessageId = entity.MessageId,
-                        UserId = entity.UserId
-                    
-                    };
-                     _history.Create(history);
-                     _history.SaveContext();
-                     mRepo.LikeNumber = entity.LikeNumber;
-                     mRepo.DisLikeNumber = entity.DisLikeNumber;
+                        //將user按讚狀態變更
+                        mRepo.LikeNumber = mRepo.LikeNumber + entity.LikeNumber;
+                        mRepo.DisLikeNumber = mRepo.DisLikeNumber + entity.DisLikeNumber;
+                        _messages.Update(mRepo);
+                        _messages.SaveContext();
 
-                     _messages.Update(mRepo);
-                     _messages.SaveContext();
+                        //處理總按讚數
+                        msg.IsDisLike = entity.IsDisLike;
+                        msg.IsLike = entity.IsLike;
+
+                        _history.Update(msg);
+                        _history.SaveContext();
+
+                         // transaction.Commit();
+
+                    }
+                    else if (mRepo != null)
+                    {
+
+                        LikeAndDislikeHistory history = new LikeAndDislikeHistory()
+                        {
+                            Id = Guid.NewGuid(),
+                            MessageId = entity.MessageId,
+                            UserId = entity.UserId,
+                            IsDisLike = entity.IsDisLike,
+                            IsLike = entity.IsLike
+                        };
+                        _history.Create(history);
+                        _history.SaveContext();
+
+                        mRepo.LikeNumber = mRepo.LikeNumber + entity.LikeNumber;
+                        mRepo.DisLikeNumber = mRepo.DisLikeNumber + entity.DisLikeNumber;
+
+                        _messages.Update(mRepo);
+                        _messages.SaveContext();
+                       // transaction.Commit();
+                    }
+                    else
+                    {
+                        //HttpStatusCode()
+                    }
+
                 }
-                else
+                catch (Exception ex)
                 {
-                    //HttpStatusCode()
+                    Debug.WriteLine(ex.Message);
+                    //transaction.Rollback();
                 }
-
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.Message);
-            }
+            //}
         }
 
         /// <summary>
@@ -171,18 +191,66 @@ namespace XforumTest.Services
         /// <param name="entity"></param>
         public void PostLikeAndDisLike(PostLikeDto entity)
         {
-            try
-            {
-                var mRepo = _posts.GetFirst(x => x.PostId == entity.PostId);
-                mRepo.LikeNumber = entity.LikeNumber;
-                mRepo.DisLikeNumber = entity.DisLikeNumber;
-                _posts.Update(mRepo);
-                _posts.SaveContext();
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.Message);
-            }
+          //  var dbContext = new MyDBContext();
+           // using (var transaction = dbContext.Database.BeginTransaction())
+            //{
+
+            
+                try
+                {
+                    var mRepo = _posts.GetFirst(x => x.PostId == entity.PostId);
+                    var post = _history.GetFirst(x => x.PostId==entity.PostId && x.UserId == entity.UserId);
+                    if (post != null && mRepo != null)
+                    {
+                        //將user按讚狀態變更
+                        mRepo.LikeNumber = mRepo.LikeNumber + entity.LikeNumber;
+                        mRepo.DisLikeNumber = mRepo.DisLikeNumber + entity.DisLikeNumber;
+                        _posts.Update(mRepo);
+                        _posts.SaveContext();
+
+                        //處理總按讚數
+                        post.IsDisLike = entity.IsDisLike;
+                        post.IsLike = entity.IsLike;
+
+                        _history.Update(post);
+                        _history.SaveContext();
+                        //transaction.Commit();
+
+
+                    }
+                    else if (mRepo != null)
+                    {
+
+                        LikeAndDislikeHistory history = new LikeAndDislikeHistory()
+                        {
+                            Id = Guid.NewGuid(),
+                            PostId = entity.PostId,
+                            UserId = entity.UserId,
+                            IsDisLike = entity.IsDisLike,
+                            IsLike = entity.IsLike
+                        };
+                        _history.Create(history);
+                        _history.SaveContext();
+
+                        mRepo.LikeNumber = mRepo.LikeNumber + entity.LikeNumber;
+                        mRepo.DisLikeNumber = mRepo.DisLikeNumber + entity.DisLikeNumber;
+
+                        _posts.Update(mRepo);
+                        _posts.SaveContext();
+                         //transaction.Commit();
+                    }
+                    else
+                    {
+                        //HttpStatusCode()
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                    //transaction.Rollback();
+                }
+           // }
         }
 
 
@@ -190,18 +258,19 @@ namespace XforumTest.Services
        /// return 該 user 對該篇文章的或留言的按讚情況
        /// </summary>
        /// <param name="dto"></param>
-        public UserLikeHistoryDto GetUserLikeHistory(BaseLikeEntity dto )
+        public UserLikeHistoryDto GetUserLikeHistory(BaseLikeEntity dto)
         {
             var userHistory = _history.GetFirst(x => x.UserId == dto.UserId && (x.PostId==dto.Id || x.MessageId== dto.Id));
             if (userHistory != null)
             {
                 return new UserLikeHistoryDto()
                 {
-                    UserId = dto.UserId,
+                    UserId = (Guid)userHistory.UserId,
                     IsDisLike = userHistory.IsDisLike,
                     IsLike = userHistory.IsLike,
                     //message or post id
-                    Id = dto.Id
+                   // PostId = userHistory.PostId,
+                   // MessageId = userHistory.MessageId
                 };
             }
 

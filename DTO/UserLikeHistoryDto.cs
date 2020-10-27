@@ -13,5 +13,8 @@ namespace XforumTest.DTO
         //public Guid UserId { get; set; }
 
         //public Guid Id { get; set; }
+
+        public Guid? PostId { get; set; }
+        public Guid? MessageId { get; set; }
     }
 }
