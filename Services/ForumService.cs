@@ -21,7 +21,7 @@ namespace XforumTest.Services
         }
         public void Create(ForumCreateDto create)
         {
-    
+
             try
             {
                 Forums createforum = new Forums
@@ -29,7 +29,7 @@ namespace XforumTest.Services
                     ForumId = Guid.NewGuid(),
                     ForumName = create.ForumName,
                     RouteName = create.RouteName,
-                    CreatedDate = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow,TimeZoneInfo.Local),                    
+                    CreatedDate = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, TimeZoneInfo.Local),
                     //ModeratorId = Guid.Parse(create.ModeratorId),
                     ModeratorId = null,
                     Description = create.Description,
@@ -63,15 +63,15 @@ namespace XforumTest.Services
         public ForumGetSingleDto GetSingle(string id)
         {
             ForumGetSingleDto forum = (from f in _Forums.GetAll().AsEnumerable()
-                                        where f.ForumId == Guid.Parse(id)
-                                        select new ForumGetSingleDto
-                                        {
-                                            ForumName = f.ForumName,
-                                            Description = f.Description,
-                                            ModeratorId = f.ModeratorId,                            
-                                            CreatedDate = f.CreatedDate,
-                                            State = f.State
-                                        }).FirstOrDefault();
+                                       where f.ForumId == Guid.Parse(id)
+                                       select new ForumGetSingleDto
+                                       {
+                                           ForumName = f.ForumName,
+                                           Description = f.Description,
+                                           ModeratorId = f.ModeratorId,
+                                           CreatedDate = f.CreatedDate,
+                                           State = f.State
+                                       }).FirstOrDefault();
             return forum;
         }
         /// <summary>
@@ -90,7 +90,7 @@ namespace XforumTest.Services
 
             _Forums.Update(oldforum);
             _Forums.SaveContext();
-        }    
+        }
         /// <summary>
         /// 取的所有看板
         /// </summary>
@@ -98,29 +98,29 @@ namespace XforumTest.Services
         public IEnumerable<ForumGetAllDTO> GetAll()
         {
             IEnumerable<ForumGetAllDTO> getall = from fm in _Forums.GetAll2()
-                         where fm.State == true
-                         select new ForumGetAllDTO
-                         {
-                             ForumName = fm.ForumName,
-                             ForumId = fm.ForumId,
-                             RouteName = fm.RouteName,
-                             Description = fm.Description
-                         };
-            return  getall;
+                                                 where fm.State == true
+                                                 select new ForumGetAllDTO
+                                                 {
+                                                     ForumName = fm.ForumName,
+                                                     ForumId = fm.ForumId,
+                                                     RouteName = fm.RouteName,
+                                                     Description = fm.Description
+                                                 };
+            return getall;
         }
 
         public IEnumerable<GetUnauditedForum> GetUnauditedForum()
         {
             IEnumerable<GetUnauditedForum> Unaudited = (from f in _Forums.GetAll2()
-                                                     where f.State == false
-                                                     select new GetUnauditedForum()
-                                                     {
-                                                         ForumName = f.ForumName,
-                                                         RouteName = f.RouteName,
-                                                         Description =f.Description,
-                                                         ImgLink = f.Img,
-                                                         CreatedDate = f.CreatedDate
-                                                     }).ToList();
+                                                        where f.State == false
+                                                        select new GetUnauditedForum()
+                                                        {
+                                                            ForumName = f.ForumName,
+                                                            RouteName = f.RouteName,
+                                                            Description = f.Description,
+                                                            ImgLink = f.Img,
+                                                            CreatedDate = f.CreatedDate.GetValueOrDefault().ToUniversalTime().AddHours(8).ToString()
+                                                        }).ToList();
             return Unaudited;
         }
     }
