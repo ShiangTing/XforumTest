@@ -30,6 +30,7 @@
             id="inline-form-input-name"
             class="mb-2 mr-sm-2 mb-sm-0"
             placeholder="請輸入文字"
+            :disabled="WriteTitle == false"
             :class="{ 'is-invalid': inputDataCheck.TitleError }"
             maxlength="15"
           ></b-input>
@@ -74,6 +75,7 @@ export default {
 
   data() {
     return {
+      WriteTitle: false,
       userId: "",
       customModulesForEditor: [
         { alias: "imageDrop", module: ImageDrop },
@@ -114,6 +116,8 @@ export default {
   },
   methods: {
     getOptionIdx: function (event, selectedIndex) {
+      this.WriteTitle = true;
+      this.AddVerify = false;
       this.selectThread.select = event.target.querySelectorAll("option")[
         selectedIndex
       ].id;
@@ -184,8 +188,7 @@ export default {
       this.$axios
         .post(process.env.VUE_APP_API + "/api/Post/Create", this.postData)
         .then((response) => {
-          console.log(response.data);
-          console.log("成功Po文");
+          vm.$swal(response.data);
           vm.$router.push("/");
         })
         .catch((err) => {
@@ -200,7 +203,9 @@ export default {
           return;
         }
       }
-      this.AddVerify = true;
+      if (this.selectThread.select !== "新書怒灌區") {
+        this.AddVerify = true;
+      }
     },
   },
   watch: {

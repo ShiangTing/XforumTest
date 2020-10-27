@@ -47,6 +47,7 @@
                 type="button"
                 class="btn btn-primary"
                 @click="buyRank(rank.titleName)"
+                :disabled="CheckBuy == false"
               >
                 購買
               </button>
@@ -81,6 +82,7 @@ export default {
         UserId: "",
         TitleId: "",
       },
+      CheckBuy: false,
     };
   },
   methods: {
@@ -106,20 +108,22 @@ export default {
               method: "POST",
               data: vm.buyRankData,
             })
-              .then(() => {
-                console.log("成功購買");
-                vm.$router.go(0);
+              .then((res) => {
+                if (res.data === "點數不足，請加把勁") {
+                  vm.$swal(res.data);
+                } else {
+                  vm.$router.go(0);
+                }
               })
               .catch((err) => console.log(err.response));
           } else {
-
             console.log("購買失敗");
           }
         });
       }
     },
     selectRank(rankName, rankPrice) {
-      console.log(rankName);
+      this.CheckBuy = true;
       this.wantedRankName = rankName;
       this.wantedRankPrice = rankPrice;
     },
