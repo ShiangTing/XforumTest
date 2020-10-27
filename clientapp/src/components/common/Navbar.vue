@@ -18,6 +18,9 @@
           <b-nav-item class="sidebarGroup">
             <SideBar />
           </b-nav-item>
+            <b-nav-item class="pl-4" v-if="isLogin && rolename =='管理者' " to="/VerifyThread">
+            <font-awesome-icon icon="clipboard-check" />
+          </b-nav-item>
           <b-nav-item class="pl-4" v-if="isLogin" to="/Rank">
             <font-awesome-icon icon="crown" />
           </b-nav-item>
@@ -34,7 +37,7 @@
             <font-awesome-icon icon="heart" />
           </b-nav-item>
           <!-- <router-link class="mx-5 my-2" to="/post">Po文!</router-link> -->
-          <b-nav-item-dropdown class="pl-4" no-caret>
+          <b-nav-item-dropdown class="pl-4" no-caret right>
             <!-- Using 'button-content' slot -->
             <template v-slot:button-content>
               <font-awesome-icon icon="user" size="lg" />

@@ -31,12 +31,12 @@ namespace XforumTest
 
         public void ConfigureContainer(ContainerBuilder builder)
         {
-            //Autofacµù¥Uªx«¬Repository
+            //Autofacï¿½ï¿½ï¿½Uï¿½xï¿½ï¿½Repository
             builder.RegisterGeneric(typeof(GeneralRepository<>)).As(typeof(IRepository<>));
 
-            //Autofacµù¥U©Ò¦³Serviceµ²§ÀªºInterface
+            //Autofacï¿½ï¿½ï¿½Uï¿½Ò¦ï¿½Serviceï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Interface
             builder.RegisterAssemblyTypes(typeof(Program).Assembly).Where(t => t.Name.EndsWith("Service"))
-                .AsImplementedInterfaces().InstancePerLifetimeScope(); //¦P¤@­ÓLifetime¥Í¦¨ªºª«¥ó¬O¦P¤@­Ó¨Ò¶µ
+                .AsImplementedInterfaces().InstancePerLifetimeScope(); //ï¿½Pï¿½@ï¿½ï¿½Lifetimeï¿½Í¦ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Oï¿½Pï¿½@ï¿½Ó¨Ò¶ï¿½
         }
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -58,7 +58,7 @@ namespace XforumTest
             //  services.AddControllers().AddNewtonsoftJson();
 
             //Connecting String
-            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIROMENT") == "Production")
+            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production")
             {
                 services.AddDbContext<MyDBContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("MyDBContext")));
             }
@@ -118,28 +118,23 @@ namespace XforumTest
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.Use(async (context, next) =>
+            {
+                await next();
 
-            //if (env.IsDevelopment())
-            //{
-            //    app.UseDeveloperExceptionPage();
-            //}
-            //else
-            //{
-            //    app.UseExceptionHandler("/Home/Error");
-            //    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-            //    app.UseHsts();
-            //}
+                if (context.Response.StatusCode == 404 &&                       
+                    !System.IO.Path.HasExtension(context.Request.Path.Value) && 
+                    !context.Request.Path.Value.StartsWith("/api"))             
+                {
+                    context.Request.Path = "/index.html";                       
+                    context.Response.StatusCode = 200;                          
+
+                    await next();
+                }
+            });
             app.UseHttpsRedirection();
 
             app.UseCors("CorsPolicy");
-
-            //app.UseStaticFiles(new StaticFileOptions
-            //{
-            //    FileProvider = new PhysicalFileProvider(
-            //        Path.Combine(Directory.GetCurrentDirectory(), "HtmlPages")),
-            //    RequestPath = "/HtmlPages"
-            //});
-            //app.UseExceptionHandler("/api/error");
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();
             // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
@@ -148,16 +143,11 @@ namespace XforumTest
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
             });
-
+            app.UseDefaultFiles();
             app.UseStaticFiles();
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
-
-            //app.UseWhen(context => context.Request.Path.StartsWithSegments("/api"), appBuilder =>
-            //{
-            //app.UseMiddleware<JwtMiddleware>();
-            //});
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(

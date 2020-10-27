@@ -24,7 +24,8 @@ import {
   faHeart,
   faBookmark,
   faCrown,
-  faCaretDown
+  faCaretDown,
+  faClipboardCheck
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import VueQuillEditor from "vue-quill-editor";
@@ -96,8 +97,8 @@ library.add(
   faBookmark,
   faHeart,
   faCrown,
-  faCaretDown
-
+  faCaretDown,
+  faClipboardCheck
 );
 
 Vue.prototype.$axios = axios;
