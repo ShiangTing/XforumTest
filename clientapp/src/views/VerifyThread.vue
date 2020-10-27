@@ -9,8 +9,14 @@
             <div class="card-body">
               <h5 class="card-title text-center">看版：{{ item.forumName }}</h5>
               <p class="card-text text-center">介紹：{{ item.description }}</p>
-              <p class="card-text text-center">
-                {{ item.routeName }}
+              <p class="card-text text-center mt-3">
+                <small class="text-muted"
+                  >申請者 : {{ item.moderatorName }}</small
+                >
+                <br>
+                <small class="text-muted"
+                  >申請時間 : {{ item.createdDate }}</small
+                >
               </p>
               <div class="d-flex justify-content-around">
                 <button
@@ -18,21 +24,16 @@
                   class="btn btn-outline-success"
                   @click="allowcreate(item.routeName)"
                 >
-                  給過
+                  准許申請
                 </button>
                 <button
                   type="button"
                   class="btn btn-outline-danger"
                   @click="forbidcreate(item.routeName)"
                 >
-                  不給
+                  駁回申請
                 </button>
               </div>
-              <p class="card-text text-center mt-3">
-                <small class="text-muted"
-                  >Created Time: {{ item.createdDate }}</small
-                >
-              </p>
             </div>
           </div>
         </div>
@@ -63,7 +64,7 @@ export default {
     };
   },
   methods: {
-    getallposts() {
+    getAllForumRequest() {
       const url = process.env.VUE_APP_API + "/api/Forum/GetUnauditedForum";
       axios({
         url: url,
@@ -120,15 +121,15 @@ export default {
         method: "Post",
         data: this.changeForumState,
       }).then(() => {
-        console.log("拒絕給過！");
-        this.$swal.fire("拒絕給過！", "", "warning").then(()=> {
+        console.log("駁回申請");
+        this.$swal.fire("駁回申請", "", "warning").then(()=> {
           this.$router.go(0);
         });
       });
     },
   },
   async created() {
-    await this.getallposts();
+    await this.getAllForumRequest();
   },
 };
 </script>
