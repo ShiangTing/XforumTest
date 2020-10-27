@@ -127,8 +127,7 @@ export default {
       const CLIENT_ID = "3d78cf6e67ed6af";
       var formData = new FormData();
       formData.append("image", file);
-      console.log("底下是formdata");
-      console.log(formData);
+
       axios({
         url: "https://api.imgur.com/3/image",
         method: "POST",
@@ -198,7 +197,6 @@ export default {
     checkAddVerify() {
       for (let index in this.inputDataCheck) {
         if (this.inputDataCheck[index] == true) {
-          console.log(this.inputDataCheck[index]);
           this.AddVerify = false;
           return;
         }

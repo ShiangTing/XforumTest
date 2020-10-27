@@ -167,7 +167,7 @@ export default {
     },
     getThreadData() {
       const url = process.env.VUE_APP_API + "/api/Post/GetForum";
-      console.log(this.$route.params.routeName);
+
       this.$axios
         .get(url + "/" + this.$route.params.routeName)
         .then((response) => {

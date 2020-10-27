@@ -210,7 +210,6 @@ export default {
       vm.allRank.forEach((data, idx, arr) => {
         if (item.titleName == data.titleName) {
           arr.splice(idx, 1);
-          console.log(arr);
         }
       });
     });
