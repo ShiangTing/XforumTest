@@ -154,7 +154,6 @@ export default {
       vm.$axios
         .post(url, data)
         .then((res) => {
-          console.log(res);
           if (res.data.issuccessful) {
             vm.message.display = true;
             vm.message.isError = false;
@@ -163,7 +162,6 @@ export default {
               vm.$router.push("/login");
             }, 5000);
           } else {
-            console.log(res)
             vm.message.content = res.data.errorMsg;
             vm.message.display = true;
             vm.message.isError = true;

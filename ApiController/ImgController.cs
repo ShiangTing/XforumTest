@@ -119,7 +119,7 @@ namespace XforumTest.ApiController
         /// <returns></returns>
 
         [HttpPost]
-         public async Task<string> UploadImg([FromBody] ImguploadDto dto)
+        public async Task<string> UploadImg([FromBody] ImguploadDto dto)
         {
 
             if (dto != null)
@@ -128,7 +128,7 @@ namespace XforumTest.ApiController
                 byte[] imageBytes = Convert.FromBase64String(dto.base64String);
 
                 //convert  byte[] to imgStream
-               // var imgStream = System.Text.Encoding.UTF8.GetString(imageBytes);
+                // var imgStream = System.Text.Encoding.UTF8.GetString(imageBytes);
                 var imgStream = new MemoryStream(imageBytes);
 
                 //Imgurapi

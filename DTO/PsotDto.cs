@@ -18,7 +18,7 @@ namespace XforumTest.DTO
 
     public class PostListDto
     {
-    //    public Guid? ForumId { get; set; }
+        //    public Guid? ForumId { get; set; }
         public string ForumName { get; set; }
         public Guid? PostId { get; set; }
         public string Title { get; set; }

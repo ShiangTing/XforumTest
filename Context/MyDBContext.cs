@@ -36,6 +36,7 @@ namespace XforumTest.Context
         public virtual DbSet<ReposiveMessages> ReposiveMessages { get; set; }
         public virtual DbSet<Tags> Tags { get; set; }
         public virtual DbSet<Titles> Titles { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<AspNetRoles>(entity =>
@@ -186,6 +187,8 @@ namespace XforumTest.Context
                     .HasMaxLength(50);
 
                 entity.Property(e => e.Img).HasMaxLength(50);
+
+                entity.Property(e => e.RejectMsg).HasMaxLength(50);
 
                 entity.Property(e => e.RouteName)
                     .IsRequired()

@@ -249,7 +249,6 @@ export default {
           vm.updateData
         )
         .then(() => {
-          console.log("成功");
           vm.$router.go(0);
         })
         .catch((err) => {

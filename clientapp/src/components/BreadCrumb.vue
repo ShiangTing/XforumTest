@@ -24,7 +24,6 @@ export default {
   },
   mounted() {
     this.updateList();
-    console.log(this);
   },
   watch: {
     $route() {

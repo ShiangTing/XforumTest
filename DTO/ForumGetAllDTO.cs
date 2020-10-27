@@ -14,7 +14,7 @@ namespace XforumTest.DTO
         public string RouteName { get; set; }
         public string Description { get; set; }
     }
-    public class ForumGetAllDTO: BaseFourmDto
+    public class ForumGetAllDTO : BaseFourmDto
     {
         public string ImgLink { get; set; }
     }
@@ -29,7 +29,7 @@ namespace XforumTest.DTO
         public string ImgLink { get; set; }
     }
 
-    public class ForumCreate: BaseFourmDto
+    public class ForumCreate : BaseFourmDto
     {
 
         public DateTime? CreatedDate { get; set; }
@@ -50,22 +50,22 @@ namespace XforumTest.DTO
 
     }
     public class GetSingle
-    { 
+    {
         public string Id { get; set; }
     }
     public class GetUnauditedForum
-    { 
+    {
         public string ForumName { get; set; }
         public string RouteName { get; set; }
         public string Description { get; set; }
+        public string CreatedDate { get; set; }
         public string ModeratorId { get; set; }
-        public DateTime? CreatedDate { get; set; }
         public string ImgLink { get; set; }
 
     }
 
     public class ChangeForumState
-    { 
+    {
         public string RouteName { get; set; }
         public bool State { get; set; }
     }

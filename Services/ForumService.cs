@@ -21,7 +21,7 @@ namespace XforumTest.Services
         }
         public void Create(ForumCreateDto create)
         {
-    
+
             try
             {
                 Forums createforum = new Forums
@@ -29,7 +29,7 @@ namespace XforumTest.Services
                     ForumId = Guid.NewGuid(),
                     ForumName = create.ForumName,
                     RouteName = create.RouteName,
-                    CreatedDate = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow,TimeZoneInfo.Local),                    
+                    CreatedDate = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, TimeZoneInfo.Local),
                     ModeratorId = Guid.Parse(create.ModeratorId),
                     Description = create.Description,
                     Img = create.ImgLink,
@@ -44,17 +44,6 @@ namespace XforumTest.Services
             }
         }
         /// <summary>
-        /// 使用軟刪除 修改State 為 false
-        /// </summary>
-        /// <param name="model"></param>
-        public void ChangeForumState(ChangeForumState model)
-        {
-            Forums forum = _Forums.GetAll().FirstOrDefault(f => f.RouteName == model.RouteName);
-            forum.State = model.State;
-            _Forums.Update(forum);
-            _Forums.SaveContext();
-        }
-        /// <summary>
         /// 取的單一看板資料
         /// </summary>
         /// <param name="id"></param>
@@ -62,15 +51,15 @@ namespace XforumTest.Services
         public ForumGetSingleDto GetSingle(string id)
         {
             ForumGetSingleDto forum = (from f in _Forums.GetAll().AsEnumerable()
-                                        where f.ForumId == Guid.Parse(id)
-                                        select new ForumGetSingleDto
-                                        {
-                                            ForumName = f.ForumName,
-                                            Description = f.Description,
-                                            ModeratorId = f.ModeratorId,                            
-                                            CreatedDate = f.CreatedDate,
-                                            State = f.State
-                                        }).FirstOrDefault();
+                                       where f.ForumId == Guid.Parse(id)
+                                       select new ForumGetSingleDto
+                                       {
+                                           ForumName = f.ForumName,
+                                           Description = f.Description,
+                                           ModeratorId = f.ModeratorId,
+                                           CreatedDate = f.CreatedDate,
+                                           State = f.State
+                                       }).FirstOrDefault();
             return forum;
         }
         /// <summary>
@@ -89,9 +78,9 @@ namespace XforumTest.Services
 
             _Forums.Update(oldforum);
             _Forums.SaveContext();
-        }    
+        }
         /// <summary>
-        /// 取的所有看板
+        /// 取得所有看板
         /// </summary>
         /// <returns></returns>
         public IEnumerable<ForumGetAllDTO> GetAll()
@@ -108,21 +97,36 @@ namespace XforumTest.Services
                          };
             return  getall;
         }
-
+        /// <summary>
+        /// 取得state = false的待創版審核之版面
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<GetUnauditedForum> GetUnauditedForum()
         {
             IEnumerable<GetUnauditedForum> Unaudited = (from f in _Forums.GetAll2()
-                                                     where f.State == false
-                                                     select new GetUnauditedForum()
-                                                     {
-                                                         ForumName = f.ForumName,
-                                                         RouteName = f.RouteName,
-                                                         Description =f.Description,
-                                                         ModeratorId = _members.GetAll2().FirstOrDefault(x => x.UserId == f.ModeratorId ).Name,
-                                                         ImgLink = f.Img,
-                                                         CreatedDate = f.CreatedDate
-                                                     }).ToList();
+                                                        where f.State == false
+                                                        select new GetUnauditedForum()
+                                                        {
+                                                            ForumName = f.ForumName,
+                                                            RouteName = f.RouteName,
+                                                            Description = f.Description,
+                                                            ModeratorId = _members.GetAll2().FirstOrDefault(x => x.UserId == f.ModeratorId).Name,
+                                                            ImgLink = f.Img,
+                                                            //Transfer to TW time
+                                                            CreatedDate = f.CreatedDate.GetValueOrDefault().ToUniversalTime().AddHours(8).ToString()
+                                                        }).ToList();
             return Unaudited;
+        }
+        /// <summary>
+        /// 使用軟刪除 修改State 為 false
+        /// </summary>
+        /// <param name="model"></param>
+        public void ChangeForumState(ChangeForumState model)
+        {
+            Forums forum = _Forums.GetAll().FirstOrDefault(f => f.RouteName == model.RouteName);
+            forum.State = model.State;
+            _Forums.Update(forum);
+            _Forums.SaveContext();
         }
     }
 }

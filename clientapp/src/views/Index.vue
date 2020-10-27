@@ -156,7 +156,6 @@ export default {
       await this.$axios
         .get(url)
         .then((response) => {
-          console.log(response.data);
           response.data.reverse().forEach((item) => {
             this.articles.push(item);
           });

@@ -30,6 +30,7 @@
             id="inline-form-input-name"
             class="mb-2 mr-sm-2 mb-sm-0"
             placeholder="請輸入文字"
+            :disabled="WriteTitle == false"
             :class="{ 'is-invalid': inputDataCheck.TitleError }"
             maxlength="15"
           ></b-input>
@@ -74,6 +75,7 @@ export default {
 
   data() {
     return {
+      WriteTitle: false,
       userId: "",
       customModulesForEditor: [
         { alias: "imageDrop", module: ImageDrop },
@@ -114,6 +116,8 @@ export default {
   },
   methods: {
     getOptionIdx: function (event, selectedIndex) {
+      this.WriteTitle = true;
+      this.AddVerify = false;
       this.selectThread.select = event.target.querySelectorAll("option")[
         selectedIndex
       ].id;
@@ -123,8 +127,7 @@ export default {
       const CLIENT_ID = "3d78cf6e67ed6af";
       var formData = new FormData();
       formData.append("image", file);
-      console.log("底下是formdata");
-      console.log(formData);
+
       axios({
         url: "https://api.imgur.com/3/image",
         method: "POST",
@@ -184,8 +187,7 @@ export default {
       this.$axios
         .post(process.env.VUE_APP_API + "/api/Post/Create", this.postData)
         .then((response) => {
-          console.log(response.data);
-          console.log("成功Po文");
+          vm.$swal(response.data);
           vm.$router.push("/");
         })
         .catch((err) => {
@@ -195,12 +197,13 @@ export default {
     checkAddVerify() {
       for (let index in this.inputDataCheck) {
         if (this.inputDataCheck[index] == true) {
-          console.log(this.inputDataCheck[index]);
           this.AddVerify = false;
           return;
         }
       }
-      this.AddVerify = true;
+      if (this.selectThread.select !== "新書怒灌區") {
+        this.AddVerify = true;
+      }
     },
   },
   watch: {
