@@ -41,7 +41,7 @@ namespace XforumTest.ApiController
          /// <returns></returns>
         [AllowAnonymous]
         [HttpPost("refresh")]
-        public IActionResult RefreshToken([FromBody]RefreshTokenDTO refreshtoken)
+        public IActionResult RefreshToken([FromBody] RefreshTokenDTO refreshtoken)
         {
             return Ok(_jwt.RefreshToken(refreshtoken));
         }

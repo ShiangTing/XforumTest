@@ -12,17 +12,17 @@ namespace XforumTest.DTO
         public decimal Price { get; set; }
     }
     public class TitleCreateDto
-    { 
+    {
         public string TitleName { get; set; }
         public decimal? Price { get; set; }
     }
     public class HasTitle
-    { 
+    {
         public string TitleName { get; set; }
     }
     public class BuyTitle
     {
         public string UserId { get; set; }
-        public string TitleId { get; set; }    
+        public string TitleId { get; set; }
     }
 }

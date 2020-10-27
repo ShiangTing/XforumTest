@@ -18,7 +18,7 @@ namespace XforumTest.Services
         {
             _forums = forums;
         }
-        public void UploadImage(Guid ForumId,string link)
+        public void UploadImage(Guid ForumId, string link)
         {
             try
             {
@@ -26,7 +26,7 @@ namespace XforumTest.Services
                 fourm.Img = link;
                 _forums.SaveContext();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Debug.WriteLine(ex.Message);
             }

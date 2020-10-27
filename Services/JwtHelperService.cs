@@ -92,14 +92,14 @@ namespace XforumTest.Helpers
                     transfertoUser.RefreshToken = newGUID.ToString();
                     _members.SaveContext();
 
-                    return new AuthenticateResponse(transfertoUser, GenerateToken(transfertoUser.Email, 3));
+                    return new AuthenticateResponse(transfertoUser, GenerateToken(transfertoUser.Email, 180));
                 }
                 else
                 {
                     return new AuthenticateResponse($"Found no {refToken.RefreshToken} refresh token!");
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return new AuthenticateResponse(ex.ToString());
             }
@@ -143,7 +143,7 @@ namespace XforumTest.Helpers
                     //}).SingleOrDefault(x => x.Email == login.Email && x.Password == login.Password);
 
                     //if (user == null) return null;
-                    return new AuthenticateResponse(validuser, GenerateToken(validuser.Email, 3));
+                    return new AuthenticateResponse(validuser, GenerateToken(validuser.Email, 180));
                 }
             }
             catch (Exception ex)

@@ -16,7 +16,7 @@ namespace XforumTest.Services
         private readonly IRepository<Titles> _titles;
         private readonly IRepository<MemberTitle> _usertitle;
 
-        public TitleService(IRepository<ForumMembers> users, IRepository<Titles> titles, IRepository<MemberTitle> usertitle) 
+        public TitleService(IRepository<ForumMembers> users, IRepository<Titles> titles, IRepository<MemberTitle> usertitle)
         {
             _users = users;
             _titles = titles;
@@ -24,10 +24,10 @@ namespace XforumTest.Services
         }
 
         public decimal? GetPoints(string id)
-        {             
+        {
             return _users.GetAll2().FirstOrDefault(x => x.UserId.ToString() == id).Points;
         }
-       
+
         public void CreateTitile(TitleCreateDto model)
         {
             try
@@ -40,8 +40,8 @@ namespace XforumTest.Services
                 };
                 _titles.Create(create);
                 _titles.SaveContext();
-            } 
-            catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 Debug.WriteLine(ex.Message);
             }
@@ -63,7 +63,7 @@ namespace XforumTest.Services
 
         public List<TitleCreateDto> GetAllTitles()
         {
-            return _titles.GetAll2().Select(x => new TitleCreateDto() {TitleName = x.TitleName, Price = x.Price }).ToList();
+            return _titles.GetAll2().Select(x => new TitleCreateDto() { TitleName = x.TitleName, Price = x.Price }).ToList();
         }
         /// <summary>
         /// 取得稱號系統
@@ -71,14 +71,14 @@ namespace XforumTest.Services
         public List<HasTitle> GetHasTitles(string id)
         {
             List<HasTitle> has = (from m in _usertitle.GetAll2()
-                                 join t in _titles.GetAll2()
-                                 on m.HasTitleId equals t.TitleId
-                                 where m.UserId.ToString() == id
-                                 select new HasTitle()
-                                 {
+                                  join t in _titles.GetAll2()
+                                  on m.HasTitleId equals t.TitleId
+                                  where m.UserId.ToString() == id
+                                  select new HasTitle()
+                                  {
                                       TitleName = t.TitleName
-                                 }).ToList();                       
-            
+                                  }).ToList();
+
             return has;
         }
         /// <summary>
@@ -89,10 +89,11 @@ namespace XforumTest.Services
         public string BuyTitle(BuyTitle buy)
         {
             ForumMembers user = _users.GetAll2().FirstOrDefault(u => u.UserId.ToString() == buy.UserId);
-            TitleDto price = _titles.GetAll2().Select(x => new TitleDto() { 
+            TitleDto price = _titles.GetAll2().Select(x => new TitleDto()
+            {
                 TitleId = x.TitleId,
-                TitleName =x.TitleName,
-                Price =decimal.Parse( x.Price.ToString())            
+                TitleName = x.TitleName,
+                Price = decimal.Parse(x.Price.ToString())
             }).FirstOrDefault(t => t.TitleName == buy.TitleId);
 
             if (user.Points > price.Price)
