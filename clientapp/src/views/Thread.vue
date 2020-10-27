@@ -56,6 +56,9 @@
                     <font-awesome-icon icon="user" size="lg" />
                     <div class="user">
                       <span class="userName">{{ article.userName }}</span>
+                      <span
+                        ><b>{{ article.rank }}</b></span
+                      >
                     </div>
 
                     <p
@@ -201,6 +204,12 @@ $description: rgba(0, 0, 0, 1) !important;
     padding-left: 5px;
     color: rgba($color: #000000, $alpha: 0.5);
     font-size: 16px;
+    .userName {
+      &::after {
+        content: ("|");
+        padding: 0 5px;
+      }
+    }
   }
 
   h6 {

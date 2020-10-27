@@ -144,8 +144,37 @@ export default {
   },
   mounted() {
     let carousel = $("#js-ferris-wheel");
+    let vm = this;
     $("#js-button").on("click", function () {
       carousel.toggleClass("is-open");
+
+      // let auth = vm.$store.state.tokenModule;
+      // let isAuth = auth.isAuthorize;
+      // let token = auth.token;
+      const url = process.env.VUE_APP_API + "/api/Users/GetSingleMember";
+
+      vm.$axios({
+        url: url,
+        method: "GET",
+        // headers: { Authorization: `Bearer ${token}` },
+      })
+        .then((res) => {
+          console.log(res.data.data.name);
+          // vm.user.email = res.data.data.email;
+          // vm.user.name = res.data.data.name;
+          // vm.user.userId = res.data.data.userId;
+          // vm.user.ownerRank = res.data.data.titleName;
+          // vm.user.age = res.data.data.age;
+          // vm.user.gender = res.data.data.gender;
+          // vm.user.phone = res.data.data.phone;
+          // vm.user.points = res.data.data.points;
+          // vm.user.roleName = res.data.data.roleName;
+          // vm.user.imgLink = res.data.data.imgLink;
+          // vm.user.password = res.data.data.password;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
 
       // getSingleMember
       // let vm = this;
