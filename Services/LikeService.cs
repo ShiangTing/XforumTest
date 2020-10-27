@@ -24,7 +24,7 @@ namespace XforumTest.Services
 
 
 
-        public void Click(MessageLikeDto entity)
+        private void Click(MessageLikeDto entity)
         {
             var mRepo = _messages.GetFirst(x => x.MessageId == entity.MessageId);
             // var msgUser = _history.GetFirst(x => x.UserId == entity.UserId);
@@ -32,6 +32,18 @@ namespace XforumTest.Services
             //當user已經按讚或按倒讚
             if (msg != null && mRepo != null)
             {
+                //處理總按讚數
+                mRepo.LikeNumber = mRepo.LikeNumber + entity.LikeNumber;
+                mRepo.DisLikeNumber = mRepo.DisLikeNumber + entity.DisLikeNumber;
+                _messages.Update(mRepo);
+                _messages.SaveContext();
+
+                msg.IsDisLike = entity.IsDisLike;
+                msg.IsLike = entity.IsLike;
+
+                _history.Update(msg);
+                _history.SaveContext();
+
                 if (msg.IsLike == true && entity.IsDisLike == true)
                 {
                     msg.IsLike = entity.IsLike;
@@ -171,6 +183,36 @@ namespace XforumTest.Services
             {
                 Debug.WriteLine(ex.Message);
             }
+        }
+
+
+       /// <summary>
+       /// return 該 user 對該篇文章的或留言的按讚情況
+       /// </summary>
+       /// <param name="dto"></param>
+        public UserLikeHistoryDto GetUserLikeHistory(BaseLikeEntity dto )
+        {
+            var userHistory = _history.GetFirst(x => x.UserId == dto.UserId && (x.PostId==dto.Id || x.MessageId== dto.Id));
+            if (userHistory != null)
+            {
+                return new UserLikeHistoryDto()
+                {
+                    UserId = dto.UserId,
+                    IsDisLike = userHistory.IsDisLike,
+                    IsLike = userHistory.IsLike,
+                    //message or post id
+                    Id = dto.Id
+                };
+            }
+
+            else
+            {
+                return new UserLikeHistoryDto()
+                {
+
+                };
+            }
+            //return Dtu{dto.history = userhistory} 
         }
     }
 }
