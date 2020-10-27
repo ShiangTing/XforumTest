@@ -10,13 +10,13 @@ using XforumTest.Interface;
 
 namespace XforumTest.Services
 {
-    public class LikeService : ILikeService<MessageLikeDto> ,ILikeService<PostLikeDto>
+    public class LikeService : ILikeService<MessageLikeDto>, ILikeService<PostLikeDto>
     {
         private readonly IRepository<ReposiveMessages> _messages;
-        private readonly IRepository<LikeAndDislikeHistory> _history;
-    
-        public LikeService(IRepository<ReposiveMessages> messages, IRepository<LikeAndDislikeHistory> history)
+        private readonly IRepository<Posts> _posts;
+        public LikeService(IRepository<ReposiveMessages> messages, IRepository<Posts> posts)
         {
+            _posts = posts;
             _messages = messages;
             _history = history;
         }
@@ -109,10 +109,8 @@ namespace XforumTest.Services
         /// 
         public void PostLikeAndDisLike(MessageLikeDto entity)
         {
-            
-            //try
-          //  {             
-               
+            try
+            {
                 var mRepo = _messages.GetFirst(x => x.MessageId == entity.MessageId);
                // var msgUser = _history.GetFirst(x => x.UserId == entity.UserId);
                 var msg = _history.GetFirst(x => x.MessageId == entity.MessageId && x.UserId == entity.UserId);
@@ -162,70 +160,16 @@ namespace XforumTest.Services
         {
             try
             {
-                var mRepo = _messages.GetFirst(x => x.MessageId == entity.PostId);
-                var post = _history.GetFirst(x => x.PostId== entity.PostId && x.UserId == entity.UserId);
-                if (post != null)
-                {
-                    _history.Delete(post);
-                    _history.SaveContext();
-
-                }
-                if (mRepo != null)
-                {
-
-                    LikeAndDislikeHistory history = new LikeAndDislikeHistory()
-                    {
-                        Id = Guid.NewGuid(),
-                        PostId = entity.PostId,
-                        UserId = entity.UserId
-
-                    };
-                    _history.Create(history);
-                    _history.SaveContext();
-                    
-                    
-                    mRepo.LikeNumber = entity.LikeNumber;
-                    mRepo.DisLikeNumber = entity.DisLikeNumber;
-                    _messages.Update(mRepo);
-                    _messages.SaveContext();
-                }
-                else
-                {
-
-                }
+                var mRepo = _posts.GetFirst(x => x.PostId == entity.PostId);
+                mRepo.LikeNumber = entity.LikeNumber;
+                mRepo.DisLikeNumber = entity.DisLikeNumber;
+                _posts.Update(mRepo);
+                _posts.SaveContext();
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex.Message);
             }
         }
-
-
-        //private void CountLikeandDisLike()
-        //{
-        //    switch 
-        //        case: 
-        //}
-
-        //    public enum Quadrant
-        //{
-        //    Unknown,
-        //    Origin,
-        //    One,
-        //    Two,
-        //    Three,
-        //    Four,
-        //    OnBorder
-        //}
-        //static Quadrant GetQuadrant(Point point) => point switch
-        //{
-        //    (0, 0) => Quadrant.Origin,
-        //    var (x, y) when x > 0 && y > 0 => Quadrant.One,
-        //    var (x, y) when x < 0 && y > 0 => Quadrant.Two,
-        //    var (x, y) when x < 0 && y < 0 => Quadrant.Three,
-        //    var (x, y) when x > 0 && y < 0 => Quadrant.Four,
-        //    var (_, _) => Quadrant.OnBorder,
-        //    _ => Quadrant.Unknown
-        //};
     }
 }

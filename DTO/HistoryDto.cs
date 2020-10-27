@@ -16,7 +16,7 @@ namespace XforumTest.DTO
 
     public class RecordDto
     {
-       
+
 
     }
 }

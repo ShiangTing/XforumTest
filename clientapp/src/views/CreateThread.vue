@@ -16,10 +16,9 @@
           <div class="text-danger small mt-1">
             {{ inputDataCheck.TitleErrorMsg }}
           </div>
-          
         </div>
         <div class="d-flex my-2 align-items-center">
-        <label class="mr-3 col-2" for="Title">看板英文名稱:</label>
+          <label class="mr-3 col-2" for="Title">看板英文名稱:</label>
           <b-input
             v-model="forum.RouteName"
             id="Title"
@@ -29,7 +28,7 @@
           ></b-input>
         </div>
         <div class="d-flex my-2 align-items-center">
-        <label class="mr-3 col-2" for="Title">看板說明:</label>
+          <label class="mr-3 col-2" for="Title">看板說明:</label>
           <b-input
             v-model="forum.Description"
             id="Title"
@@ -47,18 +46,18 @@
             rows="5"
             placeholder="請輸入文字"
             maxlength="500"
-          />          
+          />
         </div> -->
-        <div style="padding: 0px 15px">          
+        <div style="padding: 0px 15px">
           <img
-              style="border: 1px dashed wheat"
-              id="blah"
-              :src="forum.ImgLink"
-              alt="上傳您的頭像"
-              width="100"
-              height="100"
-              class="my-3"
-            />
+            style="border: 1px dashed wheat"
+            id="blah"
+            :src="forum.ImgLink"
+            alt="上傳您的頭像"
+            width="100"
+            height="100"
+            class="my-3"
+          />
 
           <input
             class="d-block mt-3"
@@ -69,7 +68,9 @@
           />
         </div>
         <div class="d-flex justify-content-end">
-          <button class="btn btn-primary p-1 my-5" @click="createForum">創版申請</button>
+          <button class="btn btn-primary p-1 my-5" @click="createForum">
+            創版申請
+          </button>
         </div>
       </div>
       <div class="col-3"></div>
@@ -90,12 +91,12 @@ export default {
     return {
       file: "",
       forum: {
-        ForumName:"",
-        RouteName:"",
-        Description:"",
-        // ModeratorId:"",
+        ForumName: "",
+        RouteName: "",
+        Description: "",
+        ModeratorId: "",
         // content:"",
-        ImgLink:"",
+        ImgLink: "",
       },
       isLogin: "",
       inputDataCheck: {
@@ -104,12 +105,23 @@ export default {
       },
     };
   },
-  mounted: {    
-  },
-  methods:{
+  mounted: {},
+  methods: {
+    getUserId: function () {
+      let vm = this;
+      const url = process.env.VUE_APP_API + "/api/Users/GetUserId";
+      vm.$axios({
+        url: url,
+        method: "GET",
+      })
+        .then((res) => {
+          vm.forum.ModeratorId = res.data;
+        })
+        .catch((err) => console.log(err.response));
+    },
     handleFileUpload() {
       this.file = this.$refs.file.files[0];
-      console.log(this.$refs.file.files[0])
+
       const CLIENT_ID = "3d78cf6e67ed6af";
       var formData = new FormData();
       formData.append("image", this.file);
@@ -122,34 +134,36 @@ export default {
         data: formData,
       })
         .then((result) => {
-          console.log(result)
           this.forum.ImgLink = result.data.data.link;
-          console.log(this.forum)
         })
         .catch((err) => {
           console.log(err);
         });
     },
-    createForum(){
-      if(this.forum.ForumName != "" && this.forum.RouteName != "" && this.forum.Description != "" && this.forum.ImgLink != ""){
-        axios.post("https://localhost:5001/api/Forum/Create",this.forum)
-        .then((result) => {
-          console.log(result)
-          alert('看板創建成功，待審核後上架')
-        })
-        .catch((err)=> {
-          console.log(err);
-        });
+    createForum() {
+      if (
+        this.forum.ForumName != "" &&
+        this.forum.RouteName != "" &&
+        this.forum.Description != "" &&
+        this.forum.ImgLink != ""
+      ) {
+        const url = process.env.VUE_APP_API + "/api/Forum/Create";
+        axios
+          .post(url, this.forum)
+          .then(() => {
+            alert("看板創建成功，待審核後上架");
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      } else {
+        alert("資料沒填好");
       }
-      else
-      {
-        alert('資料沒填好')
-      }
-    }
+    },
   },
   watch: {
-    forum:{
-        ForumName : {
+    forum: {
+      ForumName: {
         immediate: true,
         handler: function () {
           if (this.forum.ForumName == "") {
@@ -166,6 +180,9 @@ export default {
         },
       },
     },
+  },
+  async created() {
+    await this.getUserId();
   },
 };
 </script>

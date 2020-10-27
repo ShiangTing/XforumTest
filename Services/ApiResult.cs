@@ -5,24 +5,24 @@ using System.Threading.Tasks;
 
 namespace XforumTest.Services
 {
-    public class ApiResult<T> 
+    public class ApiResult<T>
     {
 
         /// <summary>
         /// 是否成功
         /// </summary>
-        public bool Issuccessful { get; set; } 
+        public bool Issuccessful { get; set; }
 
 
         /// <summary>
         /// 成功為0000
         /// </summary>
-        public string Status { get; set; } 
+        public string Status { get; set; }
 
         /// <summary>
         /// 錯誤訊息
         /// </summary>
-        public string ErrorMsg { get; set; } 
+        public string ErrorMsg { get; set; }
 
         public T Data { get; set; }
 
@@ -32,19 +32,16 @@ namespace XforumTest.Services
             Status = "0000";
             ErrorMsg = "no error";
         }
-        
+
         public ApiResult(string error)
         {
             Issuccessful = false;
             Status = "0001";
-            ErrorMsg = $"{error}" ;
+            ErrorMsg = $"{error}";
         }
 
-        public enum ErrorMessage
-        {
-            Error =0 ,Error2
-        }
-           
+
+
 
     }
 }

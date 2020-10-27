@@ -56,7 +56,11 @@
                     <font-awesome-icon icon="user" size="lg" />
                     <div class="user">
                       <span class="userName">{{ article.userName }}</span>
+                      <span
+                        ><b>{{ article.rank }}</b></span
+                      >
                     </div>
+
                     <p
                       v-text="createDate(article.createdDate)"
                       class="pt-2"
@@ -80,7 +84,7 @@
                 <span class="mr-5 text-primary">載入中請稍等哦!!</span>
                 <b-spinner label="Loading..."></b-spinner>
               </div>
-              <div v-else class="text-center mt-3 text-primary">載入完畢!!</div>
+              <!-- <div v-else class="text-center mt-3 text-primary">載入完畢!!</div> -->
             </div>
           </div></b-col
         >
@@ -163,7 +167,7 @@ export default {
     },
     getThreadData() {
       const url = process.env.VUE_APP_API + "/api/Post/GetForum";
-      console.log(this.$route.params.routeName);
+
       this.$axios
         .get(url + "/" + this.$route.params.routeName)
         .then((response) => {
@@ -176,10 +180,10 @@ export default {
           console.log(err);
         });
     },
-    goToArticle(id){
+    goToArticle(id) {
       let vm = this;
-      vm.$router.push(`/article/${id}`)
-    }
+      vm.$router.push(`/article/${id}`);
+    },
   },
   watch: {},
   beforeDestroy() {},
@@ -200,6 +204,12 @@ $description: rgba(0, 0, 0, 1) !important;
     padding-left: 5px;
     color: rgba($color: #000000, $alpha: 0.5);
     font-size: 16px;
+    .userName {
+      &::after {
+        content: ("|");
+        padding: 0 5px;
+      }
+    }
   }
 
   h6 {

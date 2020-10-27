@@ -74,21 +74,21 @@ namespace XforumTest.Services
         public async Task<List<RMessageDTO>> GetAllbyPostId(Guid postId)
         {
             var mRepo = (from m in _messages.GetAll()
-                        where m.PostId == postId
-                        join p in _members.GetAll()
-                        on m.UserId equals p.UserId
-                        select new RMessageDTO
-                        {
-                            MessageId = m.MessageId,
-                            LikeNumber = m.LikeNumber,
-                            DisLikeNumber = m.DisLikeNumber,
-                            PostId = m.PostId,
-                            CreatedDate = m.CreatedDate,
-                            Context = m.Context,
-                            UserId = (Guid)m.UserId,
-                            UserName = p.Name,
-                            UserImg = p.ImgLink
-                        }).OrderBy(item => item.CreatedDate);
+                         where m.PostId == postId
+                         join p in _members.GetAll()
+                         on m.UserId equals p.UserId
+                         select new RMessageDTO
+                         {
+                             MessageId = m.MessageId,
+                             LikeNumber = m.LikeNumber,
+                             DisLikeNumber = m.DisLikeNumber,
+                             PostId = m.PostId,
+                             CreatedDate = m.CreatedDate,
+                             Context = m.Context,
+                             UserId = (Guid)m.UserId,
+                             UserName = p.Name,
+                             UserImg = p.ImgLink
+                         }).OrderBy(item => item.CreatedDate);
             return await mRepo.ToListAsync();
         }
         public void GetSingle()

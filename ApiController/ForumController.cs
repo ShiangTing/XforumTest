@@ -13,7 +13,7 @@ namespace XforumTest.ApiController
     {
         //private static ForumService forumservice = new ForumService();
         private readonly IForumService _forumservice;
-        public ForumController(IForumService Service) 
+        public ForumController(IForumService Service)
         {
             _forumservice = Service;
         }
@@ -43,7 +43,7 @@ namespace XforumTest.ApiController
         {
             var edit = _forumservice.GetSingle(id);
             return edit;
-        }      
+        }
 
         /// <summary>
         /// 編輯看板資料、回復軟刪除狀態
@@ -64,9 +64,9 @@ namespace XforumTest.ApiController
         /// </summary>
         /// <returns></returns>
         [HttpPost]
-        public void Delete(string id)
+        public void ChangeForumState(ChangeForumState model)
         {
-            _forumservice.Delete(id);
+            _forumservice.ChangeForumState(model);
         }
 
 
@@ -75,10 +75,15 @@ namespace XforumTest.ApiController
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public  IEnumerable<ForumGetAllDTO> GetAll()
+        public IEnumerable<ForumGetAllDTO> GetAll()
         {
             //var getall = new ForumService().GetAll();
-            return  _forumservice.GetAll();
-        }        
+            return _forumservice.GetAll();
+        }
+        [HttpGet]
+        public IEnumerable<GetUnauditedForum> GetUnauditedForum()
+        {
+            return _forumservice.GetUnauditedForum();
+        }
     }
 }

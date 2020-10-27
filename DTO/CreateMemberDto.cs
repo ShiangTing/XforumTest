@@ -10,7 +10,7 @@ namespace XforumTest.DTO
     {
         //[Required]
         //public Guid? UserId { get; set; }
-      //  public Guid? RoleId { get; set; }
+        //  public Guid? RoleId { get; set; }
         [Required]
         [MinLength(6)]
         public string Password { get; set; }
@@ -24,9 +24,9 @@ namespace XforumTest.DTO
         [MinLength(1)]
         public string Name { get; set; }
 
-       // [Phone]
+        // [Phone]
         public string Phone { get; set; }
-        
+
         public string Gender { get; set; }
 
         public int Age { get; set; }

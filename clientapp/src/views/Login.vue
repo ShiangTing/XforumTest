@@ -87,7 +87,7 @@ export default {
               refreshToken: res.data.refreshToken,
               token: res.data.token,
               expireTime: res.data.expireTime,
-              isAuthorize: true
+              isAuthorize: true,
             };
             vm.$store.dispatch("setAuth", data);
             vm.$router.push("/");
@@ -95,7 +95,6 @@ export default {
             vm.error.isError = true;
             vm.error.message = res.data.errorMsg;
           }
-          console.log(res);
         })
         .catch((err) => {
           vm.error.isError = true;

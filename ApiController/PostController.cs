@@ -34,7 +34,7 @@ namespace XforumTest.ApiController
 
         //軟刪除
         [HttpPost]
-        public IActionResult Delete([FromBody]PostListDto json)
+        public IActionResult Delete([FromBody] PostListDto json)
         {
             _postservice.Delete(json.PostId.ToString());
             return Ok();
@@ -63,10 +63,10 @@ namespace XforumTest.ApiController
         /// </summary>
         //  [Route("/")]
         [HttpGet]
-        public IEnumerable<PostListDto> GetAllPosts()
-        {        
+        public List<PostListDto> GetAllPosts()
+        {
 
-            return  _postservice.GetAll();
+            return _postservice.GetAll();
         }
 
 
@@ -77,7 +77,7 @@ namespace XforumTest.ApiController
 
         //  [Route("/")]
         [HttpGet("{route}")]
-        public IEnumerable<PostListDto> GetForum(string route)
+        public List<PostListDto> GetForum(string route)
         {
             return _postservice.GetForum(route);
         }
