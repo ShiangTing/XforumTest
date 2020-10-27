@@ -31,7 +31,6 @@ namespace XforumTest.Services
                     RouteName = create.RouteName,
                     CreatedDate = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, TimeZoneInfo.Local),
                     ModeratorId = Guid.Parse(create.ModeratorId),
-                    //ModeratorId = null,
                     Description = create.Description,
                     Img = create.ImgLink,
                     State = false
@@ -111,10 +110,9 @@ namespace XforumTest.Services
                                                             ForumName = f.ForumName,
                                                             RouteName = f.RouteName,
                                                             Description = f.Description,
-                                                            ModeratorId = _members.GetAll2().FirstOrDefault(x => x.UserId == f.ModeratorId).Name,
+                                                            ModeratorName = _members.GetAll2().FirstOrDefault(x => x.UserId == f.ModeratorId).Name,
                                                             ImgLink = f.Img,
-                                                            //Transfer to TW time
-                                                            CreatedDate = f.CreatedDate.GetValueOrDefault().ToUniversalTime().AddHours(8).ToString()
+                                                            CreatedDate = f.CreatedDate.ToString()
                                                         }).ToList();
             return Unaudited;
         }
