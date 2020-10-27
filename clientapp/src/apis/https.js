@@ -35,10 +35,14 @@ instance.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
     let err = error.response;
-    if (err.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
-      await refreshAccessToken();
-      return instance(originalRequest);
+    let expireTime = parseInt(store.state.tokenModule.expireTime);
+    let nowTime = parseInt(Date.now() / 1000);
+    if (err.status === 401 && expireTime <= nowTime && store.state.tokenModule.isAuthorize) {
+      window.localStorage.clear();
+      const token = await refreshAccessToken();
+      originalRequest.headers.Authorization =
+        'Bearer ' + token;
+      return instance.request(originalRequest);
     }
     if (err.status) {
       errorHandle(err.status.toString(), err.config.url);
@@ -60,9 +64,11 @@ let refreshAccessToken = function() {
         isAuthorize: true,
       };
       store.dispatch('setAuth', data);
+      return store.state.tokenModule.token;
     })
     .catch((err) => {
       console.err(err);
+      alert('驗證過期請重新登入')
     });
 };
 export default instance;

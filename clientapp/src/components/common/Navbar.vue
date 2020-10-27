@@ -117,8 +117,7 @@ export default {
         .then((res) => {
           vm.name = res.data.data.name;
           vm.rolename = res.data.data.roleName;
-          vm.memberImg = res.data.data.imgLink;
-
+          vm.memberImg = res.data.data.imgLink
           vm.isLogin = true;
         })
         .catch(() => {
