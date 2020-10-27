@@ -23,6 +23,10 @@ namespace XforumTest.Services
         /// <param name="dto"></param>
         public void Match(MatchDto dto)
         {
+            var user = _members.GetFirst(x => x.UserId == dto.UserId);
+            //隨機產生亂數字
+            //找到contain該數字的第一個
+           // var matchedUser = 
             //var user = 
             //if()
         }
