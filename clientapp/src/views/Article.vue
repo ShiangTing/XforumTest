@@ -51,7 +51,8 @@
                   :key="message.messageId">
                   <div class="col-12 col-md-10 d-flex">
                     <a class="user-img">
-                      <font-awesome-icon icon="user" size="lg" />
+                      <font-awesome-icon icon="user" size="lg" v-if="!isLogin" />
+                      <img :src="message.userImg" alt="userImg" v-else>
                     </a>
                     <div class="reply-content">
                       <a class="replay-user mr-2 d-inline-block">{{message.userName}}</a>
@@ -78,7 +79,8 @@
                 <div class="reply-item border-0">
                   <div class="input-group">
                     <a class="user-img text-secondary bg-white">
-                      <font-awesome-icon icon="user" size="lg" />
+                      <font-awesome-icon icon="user" size="lg" v-if="!isLogin" />
+                      <img :src="memberImg" alt="memberImg" v-else>
                     </a>
                     <textarea class="form-control h-100" placeholder="留個言吧~" v-model="reply.context"></textarea>
                     <button class="btn btn-secondary h-100" @click.prevent="postMessage">送出</button>
@@ -109,6 +111,7 @@ export default {
   components: { Navbar, VueEditor },
   data () {
     return {
+      isLogin: false,
       //編輯器
       customModulesForEditor: [
         { alias: "imageDrop", module: ImageDrop },
@@ -139,6 +142,7 @@ export default {
         context: "",
         userId: "",
       },
+      memberImg: "",
       templike: {
         articleLike: false,
         articleDislike: false,
@@ -172,9 +176,11 @@ export default {
     },
     getUserInfo () {
       let vm = this;
-      let userIdUrl = process.env.VUE_APP_API + "/api/Users/getSingleMember";
-      vm.$axios.get(userIdUrl).then(res => {
-        vm.reply.userId = res.data.userId
+      let userUrl = process.env.VUE_APP_API + "/api/Users/getSingleMember";
+      vm.$axios.get(userUrl).then(res => {
+        vm.reply.userId = res.data.data.userId
+        vm.memberImg = res.data.data.imgLink
+        vm.isLogin = true
       }).catch(err => {
         console.log(err);
       })
@@ -183,7 +189,6 @@ export default {
       let vm = this;
       let url = process.env.VUE_APP_API + "/api/Post/getSingle/" + vm.$route.params.id;
       vm.$axios.get(url).then(res => {
-        console.log(res.data);
         vm.article = {
           postId: res.data.postId,
           userId: res.data.userId,
@@ -488,5 +493,10 @@ export default {
     border-radius: 50%;
     border: 1px solid rgba(0, 0, 0, 0.125);
     margin-right: 10px;
+    > img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+    }
   }
 </style>
