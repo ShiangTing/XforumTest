@@ -2,6 +2,7 @@ import Vue from 'vue';
 import Router from './router';
 import App from './App.vue';
 import VueParticles from 'vue-particles';
+import 'bootstrap';
 import BoostrapVue from 'bootstrap-vue';
 import infiniteScroll from 'vue-infinite-scroll'
 import VueSweetalert2 from 'vue-sweetalert2';
