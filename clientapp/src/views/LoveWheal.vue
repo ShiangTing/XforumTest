@@ -2,9 +2,28 @@
 <div>
   <Navbar />
   <div>
-  <div class="text-center text-primary fa-8x">
-    p Welcome Love Wheel
+  //- <div class="text-center text-primary fa-3x">
+  //-   p Welcome Love Wheel
+  //- </div>
+  <div class="d-flex justify-content-center align-items-center mt-5">
+    //- <div class="mx-5">
+    //- span.inputMatch(v-text="user.name")
+    //- </div>
+    //- <div v-if="user.imgLink">
+    //- <img :src="user.imgLink"  width="100px" height="100px" class="matchImg">
+    //- </div>
+
+    h2.wantText.mx-5 想要與此陌生人配對嗎.....
+    <div class="mx-5" v-if="metchUser.matchimgLink">
+    h1.inputMatch(v-text="`『${metchUser.matchedName}』`")
+    </div>
+    <div v-if="metchUser.matchimgLink">
+    <img :src="metchUser.matchimgLink" width="100px" height="100px" class="matchImg">
+    </div>
+      .ground
+  #chat-button.button(@click="startChat") 加入好友
   </div>
+
   //- ICONS -//
 - var el = {};
 
@@ -121,6 +140,9 @@ mixin icon(el)
 
 .ground
   #js-button.button 開始配對
+
+.ground
+  #hide-button.button 重新配對
     </div>
   </div>
 </template>
@@ -134,94 +156,110 @@ export default {
   data() {
     return {
       user: {
+        userId: "",
         name: "",
         ownerRank: "",
         age: "",
         gender: "",
         imgLink: "",
       },
+      self: {
+        userId: "",
+      },
+      metchUser: {
+        matchedName: "",
+        matchedUserId: "",
+        matchimgLink: "",
+      },
+      chatData: {
+        userId: "",
+        matchedUserId: "",
+      },
     };
   },
-  mounted() {
-    let carousel = $("#js-ferris-wheel");
-    let vm = this;
-    $("#js-button").on("click", function () {
-      carousel.toggleClass("is-open");
-
-      // let auth = vm.$store.state.tokenModule;
-      // let isAuth = auth.isAuthorize;
-      // let token = auth.token;
-      const url = process.env.VUE_APP_API + "/api/Users/GetSingleMember";
-
-      vm.$axios({
-        url: url,
-        method: "GET",
-        // headers: { Authorization: `Bearer ${token}` },
-      })
-        .then((res) => {
-          console.log(res.data.data.name);
-          // vm.user.email = res.data.data.email;
-          // vm.user.name = res.data.data.name;
-          // vm.user.userId = res.data.data.userId;
-          // vm.user.ownerRank = res.data.data.titleName;
-          // vm.user.age = res.data.data.age;
-          // vm.user.gender = res.data.data.gender;
-          // vm.user.phone = res.data.data.phone;
-          // vm.user.points = res.data.data.points;
-          // vm.user.roleName = res.data.data.roleName;
-          // vm.user.imgLink = res.data.data.imgLink;
-          // vm.user.password = res.data.data.password;
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-
-      // getSingleMember
+  methods: {
+    startChat() {
+      this.$swal({
+        title: `您配對到的是${this.metchUser.matchedName}`,
+        text: "要加入好友列表嗎",
+        type: "question",
+        showCancelButton: true,
+        confirmButtonText: "確定",
+        cancelButtonText: "取消",
+      }).then((result) => {
+        if (result.value) {
+          console.log(result.value);
+        } else {
+          console.log(1);
+        }
+      });
       // let vm = this;
-      // const url = process.env.VUE_APP_API + "/api/Users/GetSingleMember";
-      // axios({
-      //   url: url,
-      //   method: "GET",
+      // const chatUrl = process.env.VUE_APP_API + "/api/Match/MatchUser";
+      // vm.$axios({
+      //   url: chatUrl,
+      //   method: "POST",
+      //   data: chatData,
       // })
-      //   .then((res) => {
-      //     console.log(res);
-      //     // vm.user.name = res.data.data.name;
-      //     // vm.user.ownerRank = res.data.data.titleName;
-      //     // vm.user.age = res.data.data.age;
-      //     // vm.user.gender = res.data.data.gender;
-      //     // vm.user.imgLink = res.data.data.imgLink;
-      //   })
+      //   .then(() => {})
       //   .catch((err) => {
       //     console.log(err);
       //   });
-    });
-  },
-  methods: {
-    getSingleMember() {
-      let vm = this;
-      let auth = vm.$store.state.tokenModule;
-      let isAuth = auth.isAuthorize;
-      let token = auth.token;
-      const url = process.env.VUE_APP_API + "/api/Users/GetSingleMember";
-      if (isAuth) {
-        vm.$axios({
-          url: url,
-          method: "GET",
-          headers: { Authorization: `Bearer ${token}` },
-        })
-          .then((res) => {
-            vm.user.name = res.data.data.name;
-            vm.user.ownerRank = res.data.data.titleName;
-            vm.user.age = res.data.data.age;
-            vm.user.gender = res.data.data.gender;
-            vm.user.imgLink = res.data.data.imgLink;
-          })
-
-          .catch((err) => {
-            console.log(err);
-          });
-      }
     },
+  },
+  mounted() {
+    $(".wantText").hide();
+    $("#hide-button").hide();
+    $("#chat-button").hide();
+    $("#hide-button").on("click", function () {
+      location.reload();
+    });
+    // $("#chat-button").on("click", function () {
+
+    // });
+    let carousel = $("#js-ferris-wheel");
+    let vm = this;
+    $("#js-button").on("click", function () {
+      $("#js-button").hide();
+      $("#hide-button").show();
+      $("#chat-button").show();
+      $(".wantText").show();
+      carousel.toggleClass("is-open");
+      const url = process.env.VUE_APP_API + "/api/Users/GetSingleMember";
+      vm.$axios({
+        url: url,
+        method: "GET",
+      })
+        .then((res) => {
+          vm.user.userId = res.data.data.userId;
+          vm.self.userId = res.data.data.userId;
+          vm.user.name = res.data.data.name;
+          vm.user.age = res.data.data.age;
+          vm.user.gender = res.data.data.gender;
+          vm.user.ownerRank = res.data.data.titleName;
+          vm.user.imgLink = res.data.data.imgLink;
+          const matchUrl = process.env.VUE_APP_API + "/api/Match/MatchUser";
+          vm.$axios({
+            url: matchUrl,
+            method: "POST",
+            data: vm.self,
+          })
+            .then((res) => {
+              vm.metchUser.matchedName = res.data.data.matchedName;
+              vm.metchUser.matchedUserId = res.data.data.matchedUserId;
+              vm.metchUser.matchimgLink = res.data.data.matchimgLink;
+              vm.chatData.userId = vm.self.userId;
+              vm.chatData.matchedUserId = vm.metchUser.matchedUserId;
+            })
+
+            .catch((err) => {
+              console.log(err);
+            });
+        })
+
+        .catch((err) => {
+          console.log(err);
+        });
+    });
   },
 };
 </script>
@@ -902,5 +940,16 @@ ferrisWheelSize = 375;
   100% {
     transform: translateZ(1px);
   }
+}
+
+.inputMatch {
+  padding: 10px;
+  font-size: 30px;
+  color: wheat;
+}
+
+#chat-button {
+  background-color: blue;
+  margin: 32px 0 0 400px;
 }
 </style>

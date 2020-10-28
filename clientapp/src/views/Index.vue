@@ -45,11 +45,11 @@
                     <font-awesome-icon icon="user" size="lg" />
                     <div class="user">
                       <span class="userName">{{ article.userName }}</span>
-                      <span class="userName" style="color: rgba(255, 210, 0)"
+                      <span style="color: rgba(255, 210, 0)"
                         ><b>『{{ article.rank }}』</b></span
                       >
 
-                      <span>{{ article.forumName }}</span>
+                      <span class="forumName">{{ article.forumName }}</span>
                     </div>
 
                     <p
@@ -189,6 +189,12 @@ $description: rgba(0, 0, 0, 1) !important;
     font-size: 16px;
     .userName {
       &::after {
+        content: ("|");
+        padding: 0 5px;
+      }
+    }
+    .forumName {
+      &::before {
         content: ("|");
         padding: 0 5px;
       }

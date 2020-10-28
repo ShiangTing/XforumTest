@@ -22,18 +22,19 @@
                 <button
                   type="button"
                   class="btn btn-outline-success"
-                  @click="allowcreate(item.routeName)"
+                  @click="allowCreate(item.routeName)"
                 >
                   准許申請
                 </button>
                 <button
                   type="button"
                   class="btn btn-outline-danger"
-                  @click="forbidcreate(item.routeName)"
+                  @click="rejectCreate(item.routeName)"
                 >
                   駁回申請
                 </button>
               </div>
+              <p class="card-text text-center mt-3 bg-danger text-light" v-if="!(item.state) && item.rejectMsg != null">拒絕原因：{{ item.rejectMsg }}</p>
             </div>
           </div>
         </div>
@@ -60,6 +61,7 @@ export default {
       changeForumState: {
         RouteName: "",
         State: "",
+        RejectMsg: "",
       },
     };
   },
@@ -83,15 +85,15 @@ export default {
           console.log(err);
         });
     },
-    allowcreate(routename) {
+    allowCreate(routename) {
       const url = process.env.VUE_APP_API + "/api/Forum/ChangeForumState";
       this.changeForumState.RouteName = routename;
       this.changeForumState.State = true;
       console.log(this.changeForumState);
       this.$swal
         .fire({
-          title: "Are you sure?",
-          text: "You won't be able to revert this!",
+          title: "確定通過審核?",
+          text: "成功後無法修正!",
           icon: "warning",
           showCancelButton: true,
           confirmButtonColor: "#3085d6",
@@ -100,6 +102,7 @@ export default {
         })
         .then((result) => {
           if (result.isConfirmed) {
+            this.changeForumState.RejectMsg = "Passed!";
             axios({
               url: url,
               method: "POST",
@@ -111,21 +114,56 @@ export default {
           }
         });
     },
-    forbidcreate(routename) {
+    rejectCreate(routename) {
       const url = process.env.VUE_APP_API + "/api/Forum/ChangeForumState";
       this.changeForumState.RouteName = routename;
       this.changeForumState.State = false;
+
       console.log(this.changeForumState);
-      axios({
-        url: url,
-        method: "Post",
-        data: this.changeForumState,
-      }).then(() => {
-        console.log("駁回申請");
-        this.$swal.fire("駁回申請", "", "warning").then(()=> {
-          this.$router.go(0);
+
+      this.$swal
+        .fire({
+          title: "確定拒絕審核?",
+          text: "",
+          input: "text",
+          inputLabel: "請輸入原因：",
+          inputValue: "",
+          inputValidator: (value)=>{
+            if(!value){
+              return '必須輸入原因！'
+            }
+          },
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, do it!",
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            this.changeForumState.RejectMsg = document.getElementById('swal2-input').value;
+            axios({
+              url: url,
+              method: "POST",
+              data: this.changeForumState,
+            }).then(() => {
+              console.log("駁回申請");
+              this.$router.go(0);
+            })
+            .catch((err) => console.log(err.response));
+          }
         });
-      });
+
+      // axios({
+      //   url: url,
+      //   method: "Post",
+      //   data: this.changeForumState,
+      // }).then(() => {
+      //   console.log("駁回申請");
+      //   this.$swal.fire("駁回申請", "", "warning").then(()=> {
+      //     this.$router.go(0);
+      //   });
+      // });
     },
   },
   async created() {

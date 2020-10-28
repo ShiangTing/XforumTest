@@ -112,7 +112,9 @@ namespace XforumTest.Services
                                                             Description = f.Description,
                                                             ModeratorName = _members.GetAll2().FirstOrDefault(x => x.UserId == f.ModeratorId).Name,
                                                             ImgLink = f.Img,
-                                                            CreatedDate = f.CreatedDate.ToString()
+                                                            CreatedDate = f.CreatedDate,
+                                                            RejectMsg = f.RejectMsg,
+                                                            State = (bool)f.State
                                                         }).ToList();
             return Unaudited;
         }
@@ -124,6 +126,7 @@ namespace XforumTest.Services
         {
             Forums forum = _Forums.GetAll().FirstOrDefault(f => f.RouteName == model.RouteName);
             forum.State = model.State;
+            forum.RejectMsg = model.RejectMsg;
             _Forums.Update(forum);
             _Forums.SaveContext();
         }
