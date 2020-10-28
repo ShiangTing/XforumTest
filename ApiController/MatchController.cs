@@ -55,6 +55,12 @@ namespace XforumTest.ApiController
             }
         }
 
+        /// <summary>
+        /// 拿到該user的好友名單
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+
         [HttpPost]
         public ApiResult<IEnumerable<ChatListDto>> GetAllChatList(UserIdDto dto)
         {

@@ -81,7 +81,7 @@ namespace XforumTest.ApiController
         /// <summary>
         /// 永久刪除留言
         /// </summary>
-        /// <param name="mId"></param>
+        /// <param name="dto"></param>
         /// <returns></returns>
         [HttpDelete]
         public ApiResult<RMessageDTO> DeleteMessages([FromBody]Base dto)
