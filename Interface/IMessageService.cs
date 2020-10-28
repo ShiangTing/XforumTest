@@ -13,7 +13,7 @@ namespace XforumTest.Interface
 
         Task<List<RMessageDTO>> GetAllbyPostId(Guid postId);
 
-        void Delete(Guid id);
+        void Delete(Base dto);
 
         void GetSingle();
 

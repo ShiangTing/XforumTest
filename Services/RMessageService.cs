@@ -51,11 +51,11 @@ namespace XforumTest.Services
                 Debug.WriteLine(ex.Message);
             }
         }
-        public void Delete(Guid id)
+        public void Delete(Base dto)
         {
             try
             {
-                var deletMessage = _messages.GetFirst(x => x.MessageId == id);
+                var deletMessage = _messages.GetFirst(x => x.MessageId == dto.Id);
                 if (deletMessage != null)
                 {
                     _messages.Delete(deletMessage);

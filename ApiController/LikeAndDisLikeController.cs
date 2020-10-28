@@ -78,7 +78,7 @@ namespace XforumTest.ApiController
         /// <param name="dto"></param>
         /// <returns></returns>
 
-        [HttpPatch]
+        [HttpPost]
         public ApiResult<UserLikeHistoryDto> GetUserLikeHistory([FromBody] BaseLikeEntity dto)
         {
             var result = new ApiResult<UserLikeHistoryDto>();
