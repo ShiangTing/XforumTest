@@ -65,10 +65,10 @@ namespace XforumTest.Hubs
     //    }
 
 
-        public async Task JoinGruop()
-        {
+        //public async Task JoinGruop()
+        //{
 
-        }
+        //}
 
      //   public async Task SendMessaeToGroup(string user, string content, string recipientId, string chatRoomId)
      //   {
