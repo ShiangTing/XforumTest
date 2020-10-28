@@ -949,7 +949,7 @@ ferrisWheelSize = 375;
 }
 
 #chat-button {
-  background-color: blue;
+  background-color: #B4DBD9;
   margin: 32px 0 0 400px;
 }
 </style>

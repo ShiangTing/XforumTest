@@ -45,8 +45,12 @@
                     <font-awesome-icon icon="user" size="lg" />
                     <div class="user">
                       <span class="userName">{{ article.userName }}</span>
-                      <span style="color: rgba(255, 210, 0)"
-                        ><b>『{{ article.rank }}』</b></span
+                      <span
+                        class="badge badge-secondary px-1 py-2 text-dark border"
+                        :style="{
+                          'background-color': article.rankColor,
+                        }"
+                        ><b> 『{{ article.rank }}』</b></span
                       >
 
                       <span class="forumName">{{ article.forumName }}</span>
@@ -189,13 +193,13 @@ $description: rgba(0, 0, 0, 1) !important;
     font-size: 16px;
     .userName {
       &::after {
-        content: ("|");
+        content: "・";
         padding: 0 5px;
       }
     }
     .forumName {
       &::before {
-        content: ("|");
+        content: "・";
         padding: 0 5px;
       }
     }
