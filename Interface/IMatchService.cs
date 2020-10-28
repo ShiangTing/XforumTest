@@ -14,5 +14,9 @@ namespace XforumTest.Interface
 
         void Add(BaseChatDto dto);
 
+
+        IEnumerable<ChatListDto> GetAll(UserIdDto dto);
+
+
     }
 }

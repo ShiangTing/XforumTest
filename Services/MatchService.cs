@@ -73,9 +73,34 @@ namespace XforumTest.Services
             _chats.SaveContext();
         }
 
-        public void Test()
+        public IEnumerable<ChatListDto> GetAll(UserIdDto dto)
         {
+            var user = _members.GetFirst(x => x.UserId == dto.UserId);
 
+         //   if (user != null)
+           // {
+
+                var list = from c in _chats.GetAll2()
+                           where dto.UserId == c.UserId
+                           join m in _members.GetAll2()
+                           on c.UserId equals m.UserId
+                           select new ChatListDto()
+                           {
+                               UserId = (Guid)c.FriendId,
+                               ImgLink = m.ImgLink,
+                               Name = m.ImgLink
+                           };
+                return list;
+
+
+
+
+           // }
+
+           // else
+           // {
+                
+           // }
         }
 
     

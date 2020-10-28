@@ -55,6 +55,25 @@ namespace XforumTest.ApiController
             }
         }
 
+        [HttpGet]
+        public ApiResult<IEnumerable<ChatListDto>> GetAllChatList(UserIdDto dto)
+        {
+            var result = new ApiResult<IEnumerable<ChatListDto>>();
+            if (ModelState.IsValid)
+            {
+                result.Data = _matchService.GetAll(dto);
+
+                return result;
+            }
+            else
+            {
+                return new ApiResult<IEnumerable<ChatListDto>>("Dto");
+            }
+        }
+
+
+
+
 
 
     }
