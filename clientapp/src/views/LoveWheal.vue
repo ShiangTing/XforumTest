@@ -173,7 +173,7 @@ export default {
       },
       chatData: {
         userId: "",
-        matchedUserId: "",
+        friendId: "",
       },
     };
   },
@@ -188,22 +188,19 @@ export default {
         cancelButtonText: "取消",
       }).then((result) => {
         if (result.value) {
-          console.log(result.value);
-        } else {
-          console.log(1);
+          let vm = this;
+          const chatUrl = process.env.VUE_APP_API + "/api/Match/AddToChatList";
+          vm.$axios({
+            url: chatUrl,
+            method: "POST",
+            data: vm.chatData,
+          })
+            .then(() => {})
+            .catch((err) => {
+              console.log(err);
+            });
         }
       });
-      // let vm = this;
-      // const chatUrl = process.env.VUE_APP_API + "/api/Match/MatchUser";
-      // vm.$axios({
-      //   url: chatUrl,
-      //   method: "POST",
-      //   data: chatData,
-      // })
-      //   .then(() => {})
-      //   .catch((err) => {
-      //     console.log(err);
-      //   });
     },
   },
   mounted() {
@@ -248,7 +245,7 @@ export default {
               vm.metchUser.matchedUserId = res.data.data.matchedUserId;
               vm.metchUser.matchimgLink = res.data.data.matchimgLink;
               vm.chatData.userId = vm.self.userId;
-              vm.chatData.matchedUserId = vm.metchUser.matchedUserId;
+              vm.chatData.friendId = vm.metchUser.matchedUserId;
             })
 
             .catch((err) => {
