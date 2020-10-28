@@ -2,9 +2,9 @@
 <div>
   <Navbar />
   <div>
-  <div class="text-center text-primary fa-3x">
-    p Welcome Love Wheel
-  </div>
+  //- <div class="text-center text-primary fa-3x">
+  //-   p Welcome Love Wheel
+  //- </div>
   <div class="d-flex justify-content-center align-items-center mt-5">
     //- <div class="mx-5">
     //- span.inputMatch(v-text="user.name")
@@ -13,14 +13,15 @@
     //- <img :src="user.imgLink"  width="100px" height="100px" class="matchImg">
     //- </div>
 
-    h1.wantText.mx-5 想要配對嗎.....
-    <div class="mx-5">
-    span.inputMatch(v-text="metchUser.matchedName")
+    h2.wantText.mx-5 想要與此陌生人配對嗎.....
+    <div class="mx-5" v-if="metchUser.matchimgLink">
+    h1.inputMatch(v-text="`『${metchUser.matchedName}』`")
     </div>
     <div v-if="metchUser.matchimgLink">
     <img :src="metchUser.matchimgLink" width="100px" height="100px" class="matchImg">
     </div>
-
+      .ground
+  #chat-button.button(@click="startChat") 加入好友
   </div>
 
   //- ICONS -//
@@ -142,8 +143,6 @@ mixin icon(el)
 
 .ground
   #hide-button.button 重新配對
-.ground
-  #chat-button.button(@click="startChat") 加入好友
     </div>
   </div>
 </template>
@@ -944,6 +943,7 @@ ferrisWheelSize = 375;
 }
 
 .inputMatch {
+  padding: 10px;
   font-size: 30px;
   color: wheat;
 }
