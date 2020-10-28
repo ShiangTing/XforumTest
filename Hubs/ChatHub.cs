@@ -20,12 +20,25 @@ namespace XforumTest.Hubs
         }
 
 
-        public async Task SendMessage(Guid userId, string message)
+        public async Task SendMessage(Guid userId, string message,Guid chatroomId)
         {
+            //創建一個group 然後將兩個id加進group
+            //SendMessage to all(client)
+            //將留言存進資料庫QQ
+
+
             await Clients.All.ReceiveMessage(userId, message);
         }
 
 
+        //送交友通知給
+        public async Task SendInform()
+        {
+
+        }
+
+
+       
 
         //發送訊息給所有人
         //public async Task SendMessage(string user, string message)
@@ -65,10 +78,7 @@ namespace XforumTest.Hubs
     //    }
 
 
-        public async Task JoinGruop()
-        {
-
-        }
+    
 
      //   public async Task SendMessaeToGroup(string user, string content, string recipientId, string chatRoomId)
      //   {
