@@ -17,6 +17,7 @@ using XforumTest.Helpers;
 using XforumTest.Interface;
 using XforumTest.Repository;
 using XforumTest.Services;
+using XforumTest.Hubs;
 
 namespace XforumTest
 {
@@ -82,7 +83,7 @@ namespace XforumTest
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration.GetValue<string>("JwtSettings:SignKey")))
                 };
             });
-
+            services.AddSignalR();
             services.AddSwaggerGen(c =>
             {
                 //c.SwaggerDoc("v1", new OpenApiInfo
@@ -114,32 +115,26 @@ namespace XforumTest
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.Use(async (context, next) =>
-            {
-                await next();
+            //app.Use(async (context, next) =>
+            //{
+            //    await next();
 
-                if (context.Response.StatusCode == 404 &&
-                    !System.IO.Path.HasExtension(context.Request.Path.Value) &&
-                    !context.Request.Path.Value.StartsWith("/api"))
-                {
-                    context.Request.Path = "/index.html";
-                    context.Response.StatusCode = 200;
+            //    if (context.Response.StatusCode == 404 &&
+            //        !System.IO.Path.HasExtension(context.Request.Path.Value) &&
+            //        !context.Request.Path.Value.StartsWith("/api"))
+            //    {
+            //        context.Request.Path = "/index.html";
+            //        context.Response.StatusCode = 200;
 
-                    await next();
-                }
-            });
+            //        await next();
+            //    }
+            //});
             app.UseExceptionHandler("/api/error/Error");
             app.UseHttpsRedirection();
 
             app.UseCors("CorsPolicy");
 
-            //app.UseStaticFiles(new StaticFileOptions
-            //{
-            //    FileProvider = new PhysicalFileProvider(
-            //        Path.Combine(Directory.GetCurrentDirectory(), "HtmlPages")),
-            //    RequestPath = "/HtmlPages"
-            //});
-          
+
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();
             // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
@@ -148,13 +143,14 @@ namespace XforumTest
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
             });
-            app.UseDefaultFiles();
+           //app.UseDefaultFiles();
             app.UseStaticFiles();
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapHub<ChatHub>("/chathub");
                 endpoints.MapControllerRoute(
                     name: "api",
                     pattern: "api/{controller}/{action}");

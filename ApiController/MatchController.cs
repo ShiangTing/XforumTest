@@ -16,6 +16,7 @@ namespace XforumTest.ApiController
     public class MatchController : ControllerBase
     {
         private readonly IMatchService _matchService;
+        
 
         public MatchController(IMatchService matchService)
         {
@@ -30,6 +31,7 @@ namespace XforumTest.ApiController
             if (ModelState.IsValid)
             {
                 result.Data = _matchService.Match(dto);
+               
                 return result;
             }
            else
@@ -37,8 +39,21 @@ namespace XforumTest.ApiController
                 return new ApiResult<MatchOutput>("Dto");
             }
 
-        }        
-
+        }
+        
+        [HttpPost]
+        public ApiResult<BaseChatDto> AddToChatList(BaseChatDto dto)
+        {
+            if (ModelState.IsValid)
+            {
+                _matchService.Add(dto);
+                return new ApiResult<BaseChatDto>();
+            }
+            else
+            {
+                return new ApiResult<BaseChatDto>("Dto");
+            }
+        }
 
 
 

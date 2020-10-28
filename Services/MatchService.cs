@@ -55,5 +55,33 @@ namespace XforumTest.Services
                 return new MatchOutput() {  };
             }
         }
+
+        /// <summary>
+        /// 將配對user加入好友中
+        /// </summary>
+        /// <param name="dto"></param>
+  
+        public void Add(BaseChatDto dto)
+        {
+            Chats chats = new Chats()
+            {
+                ChatId = Guid.NewGuid(),
+                UserId = dto.UserId,
+                FriendId = dto.FriendId,
+            };
+            _chats.Create(chats);
+            _chats.SaveContext();
+        }
+
+        public void Test()
+        {
+
+        }
+
+    
+    
+    
+    
+    
     }
 }
