@@ -85,5 +85,10 @@ namespace XforumTest.ApiController
         {
             return _forumservice.GetUnauditedForum();
         }
+        [HttpGet]
+        public string GetImgLink(string id)
+        {
+            return _forumservice.GetImgLink(id);
+        }
     }
 }

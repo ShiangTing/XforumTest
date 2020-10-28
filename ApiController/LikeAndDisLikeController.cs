@@ -35,7 +35,7 @@ namespace XforumTest.ApiController
         public ApiResult<MessageLikeDto> MsgLikeAndDisLike([FromBody] MessageLikeDto Dto)
         {
             var result = new ApiResult<MessageLikeDto>();
-
+            System.Diagnostics.Debug.WriteLine("test");
             if (ModelState.IsValid)
             {
                 //  var service = new LikeService();
@@ -55,7 +55,7 @@ namespace XforumTest.ApiController
         /// <param name="Dto"></param>
         /// <returns></returns>
         [HttpPut]
-        public ApiResult<PostLikeDto> PostLikeAndDisLike(PostLikeDto Dto)
+        public ApiResult<PostLikeDto> PostLikeAndDisLike([FromBody] PostLikeDto Dto)
         {
             var result = new ApiResult<PostLikeDto>();
 
@@ -68,6 +68,31 @@ namespace XforumTest.ApiController
             else
             {
                 return new ApiResult<PostLikeDto>("Dto");
+            }
+
+        }
+
+        /// <summary>
+        ///拿到User對該篇po文或留言的按讚狀況 
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+
+        [HttpPatch]
+        public ApiResult<UserLikeHistoryDto> GetUserLikeHistory([FromBody] BaseLikeEntity dto)
+        {
+            var result = new ApiResult<UserLikeHistoryDto>();
+
+            if (ModelState.IsValid)
+            {
+                //  var service = new LikeService();
+                
+                result.Data = _plikeService.GetUserLikeHistory(dto);
+                return result;
+            }
+            else
+            {
+                return new ApiResult<UserLikeHistoryDto>("Dto");
             }
 
         }

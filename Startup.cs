@@ -128,9 +128,18 @@ namespace XforumTest
                     await next();
                 }
             });
+            app.UseExceptionHandler("/api/error/Error");
             app.UseHttpsRedirection();
 
             app.UseCors("CorsPolicy");
+
+            //app.UseStaticFiles(new StaticFileOptions
+            //{
+            //    FileProvider = new PhysicalFileProvider(
+            //        Path.Combine(Directory.GetCurrentDirectory(), "HtmlPages")),
+            //    RequestPath = "/HtmlPages"
+            //});
+          
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();
             // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
