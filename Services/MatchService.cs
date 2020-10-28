@@ -88,7 +88,7 @@ namespace XforumTest.Services
                            {
                                UserId = (Guid)c.FriendId,
                                ImgLink = m.ImgLink,
-                               Name = m.ImgLink
+                               Name = m.Name
                            };
                 return list;
 
