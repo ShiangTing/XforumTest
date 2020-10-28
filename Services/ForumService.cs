@@ -19,6 +19,10 @@ namespace XforumTest.Services
             _Forums = Forums;
             _members = members;
         }
+        /// <summary>
+        /// 創版
+        /// </summary>
+        /// <param name="create"></param>
         public void Create(ForumCreateDto create)
         {
 
@@ -44,7 +48,7 @@ namespace XforumTest.Services
             }
         }
         /// <summary>
-        /// 取的單一看板資料
+        /// 取得單一看板資料
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -104,7 +108,52 @@ namespace XforumTest.Services
         public IEnumerable<GetUnauditedForum> GetUnauditedForum()
         {
             IEnumerable<GetUnauditedForum> Unaudited = (from f in _Forums.GetAll2()
-                                                        where f.State == false
+                                                        where f.State == false && f.RejectMsg == null
+                                                        orderby f.CreatedDate descending
+                                                        select new GetUnauditedForum()
+                                                        {
+                                                            ForumName = f.ForumName,
+                                                            RouteName = f.RouteName,
+                                                            Description = f.Description,
+                                                            ModeratorName = _members.GetAll2().FirstOrDefault(x => x.UserId == f.ModeratorId).Name,
+                                                            ImgLink = f.Img,
+                                                            CreatedDate = f.CreatedDate.ToString(),
+                                                            RejectMsg = f.RejectMsg,
+                                                            State = (bool)f.State
+                                                        }).ToList();
+            return Unaudited;
+        }
+        /// <summary>
+        /// 取得需重審版面
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<GetUnauditedForum> GetNeedReauditForum()
+        {
+            IEnumerable<GetUnauditedForum> Unaudited = (from f in _Forums.GetAll2()
+                                                        where f.State == false && f.RejectMsg != null
+                                                        orderby f.CreatedDate descending
+                                                        select new GetUnauditedForum()
+                                                        {
+                                                            ForumName = f.ForumName,
+                                                            RouteName = f.RouteName,
+                                                            Description = f.Description,
+                                                            ModeratorName = _members.GetAll2().FirstOrDefault(x => x.UserId == f.ModeratorId).Name,
+                                                            ImgLink = f.Img,
+                                                            CreatedDate = f.CreatedDate.ToString(),
+                                                            RejectMsg = f.RejectMsg,
+                                                            State = (bool)f.State
+                                                        }).ToList();
+            return Unaudited;
+        }
+        /// <summary>
+        /// 取得審核通過版面
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<GetUnauditedForum> GetPassedForum()
+        {
+            IEnumerable<GetUnauditedForum> Unaudited = (from f in _Forums.GetAll2()
+                                                        where f.State == true
+                                                        orderby f.CreatedDate descending
                                                         select new GetUnauditedForum()
                                                         {
                                                             ForumName = f.ForumName,

@@ -1,8 +1,19 @@
 <template>
   <div>
     <Navbar />
-    <div class="container mt-3">
-      <div class="card-group">
+    <div class="container p-3">
+      <div class="d-flex justify-content-center">
+        <button type="button" class="btn btn-outline-primary active" @click="getUnauditedForum">
+          待審核
+        </button>
+        <button type="button" class="btn btn-outline-primary mx-3" @click="getNeedReauditForum">
+          需再審核
+        </button>
+        <button type="button" class="btn btn-outline-primary" @click="getPassedForum">
+          已通過審核
+        </button>
+      </div>
+      <div class="card-group mt-3">
         <div class="col-xs-12 col-md-4" v-for="(item, idx) in posts" :key="idx">
           <div class="card">
             <img :src="item.imgLink" class="card-img-top" />
@@ -13,7 +24,7 @@
                 <small class="text-muted"
                   >申請者 : {{ item.moderatorName }}</small
                 >
-                <br>
+                <br />
                 <small class="text-muted"
                   >申請時間 : {{ item.createdDate }}</small
                 >
@@ -23,6 +34,7 @@
                   type="button"
                   class="btn btn-outline-success"
                   @click="allowCreate(item.routeName)"
+                  v-if="!item.state"
                 >
                   准許申請
                 </button>
@@ -30,11 +42,37 @@
                   type="button"
                   class="btn btn-outline-danger"
                   @click="rejectCreate(item.routeName)"
+                  v-if="!item.state && item.rejectMsg != 'Passed!'"
                 >
                   駁回申請
                 </button>
+                <button
+                  type="button"
+                  class="btn btn-outline-danger"
+                  @click="rejectCreate(item.routeName)"
+                  v-if="item.state && item.rejectMsg == 'Passed!'"
+                >
+                  取消已審核
+                </button>
               </div>
-              <p class="card-text text-center mt-3 bg-danger text-light" v-if="!(item.state) && item.rejectMsg != null">拒絕原因：{{ item.rejectMsg }}</p>
+              <p
+                class="card-text text-center mt-3 bg-warning"
+                v-if="!item.state && item.rejectMsg == null"
+              >
+                等待審核
+              </p>
+              <p
+                class="card-text text-center mt-3 bg-danger text-light"
+                v-if="!item.state && item.rejectMsg != null"
+              >
+                拒絕原因：{{ item.rejectMsg }}
+              </p>
+              <p
+                class="card-text text-center mt-3 bg-success text-light"
+                v-if="item.state && item.rejectMsg == 'Passed!'"
+              >
+                審核已通過
+              </p>
             </div>
           </div>
         </div>
@@ -66,21 +104,51 @@ export default {
     };
   },
   methods: {
-    getAllForumRequest() {
+    getUnauditedForum() {
       const url = process.env.VUE_APP_API + "/api/Forum/GetUnauditedForum";
       axios({
         url: url,
         method: "GET",
         // headers: { Authorization: `Bearer ${token}` },
       })
-        .then((res) => {
-          console.log(res.data);
+        .then((res) => {       
+          this.posts = [];
           res.data.forEach((item) => {
             this.posts.push(item);
           });
-          console.log(this.posts);
         })
-
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    getNeedReauditForum() {
+      const url = process.env.VUE_APP_API + "/api/Forum/GetNeedReauditForum";
+      axios({
+        url: url,
+        method: "GET",
+      })
+        .then((res) => {
+          this.posts = [];
+          res.data.forEach((item) => {
+            this.posts.push(item);
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    getPassedForum() {
+      const url = process.env.VUE_APP_API + "/api/Forum/GetPassedForum";
+      axios({
+        url: url,
+        method: "GET",
+      })
+        .then((res) => {
+          this.posts = [];
+          res.data.forEach((item) => {
+            this.posts.push(item);
+          });
+        })
         .catch((err) => {
           console.log(err);
         });
@@ -107,10 +175,11 @@ export default {
               url: url,
               method: "POST",
               data: this.changeForumState,
-            }).then(() => {
-              this.$router.go(0);
             })
-            .catch((err) => console.log(err.response));
+              .then(() => {
+                this.$router.go(0);
+              })
+              .catch((err) => console.log(err.response));
           }
         });
     },
@@ -123,14 +192,14 @@ export default {
 
       this.$swal
         .fire({
-          title: "確定拒絕審核?",
+          title: "確定?",
           text: "",
           input: "text",
           inputLabel: "請輸入原因：",
           inputValue: "",
-          inputValidator: (value)=>{
-            if(!value){
-              return '必須輸入原因！'
+          inputValidator: (value) => {
+            if (!value) {
+              return "必須輸入原因！";
             }
           },
           icon: "warning",
@@ -141,16 +210,19 @@ export default {
         })
         .then((result) => {
           if (result.isConfirmed) {
-            this.changeForumState.RejectMsg = document.getElementById('swal2-input').value;
+            this.changeForumState.RejectMsg = document.getElementById(
+              "swal2-input"
+            ).value;
             axios({
               url: url,
               method: "POST",
               data: this.changeForumState,
-            }).then(() => {
-              console.log("駁回申請");
-              this.$router.go(0);
             })
-            .catch((err) => console.log(err.response));
+              .then(() => {
+                console.log("駁回申請");
+                this.$router.go(0);
+              })
+              .catch((err) => console.log(err.response));
           }
         });
 
@@ -167,7 +239,9 @@ export default {
     },
   },
   async created() {
-    await this.getAllForumRequest();
+    await this.getUnauditedForum();
+    // await this.getNeedReauditForum();
+    // await this.getPassedForum();
   },
 };
 </script>

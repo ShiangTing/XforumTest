@@ -20,7 +20,7 @@
           </b-nav-item>
           <b-nav-item
             class="pl-4"
-            v-if="isLogin && rolename == '管理者'"
+            v-if="isLogin"
             to="/VerifyThread"
           >
             <font-awesome-icon icon="clipboard-check" />
