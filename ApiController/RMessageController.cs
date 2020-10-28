@@ -84,13 +84,13 @@ namespace XforumTest.ApiController
         /// <param name="mId"></param>
         /// <returns></returns>
         [HttpDelete]
-        public ApiResult<RMessageDTO> DeleteMessages(Guid mId)
+        public ApiResult<RMessageDTO> DeleteMessages(Base dto)
         {
             var result = new ApiResult<RMessageDTO>();
-            if (mId != null)
+            if (dto != null)
             {
                 // var service = new RMessageService();
-                _messageService.Delete(mId);
+                _messageService.Delete(dto);
                 return result;
             }
             else
