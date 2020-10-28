@@ -14,6 +14,7 @@ namespace XforumTest.DataTable
         public Guid TitleId { get; set; }
         public string TitleName { get; set; }
         public decimal? Price { get; set; }
+        public string RankColor { get; set; }
 
         public virtual ICollection<ForumMembers> ForumMembers { get; set; }
         public virtual ICollection<MemberTitle> MemberTitle { get; set; }
