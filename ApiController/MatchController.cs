@@ -55,7 +55,7 @@ namespace XforumTest.ApiController
             }
         }
 
-        [HttpGet]
+        [HttpPost]
         public ApiResult<IEnumerable<ChatListDto>> GetAllChatList(UserIdDto dto)
         {
             var result = new ApiResult<IEnumerable<ChatListDto>>();
