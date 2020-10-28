@@ -16,6 +16,7 @@ namespace XforumTest.ApiController
     public class MatchController : ControllerBase
     {
         private readonly IMatchService _matchService;
+        
 
         public MatchController(IMatchService matchService)
         {
@@ -30,6 +31,7 @@ namespace XforumTest.ApiController
             if (ModelState.IsValid)
             {
                 result.Data = _matchService.Match(dto);
+               
                 return result;
             }
            else
@@ -37,7 +39,45 @@ namespace XforumTest.ApiController
                 return new ApiResult<MatchOutput>("Dto");
             }
 
-        }        
+        }
+        
+        [HttpPost]
+        public ApiResult<BaseChatDto> AddToChatList(BaseChatDto dto)
+        {
+            if (ModelState.IsValid)
+            {
+                _matchService.Add(dto);
+                return new ApiResult<BaseChatDto>();
+            }
+            else
+            {
+                return new ApiResult<BaseChatDto>("Dto");
+            }
+        }
+
+        /// <summary>
+        /// 拿到該user的好友名單
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+
+        [HttpPost]
+        public ApiResult<IEnumerable<ChatListDto>> GetAllChatList(UserIdDto dto)
+        {
+            var result = new ApiResult<IEnumerable<ChatListDto>>();
+            if (ModelState.IsValid)
+            {
+                result.Data = _matchService.GetAll(dto);
+
+                return result;
+            }
+            else
+            {
+                return new ApiResult<IEnumerable<ChatListDto>>("Dto");
+            }
+        }
+
+
 
 
 

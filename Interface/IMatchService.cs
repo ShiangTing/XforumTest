@@ -11,5 +11,12 @@ namespace XforumTest.Interface
         //隨機抓人
         MatchOutput Match(MatchDto dto);
 
+
+        void Add(BaseChatDto dto);
+
+
+        IEnumerable<ChatListDto> GetAll(UserIdDto dto);
+
+
     }
 }

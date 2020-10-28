@@ -161,7 +161,7 @@ namespace XforumTest.Services
                                                             Description = f.Description,
                                                             ModeratorName = _members.GetAll2().FirstOrDefault(x => x.UserId == f.ModeratorId).Name,
                                                             ImgLink = f.Img,
-                                                            CreatedDate = f.CreatedDate.ToString(),
+                                                            CreatedDate = f.CreatedDate,
                                                             RejectMsg = f.RejectMsg,
                                                             State = (bool)f.State
                                                         }).ToList();

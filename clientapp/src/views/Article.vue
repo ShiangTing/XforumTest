@@ -1,157 +1,145 @@
 <template>
-  <div>
+  <div class="background bg-secondary">
     <Navbar />
-    <div class="bg-secondary">
-      <div class="container py-5">
-        <div class="row justify-content-center">
-          <div class="col-lg-9 col-12">
-            <div class="card">
-              <div class="card-body">
-                <div class="row justify-content-between">
-                  <div class="col-6">
-                    <h3 class="card-title">{{ article.title }}</h3>
-                    <h6 class="card-subtitle mb-2 text-success">
-                      作者: {{ article.userName }}
-                    </h6>
-                    <p class="card-date text-muted">
-                      {{
-                        article.createDate
-                          .replace(/-/g, "/")
-                          .replace("T", " ")
-                          .replace(/\.\d+/, "")
-                      }}
-                    </p>
-                  </div>
-                  <div
-                    class="col-3 d-flex justify-content-end align-items-center"
-                  >
-                    <a
-                      v-if="article.userId === reply.userId"
-                      class="title-btn rounded-circle"
-                      @click="
-                        $bvModal.show('edit');
-                        saveOrginArticle();
-                      "
-                    >
-                      <font-awesome-icon icon="pen" size="lg" />
-                    </a>
-                    <a
-                      v-if="article.userId === reply.userId"
-                      class="title-btn rounded-circle"
-                      @click="deleteArticle"
-                    >
-                      <font-awesome-icon icon="trash" size="lg" />
-                    </a>
-                  </div>
+    <div class="container py-5">
+      <div class="row justify-content-center">
+        <div class="col-lg-9 col-12">
+          <div class="card">
+            <div class="card-body">
+              <div class="row justify-content-between">
+                <div class="col-6">
+                  <h3 class="card-title">{{ article.title }}</h3>
+                  <h6 class="card-subtitle mb-2 text-success">
+                    作者: {{ article.userName }}
+                  </h6>
+                  <p class="card-date text-muted">
+                    {{
+                      article.createDate
+                        .replace(/-/g, "/")
+                        .replace("T", " ")
+                        .replace(/\.\d+/, "")
+                    }}
+                  </p>
                 </div>
-                <hr />
-                <div class="article-content">
-                  <div v-html="article.description"></div>
-                  <div class="col-6 d-flex align-items-center p-0">
-                    <div class="mr-2 d-flex align-items-center">
-                      <a
-                        href="javascript:;"
-                        class="rounded-circle title-btn"
-                        :class="!templike.articleLike ? '' : 'active'"
-                        @click.prevent="likeArticle"
-                      >
-                        <font-awesome-icon icon="thumbs-up" size="lg" />
-                      </a>
-                      <span class="text-secondary px-2">{{
-                        article.like
-                      }}</span>
-                    </div>
-                    <div class="mr-2 d-flex align-items-center">
-                      <a
-                        href="javascript:;"
-                        class="rounded-circle title-btn"
-                        :class="!templike.articleDislike ? '' : 'active'"
-                        @click.prevent="dislikeArticle"
-                      >
-                        <font-awesome-icon icon="thumbs-down" size="lg" />
-                      </a>
-                      <span class="text-secondary px-2">{{
-                        article.dislike
-                      }}</span>
-                    </div>
+                <div
+                  class="col-3 d-flex justify-content-end align-items-center"
+                >
+                  <a
+                    v-if="article.userId === reply.userId"
+                    class="title-btn rounded-circle"
+                    @click="
+                      $bvModal.show('edit');
+                      saveOrginArticle();
+                    "
+                  >
+                    <font-awesome-icon icon="pen" size="lg" />
+                  </a>
+                  <a
+                    v-if="article.userId === reply.userId"
+                    class="title-btn rounded-circle"
+                    @click="deleteArticle"
+                  >
+                    <font-awesome-icon icon="trash" size="lg" />
+                  </a>
+                </div>
+              </div>
+              <hr />
+              <div class="article-content">
+                <div v-html="article.description"></div>
+                <div class="col-6 d-flex align-items-center p-0">
+                  <div class="mr-2 d-flex align-items-center">
+                    <a
+                      href="javascript:;"
+                      class="rounded-circle title-btn"
+                      :class="!templike.articleLike ? '' : 'active'"
+                      @click.prevent="likeArticle"
+                    >
+                      <font-awesome-icon icon="thumbs-up" size="lg" />
+                    </a>
+                    <span class="text-secondary px-2">{{ article.like }}</span>
+                  </div>
+                  <div class="mr-2 d-flex align-items-center">
+                    <a
+                      href="javascript:;"
+                      class="rounded-circle title-btn"
+                      :class="!templike.articleDislike ? '' : 'active'"
+                      @click.prevent="dislikeArticle"
+                    >
+                      <font-awesome-icon icon="thumbs-down" size="lg" />
+                    </a>
+                    <span class="text-secondary px-2">{{
+                      article.dislike
+                    }}</span>
                   </div>
                 </div>
               </div>
-              <div class="reply-group border p-3">
-                <div
-                  class="reply-item row justify-content-between"
-                  v-for="(message, index) in messageList"
-                  :key="message.messageId"
-                >
-                  <div class="col-12 col-md-10 d-flex">
-                    <a class="user-img">
-                      <font-awesome-icon
-                        icon="user"
-                        size="lg"
-                        v-if="!isLogin"
-                      />
-                      <img :src="message.userImg" alt="userImg" v-else />
-                    </a>
-                    <div class="reply-content">
-                      <a class="replay-user mr-2 d-inline-block">{{
-                        message.userName
-                      }}</a>
-                      <span class="card-date text-muted">{{
-                        message.createdDate
-                          .replace(/-/g, "/")
-                          .replace("T", " ")
-                          .replace(/\.\d+/, "")
-                      }}</span>
-                      <p>{{ message.context }}</p>
-                    </div>
-                  </div>
-                  <div class="col-12 col-md-2 d-flex align-items-center">
-                    <a
-                      href="javascript:;"
-                      class="title-btn msg-btn border-0 rounded-circle"
-                      :class="
-                        !templike.messagelikeList[index].like ? '' : 'active'
-                      "
-                      @click.prevent="likeMessage(index)"
-                    >
-                      <font-awesome-icon icon="thumbs-up" size="sm" />
-                    </a>
-                    <span class="px-2">{{ message.likeNumber }}</span>
-                    <a
-                      href="javascript:;"
-                      class="title-btn msg-btn border-0 rounded-circle"
-                      :class="
-                        !templike.messagelikeList[index].dislike ? '' : 'active'
-                      "
-                      @click.prevent="dislikeMessage(index)"
-                    >
-                      <font-awesome-icon icon="thumbs-down" size="sm" />
-                    </a>
-                    <span class="px-2">{{ message.disLikeNumber }}</span>
+            </div>
+            <div class="reply-group border p-3">
+              <div
+                class="reply-item row justify-content-between"
+                v-for="(message, index) in messageList"
+                :key="message.messageId"
+              >
+                <div class="col-12 col-md-10 d-flex">
+                  <a class="user-img">
+                    <font-awesome-icon icon="user" size="lg" v-if="!isLogin" />
+                    <img :src="message.userImg" alt="userImg" v-else />
+                  </a>
+                  <div class="reply-content">
+                    <a class="replay-user mr-2 d-inline-block">{{
+                      message.userName
+                    }}</a>
+                    <span class="card-date text-muted">{{
+                      message.createdDate
+                        .replace(/-/g, "/")
+                        .replace("T", " ")
+                        .replace(/\.\d+/, "")
+                    }}</span>
+                    <p>{{ message.context }}</p>
                   </div>
                 </div>
-                <div class="reply-item border-0">
-                  <div class="input-group">
-                    <a class="user-img text-secondary bg-white">
-                      <font-awesome-icon
-                        icon="user"
-                        size="lg"
-                        v-if="!isLogin"
-                      />
-                      <img :src="memberImg" alt="memberImg" v-else />
-                    </a>
-                    <textarea
-                      class="form-control h-100"
-                      placeholder="留個言吧~"
-                      v-model="reply.context"
-                    ></textarea>
-                    <button
-                      class="btn btn-secondary h-100"
-                      @click.prevent="postMessage"
-                    >
-                      送出
-                    </button>
-                  </div>
+                <div class="col-12 col-md-2 d-flex align-items-center">
+                  <a
+                    href="javascript:;"
+                    class="title-btn msg-btn border-0 rounded-circle"
+                    :class="
+                      !templike.messagelikeList[index].like ? '' : 'active'
+                    "
+                    @click.prevent="likeMessage(index)"
+                  >
+                    <font-awesome-icon icon="thumbs-up" size="sm" />
+                  </a>
+                  <span class="px-2">{{ message.likeNumber }}</span>
+                  <a
+                    href="javascript:;"
+                    class="title-btn msg-btn border-0 rounded-circle"
+                    :class="
+                      !templike.messagelikeList[index].dislike ? '' : 'active'
+                    "
+                    @click.prevent="dislikeMessage(index)"
+                  >
+                    <font-awesome-icon icon="thumbs-down" size="sm" />
+                  </a>
+                  <span class="px-2">{{ message.disLikeNumber }}</span>
+                </div>
+              </div>
+              <div class="reply-item border-0">
+                <div class="input-group">
+                  <a class="user-img text-secondary bg-white">
+                    <font-awesome-icon icon="user" size="lg" v-if="!isLogin" />
+                    <img :src="memberImg" alt="memberImg" v-else />
+                  </a>
+                  <textarea
+                    class="form-control h-100"
+                    placeholder="留個言吧~"
+                    v-model="reply.context"
+                  ></textarea>
+                  <button
+                    class="btn btn-secondary h-100"
+                    @click.prevent="postMessage"
+                  >
+                    送出
+                  </button>
                 </div>
               </div>
             </div>
@@ -507,6 +495,9 @@ export default {
 </script>
 <style lang="scss" scoped>
 $border-color: 1px solid rgba(0, 0, 0, 0.125);
+.background {
+  min-height: 100vh;
+}
 .input-group {
   height: 35px;
 }

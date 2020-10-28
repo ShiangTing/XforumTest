@@ -82,6 +82,7 @@ namespace XforumTest.Services
                                       UserId = p.UserId,
                                       UserName = u.Name,
                                       Rank = _titles.GetAll2().FirstOrDefault(x => x.TitleId == u.TitleId).TitleName,
+                                      RankColor = _titles.GetAll2().FirstOrDefault(x => x.TitleId == u.TitleId).RankColor,
                                       LikeNumber = p.LikeNumber,
                                       DisLikeNumber = p.DisLikeNumber,
                                       State = p.State
@@ -131,6 +132,7 @@ namespace XforumTest.Services
                                            UserId = p.UserId,
                                            UserName = u.Name,
                                            Rank = _titles.GetAll2().FirstOrDefault(x => x.TitleId == u.TitleId).TitleName,
+                                           RankColor = _titles.GetAll2().FirstOrDefault(x => x.TitleId == u.TitleId).RankColor,
                                            LikeNumber = p.LikeNumber,
                                            DisLikeNumber = p.DisLikeNumber,
                                            State = p.State
@@ -161,6 +163,7 @@ namespace XforumTest.Services
                                                  UserId = p.UserId,
                                                  UserName = u.Name,
                                                  Rank = _titles.GetAll2().FirstOrDefault(x => x.TitleId == u.TitleId).TitleName,
+                                                 RankColor = _titles.GetAll2().FirstOrDefault(x => x.TitleId == u.TitleId).RankColor,
                                                  LikeNumber = p.LikeNumber,
                                                  DisLikeNumber = p.DisLikeNumber,
                                                  State = p.State

@@ -2,25 +2,28 @@
 <div>
   <Navbar />
   <div>
-  <div class="text-center text-primary fa-8x">
-    p Welcome Love Wheel
-  </div>
-  <div class="d-flex justify-content-center">
-    <div class="mx-5">
-    span.inputMatch(v-text="user.name")
-    </div>
-    <div v-if="user.imgLink">
-    <img :src="user.imgLink"  width="100px" height="100px" class="matchImg">
-    </div>
+  //- <div class="text-center text-primary fa-3x">
+  //-   p Welcome Love Wheel
+  //- </div>
+  <div class="d-flex justify-content-center align-items-center mt-5">
+    //- <div class="mx-5">
+    //- span.inputMatch(v-text="user.name")
+    //- </div>
+    //- <div v-if="user.imgLink">
+    //- <img :src="user.imgLink"  width="100px" height="100px" class="matchImg">
+    //- </div>
 
-    <div class="mx-5">
-    span.inputMatch(v-text="metchUser.matchedName")
+    h2.wantText.mx-5 想要與此陌生人配對嗎.....
+    <div class="mx-5" v-if="metchUser.matchimgLink">
+    h1.inputMatch(v-text="`『${metchUser.matchedName}』`")
     </div>
     <div v-if="metchUser.matchimgLink">
     <img :src="metchUser.matchimgLink" width="100px" height="100px" class="matchImg">
     </div>
-
+      .ground
+  #chat-button.button(@click="startChat") 加入好友
   </div>
+
   //- ICONS -//
 - var el = {};
 
@@ -168,18 +171,58 @@ export default {
         matchedUserId: "",
         matchimgLink: "",
       },
+      chatData: {
+        userId: "",
+        matchedUserId: "",
+      },
     };
   },
+  methods: {
+    startChat() {
+      this.$swal({
+        title: `您配對到的是${this.metchUser.matchedName}`,
+        text: "要加入好友列表嗎",
+        type: "question",
+        showCancelButton: true,
+        confirmButtonText: "確定",
+        cancelButtonText: "取消",
+      }).then((result) => {
+        if (result.value) {
+          console.log(result.value);
+        } else {
+          console.log(1);
+        }
+      });
+      // let vm = this;
+      // const chatUrl = process.env.VUE_APP_API + "/api/Match/MatchUser";
+      // vm.$axios({
+      //   url: chatUrl,
+      //   method: "POST",
+      //   data: chatData,
+      // })
+      //   .then(() => {})
+      //   .catch((err) => {
+      //     console.log(err);
+      //   });
+    },
+  },
   mounted() {
+    $(".wantText").hide();
     $("#hide-button").hide();
+    $("#chat-button").hide();
     $("#hide-button").on("click", function () {
       location.reload();
     });
+    // $("#chat-button").on("click", function () {
+
+    // });
     let carousel = $("#js-ferris-wheel");
     let vm = this;
     $("#js-button").on("click", function () {
       $("#js-button").hide();
       $("#hide-button").show();
+      $("#chat-button").show();
+      $(".wantText").show();
       carousel.toggleClass("is-open");
       const url = process.env.VUE_APP_API + "/api/Users/GetSingleMember";
       vm.$axios({
@@ -194,7 +237,6 @@ export default {
           vm.user.gender = res.data.data.gender;
           vm.user.ownerRank = res.data.data.titleName;
           vm.user.imgLink = res.data.data.imgLink;
-          console.log(res.data.data);
           const matchUrl = process.env.VUE_APP_API + "/api/Match/MatchUser";
           vm.$axios({
             url: matchUrl,
@@ -202,11 +244,11 @@ export default {
             data: vm.self,
           })
             .then((res) => {
-              console.log("Metch");
-              console.log(res.data.data);
               vm.metchUser.matchedName = res.data.data.matchedName;
               vm.metchUser.matchedUserId = res.data.data.matchedUserId;
               vm.metchUser.matchimgLink = res.data.data.matchimgLink;
+              vm.chatData.userId = vm.self.userId;
+              vm.chatData.matchedUserId = vm.metchUser.matchedUserId;
             })
 
             .catch((err) => {
@@ -898,5 +940,16 @@ ferrisWheelSize = 375;
   100% {
     transform: translateZ(1px);
   }
+}
+
+.inputMatch {
+  padding: 10px;
+  font-size: 30px;
+  color: wheat;
+}
+
+#chat-button {
+  background-color: #B4DBD9;
+  margin: 32px 0 0 400px;
 }
 </style>

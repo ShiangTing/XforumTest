@@ -81,16 +81,16 @@ namespace XforumTest.ApiController
         /// <summary>
         /// 永久刪除留言
         /// </summary>
-        /// <param name="mId"></param>
+        /// <param name="dto"></param>
         /// <returns></returns>
         [HttpDelete]
-        public ApiResult<RMessageDTO> DeleteMessages(Guid mId)
+        public ApiResult<RMessageDTO> DeleteMessages([FromBody]Base dto)
         {
             var result = new ApiResult<RMessageDTO>();
-            if (mId != null)
+            if (dto != null)
             {
                 // var service = new RMessageService();
-                _messageService.Delete(mId);
+                _messageService.Delete(dto);
                 return result;
             }
             else
