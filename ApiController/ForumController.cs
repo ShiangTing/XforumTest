@@ -69,7 +69,6 @@ namespace XforumTest.ApiController
             _forumservice.ChangeForumState(model);
         }
 
-
         /// <summary>
         /// 取得所有 作者、title、routename、date、content
         /// </summary>
@@ -80,10 +79,33 @@ namespace XforumTest.ApiController
             //var getall = new ForumService().GetAll();
             return _forumservice.GetAll();
         }
+
+        /// <summary>
+        /// 取得待審版面
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public IEnumerable<GetUnauditedForum> GetUnauditedForum()
         {
             return _forumservice.GetUnauditedForum();
+        }
+        /// <summary>
+        /// 取得需重審版面
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public IEnumerable<GetUnauditedForum> GetNeedReauditForum()
+        {
+            return _forumservice.GetNeedReauditForum();
+        }
+        /// <summary>
+        /// 取得審核通過版面
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public IEnumerable<GetUnauditedForum> GetPassedForum()
+        {
+            return _forumservice.GetPassedForum();
         }
         [HttpGet]
         public string GetImgLink(string id)
