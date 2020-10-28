@@ -61,12 +61,14 @@ namespace XforumTest.DTO
         public string CreatedDate { get; set; }
         public string ModeratorName { get; set; }
         public string ImgLink { get; set; }
-
+        public string RejectMsg { get; set; }
+        public bool State { get; set; }
     }
 
     public class ChangeForumState
     {
         public string RouteName { get; set; }
         public bool State { get; set; }
+        public string RejectMsg { get; set; }
     }
 }
