@@ -2,8 +2,8 @@
   <div>
     <b-container fluid>
       <b-row>
-        <b-col> <Sidebar class="sidebar" /></b-col>
-        <b-col cols="8">
+        <b-col cols="2"> <Sidebar class="sidebar" /></b-col>
+        <b-col cols="7">
           <div>
             <!-- 這裡是index區域的貼文 -->
             <vue-particles

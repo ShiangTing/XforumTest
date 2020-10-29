@@ -93,7 +93,9 @@
             </div>
           </div></b-col
         >
-        <b-col></b-col>
+        <b-col>
+          <ChatBlock></ChatBlock>
+        </b-col>
       </b-row>
     </b-container>
   </div>
@@ -101,10 +103,12 @@
 
 <script>
 import Sidebar from "../components/Home/Sidbar";
+import ChatBlock from "../components/common/Chat"
 
 export default {
   components: {
     Sidebar,
+    ChatBlock
   },
   data() {
     return {
@@ -269,7 +273,7 @@ $description: rgba(0, 0, 0, 1) !important;
   color: #000;
 }
 .threadLogo {
-  object-fit: cover;
+  object-fit: fill;
 }
 @media screen and (max-width: 996px) {
   .sidebar {

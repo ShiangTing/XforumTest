@@ -2,7 +2,7 @@
   <div>
     <Navbar />
     <!-- <BreadCrumb /> -->
-    <router-view :key="$route.path" />
+    <router-view :key="$route.fullPath" />
   </div>
 </template>
 

@@ -3,12 +3,9 @@ import store from '../store/index';
 import errorHandle from './errorHandle';
 // axios 配置
 const instance = axios.create();
-instance.defaults.timeout = 5000;
 
 instance.interceptors.request.use(
   (config) => {
-    //   let expireTime = store.state.tokenModule.expireTime;
-
     if (
       config.url.indexOf('/refresh') >= 0 ||
       config.url.indexOf('/login') >= 0
@@ -18,10 +15,6 @@ instance.interceptors.request.use(
     if (store.state.tokenModule.isAuthorize) {
       config.headers.Authorization = `Bearer ${store.state.tokenModule.token}`;
     }
-    // if (parseInt(expireTime) <= parseInt(Date.now() / 1000)) {
-    //   refreshAccessToken();
-    //   config.headers.Authorization = `Bearer ${store.state.tokenModule.token}`;
-    // }
     return config;
   },
   (err) => {
@@ -34,9 +27,7 @@ instance.interceptors.response.use(
     return response;
   },
   async (error) => {
-    console.log("err",error);
     const originalRequest = error.config;
-    console.log(originalRequest);
     if (error.response.status === 401) {
       const token = await refreshAccessToken();
       if (token) {
@@ -60,17 +51,16 @@ function refreshAccessToken() {
     .then((res) => {
       store.dispatch('clearAuth');
       let data = {
-        refreshToken: res.data.refreshToken,
-        token: res.data.token,
-        expireTime: res.data.expireTime,
+        refreshToken: res.data.refreshToken.toString(),
+        token: res.data.token.toString(),
+        expireTime: res.data.expireTime.toString(),
         isAuthorize: true,
       };
       store.dispatch('setAuth', data);
       return store.state.tokenModule.token;
     })
     .catch((err) => {
-      console.err(err);
-      alert('驗證過期請重新登入');
+      console.log(err.response,'驗證過期請重新登入');
     });
 }
 export default instance;

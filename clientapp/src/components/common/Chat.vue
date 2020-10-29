@@ -2,7 +2,7 @@
   <div>
     <ul class="list-group">
       <li class="list-group-item font-weight-bold bg-dark text-white">聊天列表</li>
-      <li class="list-group-item" v-for="item in chatList" :key="item.userId">
+      <li class="list-group-item" v-for="(item,index) in chatList" :key="index">
         <a class="d-flex align-items-center text-black w-100 h-100" data-toggle="modal" data-target="#chatModal">
           <img :src="item.imgLink" alt="" style="width: 30px; height: 30px">
           <p class="m-0 pl-2 text-black">{{item.name}}</p>
@@ -173,11 +173,13 @@ export default {
   created () {
     let vm = this;
     vm.$bus.$on("getUserId", msg => {
-      // 並將接收到的 message 傳給自己的 methods showAlert 去觸發 alert 事件。
       vm.userId = msg;
-      vm.getChatList();
+      vm.getChatList()
     });
   },
+  beforeDestroy () {
+    this.$bus.$off("getUserId");
+  }
 }
 
 </script>

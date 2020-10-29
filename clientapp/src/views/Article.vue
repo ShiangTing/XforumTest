@@ -96,7 +96,7 @@
                     <div class="d-flex align-items-center">
                       <a class="title-btn msg-btn border-0 rounded-circle"
                         :class="msgCurrentThumbStatusList[index].isDisLike ? 'active' : ''"
-                        @click.prevent="dislikeMessage(index)">
+                        v-if=" messageList.length > 0" @click.prevent="dislikeMessage(index)">
                         <font-awesome-icon icon="thumbs-down" size="sm" />
                       </a>
                       <span class="msg-num">{{ message.disLikeNumber }}</span>
@@ -142,6 +142,7 @@ import Navbar from "../components/common/Navbar";
 import { VueEditor } from "vue2-editor";
 import { ImageDrop } from "quill-image-drop-module";
 import ImageResize from "quill-image-resize";
+import _ from 'lodash';
 import axios from "axios";
 export default {
   components: { Navbar, VueEditor },
@@ -231,7 +232,8 @@ export default {
     getUserInfo () {
       let vm = this;
       let userUrl = process.env.VUE_APP_API + "/api/Users/getSingleMember";
-      vm.$axios
+
+      return vm.$axios
         .get(userUrl)
         .then((res) => {
           vm.reply.userId = res.data.data.userId;
@@ -242,10 +244,11 @@ export default {
           console.log(err);
         });
     },
+    // 文章內容
     getArticle () {
       let vm = this;
       let url = process.env.VUE_APP_API + "/api/Post/getSingle/" + vm.$route.params.id;
-      vm.$axios.get(url).then((res) => {
+      return vm.$axios.get(url).then((res) => {
         vm.article = {
           postId: res.data.postId,
           userId: res.data.userId,
@@ -258,8 +261,12 @@ export default {
           state: res.data.state,
         };
         vm.reply.postId = res.data.postId;
-
+      }).then(() => {
+        vm.getUserThumbStatus(vm.article.postId, vm.articleOriginThumbStatus, vm.articleCurrentThumbStatus)
+        vm.articleOriginThumbStatus.postId = vm.article.postId
+        vm.articleCurrentThumbStatus.postId = vm.article.postId
       });
+
     },
     saveOrginArticle () {
       let vm = this;
@@ -270,34 +277,6 @@ export default {
       let vm = this;
       vm.article.description = vm.tempDescription;
       vm.article.title = vm.tempTitle
-    },
-    getMessages () {
-      let vm = this;
-      let url =
-        process.env.VUE_APP_API +
-        "/api/RMessage/GetAllMessages/" +
-        vm.$route.params.id;
-      vm.$axios.get(url).then((res) => {
-        if (res.data.issuccessful) {
-          vm.messageList = res.data.data;
-          if (vm.messageList.length !== 0) {
-            res.data.data.forEach((item) => {
-              let messageItem = {
-                postId: item.postId,
-                messageId: item.messageId,
-                isLike: false,
-                isDisLike: false,
-                likeNumber: 0,
-                disLikeNumber: 0
-              };
-              vm.msgOriginThumbStatusList.push(messageItem);
-              vm.msgCurrentThumbStatusList.push(messageItem);
-              vm.getUserThumbStatus(item.messageId)
-            });
-
-          }
-        }
-      });
     },
     editArticle () {
       let vm = this;
@@ -366,6 +345,35 @@ export default {
         }
       });
     },
+    //留言內容
+    getMessages () {
+      let vm = this;
+      let url = process.env.VUE_APP_API + "/api/RMessage/GetAllMessages/" + vm.$route.params.id;
+      return vm.$axios.get(url).then((res) => {
+        if (res.data.issuccessful) {
+          vm.messageList = res.data.data;
+          vm.messageList.forEach(() => {
+            let defaultData = {
+              messageId: "",
+              userId: "",
+              isLike: false,
+              isDisLike: false,
+              likeNumber: 0,
+              disLikeNumber: 0
+            };
+            vm.msgOriginThumbStatusList.push(defaultData);
+            vm.msgCurrentThumbStatusList.push(defaultData);
+          })
+        }
+      }).then(() => {
+        vm.messageList.forEach((item, index) => {
+          vm.getUserThumbStatus(item.messageId, vm.msgOriginThumbStatusList[index], vm.msgCurrentThumbStatusList[index]);
+          vm.msgOriginThumbStatusList[index].messageId = item.messageId;
+          vm.msgCurrentThumbStatusList[index].messageId = item.messageId;
+        })
+      });
+
+    },
     postMessage () {
       let vm = this;
       let url = process.env.VUE_APP_API + "/api/RMessage/CreateMessage";
@@ -382,36 +390,43 @@ export default {
         });
     },
 
-    deleteMessage () {
+    deleteMessage (messageId) {
       let vm = this;
       let url = process.env.VUE_APP_API + "/api/RMessage/DeleteMessages";
       vm.$axios({
         method: 'delete',
         url: url,
         data: {
-          userId: vm.reply.userId
+          id: messageId
         }
+      }).then((res) => {
+        console.log(res);
       })
     },
-    getUserThumbStatus (id) {
+    getUserThumbStatus (id, origin, current) {
       let vm = this;
       let url = process.env.VUE_APP_API + "/api/LikeAndDisLike/GetUserLikeHistory"
-      if (vm.reply.userId !== "" && vm.article.postId !== "") {
-        let data = {
-          userId: vm.reply.userId,
-          id: id
-        }
-        vm.$axios.patch(url, data).then(res => {
-          console.log(res.data);
+      let data = {
+        userId: vm.reply.userId,
+        id: id
+      }
+      console.log("狀態", data);
+      if (vm.isLogin) {
+        return vm.$axios.post(url, data).then(res => {
+          origin.isLike = res.data.data.isLike
+          origin.isDisLike = res.data.data.isDisLike
+          current.isLike = res.data.data.isLike
+          current.isDisLike = res.data.data.isDisLike
         }).catch(err => {
           console.log(err);
         })
+
       }
     },
     thumbUpCheck (currentThumbStatus, viewData) {
       if (!currentThumbStatus.isLike && !currentThumbStatus.isDisLike) {
         currentThumbStatus.isLike = true
-        currentThumbStatus.likeNumber = 1
+        currentThumbStatus.likeNumber += 1
         viewData.likeNumber += 1
         return;
       }
@@ -457,121 +472,110 @@ export default {
     },
     likeArticle () {
       let vm = this;
-      vm.thumbUpCheck(vm.articleCurrentThumbStatus, vm.article)
+      vm.thumbUpCheck(vm.articleCurrentThumbStatus, vm.article);
+      vm.updateArticleStatus(vm.articleCurrentThumbStatus)
+        .then(() => vm.getUserThumbStatus(vm.article.postId, vm.articleOriginThumbStatus, vm.articleCurrentThumbStatus));
     },
     dislikeArticle () {
       let vm = this;
-      vm.thumbDownCheck(vm.articleCurrentThumbStatus, vm.article)
+      vm.thumbDownCheck(vm.articleCurrentThumbStatus, vm.article);
+      vm.updateArticleStatus(vm.articleCurrentThumbStatus)
+        .then(() => vm.getUserThumbStatus(vm.article.postId, vm.articleOriginThumbStatus, vm.articleCurrentThumbStatus));
     },
     likeMessage (index) {
       let vm = this;
       vm.thumbUpCheck(vm.msgCurrentThumbStatusList[index], vm.messageList[index])
+      vm.updateMessageStatus(vm.msgCurrentThumbStatusList[index])
+        .then(() => {
+          vm.getUserThumbStatus(vm.msgCurrentThumbStatusList[index].messageId, vm.msgOriginThumbStatusList[index], vm.msgCurrentThumbStatusList[index])
+        });
     },
     dislikeMessage (index) {
       let vm = this;
       vm.thumbDownCheck(vm.msgCurrentThumbStatusList[index], vm.messageList[index])
+      vm.updateMessageStatus(vm.msgCurrentThumbStatusList[index])
+        .then(() => {
+          vm.getUserThumbStatus(vm.msgCurrentThumbStatusList[index].messageId, vm.msgOriginThumbStatusList[index], vm.msgCurrentThumbStatusList[index])
+        });
     },
-    // async saveLikeData () {
-    //   let vm = this;
-    //   let article = {
-    //     url: process.env.VUE_APP_API + "/api/LikeAndDisLike/PostLikeAndDislike",
-    //     data: {
-    //       postId: vm.article.postId,
-    //       likeNumber: vm.article.like,
-    //       disLikeNumber: vm.article.dislike,
-    //     },
-    //     post: function () {
-    //       return vm.$axios
-    //         .put(article.url, article.data)
-    //         .then(() => { })
-    //         .catch((err) => console.log(err));
-    //     },
-    //   };
-
-    //   let message = {
-    //     url: process.env.VUE_APP_API + "/api/LikeAndDisLike/MsgLikeAndDislike",
-    //     data: [],
-    //     post: function () {
-    //       return message.data.forEach((item) => {
-    //         vm.$axios
-    //           .post(message.url, item)
-    //           .then(() => { })
-    //           .catch((err) => console.log(err));
-    //       });
-    //     },
-    //   };
-    //   vm.messageList.forEach((item) => {
-    //     let msgData = {
-    //       messageId: item.messageId,
-    //       likeNumber: item.likeNumber,
-    //       disLikeNumber: item.disLikeNumber,
-    //     };
-    //     message.data.push(msgData);
-    //   });
-    //   await article.post();
-    //   await message.post();
-    // },
+    updateArticleStatus (current) {
+      let vm = this;
+      let url = process.env.VUE_APP_API + "/api/LikeAndDisLike/PostLikeAndDisLike";
+      if (vm.isLogin) {
+        return vm.$axios.put(url, current).then(res => {
+          console.log("1.送出post狀態", res);
+        })
+      }
+    },
+    updateMessageStatus (current) {
+      let vm = this;
+      console.log(current);
+      let url = process.env.VUE_APP_API + "/api/LikeAndDisLike/MsgLikeAndDisLike";
+      if (vm.isLogin) {
+        return vm.$axios.post(url, current).then(res => {
+          console.log("1.送出msg狀態", res);
+        })
+      }
+    }
   },
   async created () {
-    await this.getArticle();
-    await this.getMessages();
-    await this.getUserInfo();
-  },
-  async updated () {
-
-    await this.getUserThumbStatus(this.article.postId);
+    let vm = this;
+    console.log(_);
+    // await vm.getUserInfo().then(() => vm.getArticle()).then(() => vm.getMessages());
+    await vm.getUserInfo();
+    await vm.getArticle();
+    await vm.getMessages();
   },
   beforeDestroy () {
-    // this.saveLikeData();
   },
 };
 </script>
 <style lang="scss" scoped>
-$border-color: 1px solid rgba(0, 0, 0, 0.125);
-.background {
-  min-height: 100vh;
-}
-.input-group {
-  height: 35px;
-}
-p {
-  margin: 0;
-}
-// card 設定
-.card {
-  border: 1.5px solid #6c757d;
-  &-title {
-    font-weight: 700;
-    letter-spacing: 5px;
+  $border-color: 1px solid rgba(0, 0, 0, 0.125);
+  .background {
+    min-height: 100vh;
   }
-  &-date {
-    font-size: 12px;
+  .input-group {
+    height: 35px;
   }
-}
-/deep/ .article-content {
-  min-height: 350px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  img {
-    max-width: 100%;
+  p {
+    margin: 0;
   }
-}
-a.title-btn {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: #6c757d;
-  width: 40px;
-  height: 40px;
-  border: $border-color;
-  margin: 0 5px;
-  transition: all 0.3s;
-  &:hover {
-    border: 1px solid rgb(244, 156, 66);
-    color: rgb(244, 156, 66);
+  // card 設定
+  .card {
+    border: 1.5px solid #6c757d;
+    &-title {
+      font-weight: 700;
+      letter-spacing: 5px;
+    }
+    &-date {
+      font-size: 12px;
+    }
   }
-}
+  /deep/ .article-content {
+    min-height: 350px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    img {
+      max-width: 100%;
+    }
+  }
+  a.title-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #6c757d;
+    width: 40px;
+    height: 40px;
+    border: $border-color;
+    margin: 0 5px;
+    transition: all 0.3s;
+    &:hover {
+      border: 1px solid rgb(244, 156, 66);
+      color: rgb(244, 156, 66);
+    }
+  }
 
   a.active {
     border: 1px solid rgb(244, 156, 66);
