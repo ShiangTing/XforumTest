@@ -18,21 +18,6 @@
           <b-nav-item class="sidebarGroup">
             <SideBar />
           </b-nav-item>
-<<<<<<< HEAD
-
-          <b-nav-item class="pl-4" v-if="isLogin">
-            <b-button
-              v-b-popover.hover.bottom="'Popover!'"
-              title="Title"
-              variant="primary"
-              >通知</b-button
-            >
-          </b-nav-item>
-          <b-nav-item
-            class="pl-4"
-            v-if="isLogin && rolename == '管理者'"
-            to="/VerifyThread"
-=======
           <b-nav-item
             class="pl-4"
             v-if="isLogin && rolename == '管理者'"
@@ -42,9 +27,8 @@
           </b-nav-item>
           <b-nav-item
             class="pl-4"
-            v-if="(isLogin && rolename == '版主')"
+            v-if="isLogin && rolename == '版主'"
             to="/VerifyThreadModPage"
->>>>>>> master
           >
             <font-awesome-icon icon="clipboard-check" />
           </b-nav-item>

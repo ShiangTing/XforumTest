@@ -176,6 +176,10 @@ export default {
         userId: "",
         friendId: "",
       },
+      sendMsgJson: {
+        UserId: "ba8ccd2b-b320-43cc-a023-edb75ca0b8dd",
+        UserMessage: "我傳訊息了",
+      },
       hubConnection: new signalR.HubConnectionBuilder()
         .configureLogging(signalR.LogLevel.Debug) //設定顯示log
         .withUrl(process.env.VUE_APP_API + "/chathub")
@@ -188,6 +192,9 @@ export default {
       vm.hubConnection
         .start()
         .then(() => {
+          vm.getConnectionId();
+        })
+        .then(() => {
           vm.listenToHub();
         })
         .catch(() => {
@@ -196,16 +203,25 @@ export default {
     },
     sendMsgToHub() {
       let vm = this;
-      console.log();
-      vm.hubConnection.send("Receive", "123").then(() => {
+      // let a = JSON.stringify(vm.sendMsgJson);
+      // vm.sendMsgJson.userId = vm.user.userId;
+      vm.hubConnection.send("SendMessageToMember", vm.sendMsgJson).then(() => {
+        // console.log(vm.sendMsgJson);
         console.log("msg send");
       });
     },
     listenToHub() {
       let vm = this;
-      vm.hubConnection.on("ReceiveMessage", (result) => {
-        console.log("回來囉");
-        console.log(result);
+      vm.hubConnection.on("SendMessage", (id, msg) => {
+        console.log(id, msg);
+      });
+    },
+    getConnectionId() {
+      let vm = this;
+      vm.hubConnection.invoke("GetConnectionId").then((msg) => {
+        console.log("connectionId");
+        console.log("connectionId", msg);
+        vm.sendMsgJson.UserId = msg;
       });
     },
     startChat() {

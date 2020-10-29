@@ -9,7 +9,7 @@ using XforumTest.Interface;
 
 namespace XforumTest.Hubs
 {
-    public class ChatHub :Hub<IChat>
+    public class ChatHub : Hub<IChat>
     {
         private readonly IRepository<ForumMembers> _members;
         private readonly IRepository<Chats> _chats;
@@ -20,10 +20,6 @@ namespace XforumTest.Hubs
             _chats = chats;
         }
 
-        public async Task Receive(string msg)
-        {
-            await Clients.All.ReceiveMessage(msg);
-        }
 
         public async Task Receive(string msg)
         {
@@ -36,14 +32,14 @@ namespace XforumTest.Hubs
             string chatId = dto.ChatId.ToString();
             if (chatRoom != null)
             {
-                chatRoom.FriendId = dto.FriendId ;
+                chatRoom.FriendId = dto.FriendId;
                 chatRoom.Message = dto.Message;
                 chatRoom.DateTime = dto.Time;
-                
+
                 chatRoom.UserId = dto.UserId;
                 _chats.Update(chatRoom);
                 _chats.SaveContext();
-               // _chats.Update()
+                // _chats.Update()
             }
             //找是否有這個GroupId
             //if(room!=null){
@@ -59,7 +55,7 @@ namespace XforumTest.Hubs
             await Groups.AddToGroupAsync(Context.ConnectionId, chatId);
             // await Clients.All.ReceiveMessage(userId, message);
             //隊群組內所有人發送留言
-            await Clients.Group(chatId).ReceiveGroupMessage(dto.UserId,dto.ChatId ,dto.Message,dto.Time);
+            await Clients.Group(chatId).ReceiveGroupMessage(dto.UserId, dto.ChatId, dto.Message, dto.Time);
 
 
         }
@@ -95,28 +91,28 @@ namespace XforumTest.Hubs
 
 
         //}
-        public async Task JoinGroup( string chatroomId)
+        public async Task JoinGroup(string chatroomId)
         {
-            await  Groups.AddToGroupAsync(Context.ConnectionId, chatroomId);
+            await Groups.AddToGroupAsync(Context.ConnectionId, chatroomId);
         }
-        
-        public async Task SendMessageToGroup(string chatroomId,string message,string userName)
+
+        public async Task SendMessageToGroup(string chatroomId, string message, string userName)
         {
-            await Clients.Group(chatroomId).ReceiveGroupMessage(chatroomId,message, userName);
+            await Clients.Group(chatroomId).ReceiveGroupMessage(chatroomId, message, userName);
         }
 
 
         //送交友通知給特定人
         public async Task SendMessageToMember(ProdcastDto dto)
         {
-            var stringId = dto.UserId.ToString();
-            await  Clients.Client(stringId).SendMessage(stringId, dto.UserMessage);
+            //var stringId = dto.UserId.ToString();
+            await Clients.Client(dto.UserId).SendMessage(dto.UserId, dto.UserMessage);
         }
 
-     //   public Task SendInforToUser(string userId, string userMessage)
-       // {
-           // userId = Context.ConnectionId;
-            //return Clients.Client(userId).SendAsync("sendToUser", userId, userMessage);
+        //   public Task SendInforToUser(string userId, string userMessage)
+        // {
+        // userId = Context.ConnectionId;
+        //return Clients.Client(userId).SendAsync("sendToUser", userId, userMessage);
         //}
 
 
@@ -132,7 +128,7 @@ namespace XforumTest.Hubs
         //    if (groupId != null)
         //    {
         //        //取得group名字?
-        //        var 
+        //        var
         //        return Clients.Groups("a").ReceiveMessage(message);
         //    }
         //    //創建
@@ -170,11 +166,13 @@ namespace XforumTest.Hubs
         // 連線
         public override async Task OnConnectedAsync()
         {
+            await Clients.All.SendMessage("UserConnected", Context.ConnectionId);
             await base.OnConnectedAsync();
         }
         // 斷線
         public override async Task OnDisconnectedAsync(Exception exception)
         {
+            await Clients.All.SendMessage("UserDisConnected", Context.ConnectionId);
             await base.OnDisconnectedAsync(exception);
         }
 
