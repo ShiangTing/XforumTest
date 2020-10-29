@@ -14,5 +14,7 @@ namespace XforumTest.Interface
 
         Task SendMessage(Guid userId,string message);
         Task ReceiveGroupMessage(Guid userId, Guid roomId, string message,DateTime postTime);
+
+        Task ReceiveGroupMessage(string chatroomId, string message, string userName);
     }
 }

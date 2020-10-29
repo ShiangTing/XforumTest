@@ -86,18 +86,22 @@ namespace XforumTest.Hubs
 
 
         //}
-        //public async Task JoinGroup(Guid userId, Guid chatroomId)
-        //{
-
-        //}
-
+        public async Task JoinGroup( string chatroomId)
+        {
+            await  Groups.AddToGroupAsync(Context.ConnectionId, chatroomId);
+        }
+        
+        public async Task SendMessageToGroup(string chatroomId,string message,string userName)
+        {
+            await Clients.Group(chatroomId).ReceiveGroupMessage(chatroomId,message, userName);
+        }
 
 
         //送交友通知給特定人
         public async Task SendMessageToMember(Guid userId, string userMessage)
         {
             var stringId = userId.ToString();
-            await Clients.Client(stringId).SendMessage(userId, userMessage);
+            await  Clients.Client(stringId).SendMessage(userId, userMessage);
         }
 
      //   public Task SendInforToUser(string userId, string userMessage)
