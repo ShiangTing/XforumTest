@@ -20,6 +20,10 @@ namespace XforumTest.Hubs
             _chats = chats;
         }
 
+        public async Task Receive(string msg)
+        {
+            await Clients.All.ReceiveMessage(msg);
+        }
 
         public async Task SendGroupMessage(ChatGroupDto dto)
         {

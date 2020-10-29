@@ -85,7 +85,7 @@
 </template>
 
 <script>
-import * as signalR from "@aspnet/signalr";
+// import * as signalR from "@aspnet/signalr";
 import SideBar from "../Home/Sidbar";
 export default {
   components: {
@@ -98,24 +98,24 @@ export default {
       userId: "",
       memberImg: "",
       rolename: "",
-      hubConnection: new signalR.HubConnectionBuilder()
-        .configureLogging(signalR.LogLevel.Debug)
-        .withUrl(process.env.VUE_APP_API + "/ChatHub")
-        .build(),
+      // hubConnection: new signalR.HubConnectionBuilder()
+      //   .configureLogging(signalR.LogLevel.Debug)
+      //   .withUrl(process.env.VUE_APP_API + "/ChatHub")
+      //   .build(),
     };
   },
   methods: {
-    connectHub() {
-      //建立連線
-      this.hubConnection
-        .start()
-        .then((res) => {
-          console.log(res);
-        })
-        .catch(() => {
-          console.log("B");
-        });
-    },
+    // connectHub() {
+    //   //建立連線
+    //   this.hubConnection
+    //     .start()
+    //     .then((res) => {
+    //       console.log(res);
+    //     })
+    //     .catch(() => {
+    //       console.log("B");
+    //     });
+    // },
     memberCTR() {
       const vm = this;
       vm.$router.push(`/MemberCenter`);
@@ -155,7 +155,7 @@ export default {
           vm.isLogin = false;
         });
     }
-    this.connectHub();
+    // this.connectHub();
   },
 };
 </script>

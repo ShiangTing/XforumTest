@@ -149,6 +149,7 @@ mixin icon(el)
 
 <script>
 import Navbar from "../components/common/Navbar";
+import * as signalR from "@aspnet/signalr";
 import $ from "jquery";
 // import axios from "axios";
 export default {
@@ -175,9 +176,38 @@ export default {
         userId: "",
         friendId: "",
       },
+      hubConnection: new signalR.HubConnectionBuilder()
+        .configureLogging(signalR.LogLevel.Debug) //設定顯示log
+        .withUrl(process.env.VUE_APP_API + "/chathub")
+        .build(),
     };
   },
   methods: {
+    connectHub() {
+      let vm = this;
+      vm.hubConnection
+        .start()
+        .then(() => {
+          vm.listenToHub();
+        })
+        .catch(() => {
+          console.log("失敗");
+        });
+    },
+    sendMsgToHub() {
+      let vm = this;
+      console.log();
+      vm.hubConnection.send("Receive", "123").then(() => {
+        console.log("msg send");
+      });
+    },
+    listenToHub() {
+      let vm = this;
+      vm.hubConnection.on("ReceiveMessage", (result) => {
+        console.log("回來囉");
+        console.log(result);
+      });
+    },
     startChat() {
       this.$swal({
         title: `您配對到的是${this.metchUser.matchedName}`,
@@ -195,13 +225,20 @@ export default {
             method: "POST",
             data: vm.chatData,
           })
-            .then(() => {})
+            .then(() => {
+              vm.sendMsgToHub();
+              // vm.$router.push("/");
+            })
             .catch((err) => {
               console.log(err);
             });
         }
       });
     },
+  },
+  created() {
+    let vm = this;
+    vm.connectHub();
   },
   mounted() {
     $(".wantText").hide();
