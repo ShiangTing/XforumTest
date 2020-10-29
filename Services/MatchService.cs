@@ -79,13 +79,26 @@ namespace XforumTest.Services
   
         public void Add(BaseChatDto dto)
         {
+            string roomId = DateTime.Now.ToString("yyyyMMddff");
+
+
             Chats chats = new Chats()
             {
+                RoomId = roomId,
                 ChatId = Guid.NewGuid(),
                 UserId = dto.UserId,
                 FriendId = dto.FriendId,
             };
+            Chats friendChats = new Chats()
+            {
+                RoomId = roomId,
+                ChatId = Guid.NewGuid(),
+                UserId = dto.FriendId,
+                FriendId = dto.UserId,
+            };
+
             _chats.Create(chats);
+            _chats.Create(friendChats);
             _chats.SaveContext();
         }
 
@@ -123,7 +136,7 @@ namespace XforumTest.Services
         public string GetSingleId(BaseChatDto dto)
         {
             var chatRoom = _chats.GetFirst(x => x.FriendId == dto.FriendId && x.UserId == dto.UserId);
-            return chatRoom.ChatId.ToString();
+            return chatRoom.RoomId;
         }
     
     
