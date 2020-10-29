@@ -136,7 +136,7 @@ namespace XforumTest.Services
         public string GetSingleId(BaseChatDto dto)
         {
             var chatRoom = _chats.GetFirst(x => x.FriendId == dto.FriendId && x.UserId == dto.UserId);
-            return chatRoom.ChatId.ToString();
+            return chatRoom.RoomId;
         }
     
     
