@@ -2,6 +2,7 @@ import Vue from 'vue';
 import Router from './router';
 import App from './App.vue';
 import VueParticles from 'vue-particles';
+import 'bootstrap';
 import BoostrapVue from 'bootstrap-vue';
 import infiniteScroll from 'vue-infinite-scroll'
 import VueSweetalert2 from 'vue-sweetalert2';
@@ -49,25 +50,25 @@ localize('zh_TW', TW);
 
 extend('required', {
   ...required,
-  message: '欄位不得為空',
+  message: '*欄位不得為空',
 });
 extend('email', {
   ...email,
-  message: '{_field_}格式錯誤'
+  message: '*{_field_}格式錯誤'
 });
 extend('min', {
   validate(value, args) {
     return value.length >= args.length;
   },
   params: ['length'],
-  message: '長度至少 6 字元',
+  message: '*長度至少 6 字元',
 });
 extend('password', {
   params: ['target'],
   validate(value, { target }) {
     return value === target;
   },
-  message: '密碼不相符',
+  message: '*密碼不相符',
 });
 Vue.use(VueLoading, {
   canCancel: false,

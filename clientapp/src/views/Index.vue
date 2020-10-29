@@ -2,8 +2,8 @@
   <div>
     <b-container fluid>
       <b-row>
-        <b-col> <Sidebar class="sidebar" /></b-col>
-        <b-col cols="8">
+        <b-col cols="2"> <Sidebar class="sidebar" /></b-col>
+        <b-col cols="7">
           <div>
             <!-- 這裡是index區域的貼文 -->
             <vue-particles
@@ -79,11 +79,12 @@
                 <span class="mr-5 text-primary">載入中請稍等哦!!</span>
                 <b-spinner label="Loading..."></b-spinner>
               </div>
-              <!-- <div v-else class="text-center mt-3 text-primary">載入完畢!!</div> -->
             </div>
           </div>
         </b-col>
-        <b-col></b-col>
+        <b-col>
+          <ChatBlock />
+        </b-col>
       </b-row>
     </b-container>
   </div>
@@ -95,6 +96,7 @@ export default {
     // InfiniteLoading,
     // SideBar,
     Sidebar: () => import("@/components/Home/Sidbar"),
+    ChatBlock: ()=> import("@/components/common/Chat")
   },
   data() {
     return {

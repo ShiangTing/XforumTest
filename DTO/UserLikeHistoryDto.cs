@@ -7,8 +7,8 @@ namespace XforumTest.DTO
 {
     public class UserLikeHistoryDto: BaseLikeEntity
     {
-        public bool? IsLike { get; set; }
-        public bool? IsDisLike { get; set; }
+        public bool IsLike { get; set; }
+        public bool IsDisLike { get; set; }
 
         //public Guid UserId { get; set; }
 
