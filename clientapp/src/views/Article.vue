@@ -110,7 +110,7 @@
                       <img :src="memberImg" alt="memberImg" v-else />
                     </a>
                     <textarea class="form-control" placeholder="留個言吧~" v-model="reply.context"></textarea>
-                    <button class="btn btn-secondary h-100" @click.prevent="postMessage">
+                    <button class="btn btn-secondary h-100" @click.prevent="postMessage" :disabled="reply.context.trim() !== ''? false:true">
                       送出
                     </button>
                   </div>
@@ -265,6 +265,8 @@ export default {
         vm.getUserThumbStatus(vm.article.postId, vm.articleOriginThumbStatus, vm.articleCurrentThumbStatus)
         vm.articleOriginThumbStatus.postId = vm.article.postId
         vm.articleCurrentThumbStatus.postId = vm.article.postId
+        vm.articleOriginThumbStatus.userId = vm.reply.userId
+        vm.articleCurrentThumbStatus.userId = vm.reply.userId
       });
 
     },
@@ -370,6 +372,8 @@ export default {
           vm.getUserThumbStatus(item.messageId, vm.msgOriginThumbStatusList[index], vm.msgCurrentThumbStatusList[index]);
           vm.msgOriginThumbStatusList[index].messageId = item.messageId;
           vm.msgCurrentThumbStatusList[index].messageId = item.messageId;
+          vm.msgOriginThumbStatusList[index].userId = vm.reply.userId;
+          vm.msgCurrentThumbStatusList[index].userId = vm.reply.userId;
         })
       });
 
@@ -410,7 +414,6 @@ export default {
         userId: vm.reply.userId,
         id: id
       }
-      console.log("狀態", data);
       if (vm.isLogin) {
         return vm.$axios.post(url, data).then(res => {
           origin.isLike = res.data.data.isLike
@@ -420,8 +423,8 @@ export default {
         }).catch(err => {
           console.log(err);
         })
-
       }
+      return
     },
     thumbUpCheck (currentThumbStatus, viewData) {
       if (!currentThumbStatus.isLike && !currentThumbStatus.isDisLike) {
@@ -473,60 +476,82 @@ export default {
     likeArticle () {
       let vm = this;
       vm.thumbUpCheck(vm.articleCurrentThumbStatus, vm.article);
-      vm.updateArticleStatus(vm.articleCurrentThumbStatus)
-        .then(() => vm.getUserThumbStatus(vm.article.postId, vm.articleOriginThumbStatus, vm.articleCurrentThumbStatus));
+      let debounceThumb = _.debounce(
+        () => {
+          vm.updateArticleStatus(vm.articleCurrentThumbStatus).then(() => {
+            vm.getUserThumbStatus(vm.article.postId, vm.articleOriginThumbStatus, vm.articleCurrentThumbStatus)
+          })
+        }
+        , 3000, { leading: true, trailing: false })
+      debounceThumb();
     },
     dislikeArticle () {
       let vm = this;
       vm.thumbDownCheck(vm.articleCurrentThumbStatus, vm.article);
-      vm.updateArticleStatus(vm.articleCurrentThumbStatus)
-        .then(() => vm.getUserThumbStatus(vm.article.postId, vm.articleOriginThumbStatus, vm.articleCurrentThumbStatus));
+      let debounceThumb = _.debounce(
+        () => {
+          vm.updateArticleStatus(vm.articleCurrentThumbStatus).then(() => {
+            vm.getUserThumbStatus(vm.article.postId, vm.articleOriginThumbStatus, vm.articleCurrentThumbStatus)
+          })
+        }
+        , 3000, { leading: true, trailing: false })
+      debounceThumb();
     },
     likeMessage (index) {
       let vm = this;
       vm.thumbUpCheck(vm.msgCurrentThumbStatusList[index], vm.messageList[index])
-      vm.updateMessageStatus(vm.msgCurrentThumbStatusList[index])
-        .then(() => {
-          vm.getUserThumbStatus(vm.msgCurrentThumbStatusList[index].messageId, vm.msgOriginThumbStatusList[index], vm.msgCurrentThumbStatusList[index])
-        });
+      let debounceThumb = _.debounce(
+        () => {
+          vm.updateMessageStatus(vm.msgCurrentThumbStatusList[index])
+            .then(() => {
+              vm.getUserThumbStatus(vm.msgCurrentThumbStatusList[index].messageId, vm.msgOriginThumbStatusList[index], vm.msgCurrentThumbStatusList[index])
+            })
+        }
+        , 3000, { leading: true, trailing: false })
+      debounceThumb();
     },
     dislikeMessage (index) {
       let vm = this;
       vm.thumbDownCheck(vm.msgCurrentThumbStatusList[index], vm.messageList[index])
-      vm.updateMessageStatus(vm.msgCurrentThumbStatusList[index])
-        .then(() => {
-          vm.getUserThumbStatus(vm.msgCurrentThumbStatusList[index].messageId, vm.msgOriginThumbStatusList[index], vm.msgCurrentThumbStatusList[index])
-        });
+      let debounceThumb = _.debounce(() => {
+
+        vm.updateMessageStatus(vm.msgCurrentThumbStatusList[index])
+          .then(() => {
+            vm.getUserThumbStatus(vm.msgCurrentThumbStatusList[index].messageId, vm.msgOriginThumbStatusList[index], vm.smsgCurrentThumbStatusList[index])
+          })
+      }
+        , 3000, { leading: true, trailing: false })
+      debounceThumb();
     },
     updateArticleStatus (current) {
       let vm = this;
       let url = process.env.VUE_APP_API + "/api/LikeAndDisLike/PostLikeAndDisLike";
       if (vm.isLogin) {
         return vm.$axios.put(url, current).then(res => {
-          console.log("1.送出post狀態", res);
+          console.log("送出post狀態", res);
         })
       }
+      return
     },
     updateMessageStatus (current) {
       let vm = this;
-      console.log(current);
       let url = process.env.VUE_APP_API + "/api/LikeAndDisLike/MsgLikeAndDisLike";
       if (vm.isLogin) {
         return vm.$axios.post(url, current).then(res => {
-          console.log("1.送出msg狀態", res);
+          console.log("送出msg狀態", res);
         })
       }
+      return
+    },
+    throttle (fn) {
+      _.throttle(fn, 3000, { 'trailing': false })
     }
   },
   async created () {
     let vm = this;
-    console.log(_);
-    // await vm.getUserInfo().then(() => vm.getArticle()).then(() => vm.getMessages());
     await vm.getUserInfo();
     await vm.getArticle();
     await vm.getMessages();
-  },
-  beforeDestroy () {
   },
 };
 </script>
