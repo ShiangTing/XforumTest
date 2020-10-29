@@ -38,18 +38,8 @@ namespace XforumTest.ApiController
 
         //}
 
-        public ChatController(IHubContext<ChatHub, IChat> hubContext)
-        {
-            _hubContext = hubContext;
-        }
 
 
 
-
-        [HttpGet]
-        public async Task GetMessage(string msg)
-        {
-            await _hubContext.Clients.All.ReceiveMessage(msg);
-        }
     }
 }
