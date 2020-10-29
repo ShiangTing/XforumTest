@@ -15,9 +15,8 @@ namespace XforumTest.Interface
         ForumGetSingleDto GetSingle(string id);
         void ChangeForumState(ChangeForumState model);
         void Edit(ForumCreateDto model);
-        IEnumerable<GetUnauditedForum> GetUnauditedForum();
-        IEnumerable<GetUnauditedForum> GetNeedReauditForum();
-        IEnumerable<GetUnauditedForum> GetPassedForum();
+        IEnumerable<GetUnauditedForum> GetManagerForumPage(AuditForumPageOfManagerAndMod pageOfManager);
+        IEnumerable<GetUnauditedForum> GetModForumPage(string UserEmail, AuditForumPageOfManagerAndMod pageOfMod);
         string GetImgLink(string id);
     }
 }

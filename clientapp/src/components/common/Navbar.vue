@@ -20,8 +20,15 @@
           </b-nav-item>
           <b-nav-item
             class="pl-4"
-            v-if="isLogin"
-            to="/VerifyThread"
+            v-if="isLogin && rolename == '管理者'"
+            to="/VerifyThreadManagerPage"
+          >
+            <font-awesome-icon icon="clipboard-check" />
+          </b-nav-item>
+          <b-nav-item
+            class="pl-4"
+            v-if="(isLogin && rolename == '版主')"
+            to="/VerifyThreadModPage"
           >
             <font-awesome-icon icon="clipboard-check" />
           </b-nav-item>

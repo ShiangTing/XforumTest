@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using XforumTest.DTO;
@@ -76,36 +77,26 @@ namespace XforumTest.ApiController
         [HttpGet]
         public IEnumerable<ForumGetAllDTO> GetAll()
         {
-            //var getall = new ForumService().GetAll();
             return _forumservice.GetAll();
         }
-
         /// <summary>
-        /// 取得待審版面
+        /// 查詢版主創建待審的版面
         /// </summary>
         /// <returns></returns>
-        [HttpGet]
-        public IEnumerable<GetUnauditedForum> GetUnauditedForum()
+        [Authorize]
+        [HttpPost]
+        public IEnumerable<GetUnauditedForum> GetModForumPage(AuditForumPageOfManagerAndMod pageOfMod)
         {
-            return _forumservice.GetUnauditedForum();
+            return _forumservice.GetModForumPage(User.Identity.Name, pageOfMod);
         }
         /// <summary>
-        /// 取得需重審版面
+        /// 查詢管理者的待審、需重審、審核通過版面
         /// </summary>
         /// <returns></returns>
-        [HttpGet]
-        public IEnumerable<GetUnauditedForum> GetNeedReauditForum()
+        [HttpPost]
+        public IEnumerable<GetUnauditedForum> GetManagerForumPage(AuditForumPageOfManagerAndMod pageOfManager)
         {
-            return _forumservice.GetNeedReauditForum();
-        }
-        /// <summary>
-        /// 取得審核通過版面
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet]
-        public IEnumerable<GetUnauditedForum> GetPassedForum()
-        {
-            return _forumservice.GetPassedForum();
+            return _forumservice.GetManagerForumPage(pageOfManager);
         }
         [HttpGet]
         public string GetImgLink(string id)
