@@ -65,7 +65,37 @@ namespace XforumTest.Hubs
 
         }
 
+        //public async Task SendGroupMessages(Guid userId,string Message,Guid chatId)
+        //{
+        //    var chatRoom = _chats.GetFirst(x => x.ChatId == chat);
+        //    string chatId = dto.ChatId.ToString();
+        //    if (chatRoom != null)
+        //    {
+        //        chatRoom.FriendId = dto.FriendId;
+        //        chatRoom.Message = dto.Message;
+        //        chatRoom.DateTime = dto.Time;
 
+        //        chatRoom.UserId = dto.UserId;
+        //        _chats.Update(chatRoom);
+        //        _chats.SaveContext();
+        //        // _chats.Update()
+        //    }
+
+
+
+
+        //    await Groups.AddToGroupAsync(Context.ConnectionId, chatId);
+
+
+
+
+
+        //    // await Clients.All.ReceiveMessage(userId, message);
+        //    //隊群組內所有人發送留言
+        //    await Clients.Group(chatId).ReceiveGroupMessage(dto.UserId, dto.ChatId, dto.Message, dto.Time);
+
+
+        //}
         public async Task JoinGroup(Guid userId, Guid chatroomId)
         {
 
