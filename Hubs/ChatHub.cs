@@ -74,9 +74,10 @@ namespace XforumTest.Hubs
 
 
         //送交友通知給特定人
-        public async Task SendInfor()
+        public async Task SendMessageToMember(Guid userId, string userMessage)
         {
-
+            var stringId = userId.ToString();
+            await Clients.Client(stringId).SendMessage(userId, userMessage);
         }
 
      //   public Task SendInforToUser(string userId, string userMessage)
