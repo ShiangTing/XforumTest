@@ -18,6 +18,16 @@
           <b-nav-item class="sidebarGroup">
             <SideBar />
           </b-nav-item>
+
+          <b-nav-item class="pl-4" v-if="isLogin && newMsg">
+            <b-button id="popover-button-sync" variant="info">通知</b-button>
+            <b-popover target="popover-button-sync" title="通知">
+              {{ newMsg }}
+            </b-popover>
+
+            <b-popover show target="popover-button-open" title="通知">
+            </b-popover>
+          </b-nav-item>
           <b-nav-item
             class="pl-4"
             v-if="isLogin && rolename == '管理者'"
@@ -96,24 +106,10 @@ export default {
       userId: "",
       memberImg: "",
       rolename: "",
-      // hubConnection: new signalR.HubConnectionBuilder()
-      //   .configureLogging(signalR.LogLevel.Debug)
-      //   .withUrl(process.env.VUE_APP_API + "/ChatHub")
-      //   .build(),
+      newMsg: "",
     };
   },
   methods: {
-    // connectHub() {
-    //   //建立連線
-    //   this.hubConnection
-    //     .start()
-    //     .then((res) => {
-    //       console.log(res);
-    //     })
-    //     .catch(() => {
-    //       console.log("B");
-    //     });
-    // },
     memberCTR() {
       const vm = this;
       vm.$router.push(`/MemberCenter`);
@@ -153,7 +149,9 @@ export default {
           vm.isLogin = false;
         });
     }
-    // this.connectHub();
+    vm.$bus.$on("getNewMsg", (msg) => {
+      vm.newMsg = msg;
+    });
   },
 };
 </script>

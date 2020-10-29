@@ -203,16 +203,19 @@ export default {
     },
     sendMsgToHub() {
       let vm = this;
-      // let a = JSON.stringify(vm.sendMsgJson);
-      // vm.sendMsgJson.userId = vm.user.userId;
       vm.hubConnection.send("SendMessageToMember", vm.sendMsgJson).then(() => {
-        // console.log(vm.sendMsgJson);
         console.log("msg send");
       });
     },
     listenToHub() {
       let vm = this;
       vm.hubConnection.on("SendMessage", (id, msg) => {
+        this.$bus.$emit(
+          "getNewMsg",
+          `您將${vm.metchUser.matchedName}加入到好友清單了!`
+        );
+
+        console.log(vm.metchUser.matchedName);
         console.log(id, msg);
       });
     },
@@ -243,7 +246,7 @@ export default {
           })
             .then(() => {
               vm.sendMsgToHub();
-              // vm.$router.push("/");
+              vm.$router.push("/");
             })
             .catch((err) => {
               console.log(err);

@@ -106,7 +106,7 @@ namespace XforumTest.Hubs
         public async Task SendMessageToMember(ProdcastDto dto)
         {
             //var stringId = dto.UserId.ToString();
-            await Clients.Client(dto.UserId).SendMessage(dto.UserId, dto.UserMessage);
+            await Clients.All.SendMessage(dto.UserId, dto.UserMessage);
         }
 
         //   public Task SendInforToUser(string userId, string userMessage)
