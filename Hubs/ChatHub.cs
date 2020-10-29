@@ -44,20 +44,10 @@ namespace XforumTest.Hubs
             //    ....
             //}
             //_C.create....
-
             //}
-
             //創建一個group 然後將兩個id加進group
             //SendMessage to all(client)
-
-
-            
-           await Groups.AddToGroupAsync(Context.ConnectionId, chatId);
-
-
-
-    
-
+            await Groups.AddToGroupAsync(Context.ConnectionId, chatId);
             // await Clients.All.ReceiveMessage(userId, message);
             //隊群組內所有人發送留言
             await Clients.Group(chatId).ReceiveGroupMessage(dto.UserId,dto.ChatId ,dto.Message,dto.Time);
@@ -96,10 +86,10 @@ namespace XforumTest.Hubs
 
 
         //}
-        public async Task JoinGroup(Guid userId, Guid chatroomId)
-        {
+        //public async Task JoinGroup(Guid userId, Guid chatroomId)
+        //{
 
-        }
+        //}
 
 
 

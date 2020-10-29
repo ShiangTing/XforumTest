@@ -15,7 +15,28 @@ namespace XforumTest.ApiController
     public class ChatController : ControllerBase
     {
 
-        //private readonly IHubContext<ChatHub,IChat> _
+      
+        private readonly IHubContext<ChatHub, IChat> _hubContext;
+        
+        public ChatController(IHubContext<ChatHub, IChat> hubContext)
+        {
+            _hubContext = hubContext;
+        }
+
+
+        [HttpGet]
+        public async Task GetMessage(string msg)
+        {
+            await _hubContext.Clients.All.ReceiveMessage(msg);
+        }
+
+
+
+
+        //public async Task JoinGroup(string chatroomId,)
+        //{
+
+        //}
 
 
 
