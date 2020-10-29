@@ -98,10 +98,10 @@ namespace XforumTest.Hubs
 
 
         //送交友通知給特定人
-        public async Task SendMessageToMember(Guid userId, string userMessage)
+        public async Task SendMessageToMember(ProdcastDto dto)
         {
-            var stringId = userId.ToString();
-            await  Clients.Client(stringId).SendMessage(userId, userMessage);
+            var stringId = dto.UserId.ToString();
+            await  Clients.Client(stringId).SendMessage(stringId, dto.UserMessage);
         }
 
      //   public Task SendInforToUser(string userId, string userMessage)
