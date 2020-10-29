@@ -7,7 +7,7 @@ import BoostrapVue from 'bootstrap-vue';
 import infiniteScroll from 'vue-infinite-scroll'
 import VueSweetalert2 from 'vue-sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
-import VueLoading from 'vue-loading-overlay'
+import VueLoading from 'vue-loading-overlay';
 import 'vue-loading-overlay/dist/vue-loading.css'
 import { library } from '@fortawesome/fontawesome-svg-core';
 import {
