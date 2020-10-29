@@ -3,7 +3,8 @@
     <ul class="list-group">
       <li class="list-group-item font-weight-bold bg-dark text-white">聊天列表</li>
       <li class="list-group-item" v-for="(item,index) in chatList" :key="index">
-        <a class="d-flex align-items-center text-black w-100 h-100" data-toggle="modal" data-target="#chatModal">
+        <a class="d-flex align-items-center text-black w-100 h-100" data-toggle="modal" data-target="#chatModal"
+          @click="createChatRoom(item.userId)">
           <img :src="item.imgLink" alt="" style="width: 30px; height: 30px">
           <p class="m-0 pl-2 text-black">{{item.name}}</p>
         </a>
@@ -24,9 +25,10 @@
           <div class="modal-body w-100">
             <div class="chat">
               <div class="d-block chat-list">
-                <p class="chat-message" v-for="(text,index) in receiveMsg" :key="index">
-                  {{ text }}
-                </p>
+                <div class="chat-message" v-for="(item,index) in receiveMsg" :key="index">
+                  <span class="message-title">{{item.userName}}</span>
+                  <span class="message-content">{{ item.message }}</span>
+                </div>
               </div>
               <div class="input-group chat-input-group">
                 <input type="text" class="form-control chat-input h-100" placeholder="在書城論壇尋求邂逅是否搞錯了甚麼?"
@@ -36,10 +38,6 @@
                 </div>
               </div>
             </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary">Save changes</button>
           </div>
         </div>
       </div>
@@ -52,7 +50,6 @@ import * as signalR from '@aspnet/signalr'
 export default {
   data () {
     return {
-      userId: "",
       hubConnection: new signalR.HubConnectionBuilder()
         .configureLogging(signalR.LogLevel.Debug) //設定顯示log
         .withUrl(process.env.VUE_APP_API + '/chathub').build(),
@@ -60,12 +57,30 @@ export default {
       show: false,
       inputMsg: "",
       receiveMsg: [],
+      chatId: "",
+      userData: {
+        userId: "",
+        username: ""
+      }
     }
   },
   methods: {
+    getUserInfo () {
+      let vm = this;
+      let userUrl = process.env.VUE_APP_API + "/api/Users/getSingleMember";
+      return vm.$axios
+        .get(userUrl)
+        .then((res) => {
+          vm.userData.userId = res.data.data.userId;
+          vm.userData.username = res.data.data.name;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
     connectHub () {
       let vm = this;
-      vm.hubConnection.start().then(() => {
+      return vm.hubConnection.start().then(() => {
         vm.listenToHub();
       }).catch(() => {
         console.log("失敗");
@@ -74,16 +89,22 @@ export default {
     sendMsgToHub () {
       let vm = this;
       console.log();
-      vm.hubConnection.send('Receive', vm.inputMsg).then(() => {
+      vm.hubConnection.send('SendMessageToGroup', vm.chatId, vm.inputMsg, vm.userData.username).then(() => {
         console.log('msg send');
       })
       vm.inputMsg = "";
     },
     listenToHub () {
       let vm = this;
-      vm.hubConnection.on('ReceiveMessage', (result) => {
+      vm.hubConnection.on('ReceiveGroupMessage', (chatroomId, message, userName) => {
         console.log("回來囉");
-        vm.receiveMsg.push(result)
+        console.log(chatroomId, message, userName);
+        vm.receiveMsg.push(
+          {
+            userName: userName,
+            message: message
+          }
+        )
       });
     },
     callHubConnection () {
@@ -97,22 +118,45 @@ export default {
       let vm = this;
       let url = process.env.VUE_APP_API + "/api/Match/GetAllChatList"
       let data = {
-        userId: vm.userId
+        userId: vm.userData.userId
       }
       console.log(data);
-      vm.$axios.post(url, data).then(res => {
+      return vm.$axios.post(url, data).then(res => {
         vm.chatList = res.data.data
       })
+    },
+    getChatRoomId (friendId) {
+      let vm = this;
+      let url = process.env.VUE_APP_API + "/api/Chat/GetChatRoomId"
+      let data = {
+        userId: vm.userData.userId,
+        FriendId: friendId
+      }
+      return vm.$axios.post(url, data).then(res => {
+        vm.chatId = res.data.data
+      })
+    },
+    joinGroup () {
+      let vm = this;
+      return vm.hubConnection.invoke('JoinGroup', vm.chatId)
+        .then(() => {
+          console.log('join Group');
+        })
+    },
+    async createChatRoom (friendId) {
+      await this.connectHub()
+      await this.getChatRoomId(friendId)
+      await this.joinGroup()
     }
   },
-  created () {
+  async created () {
     let vm = this;
-    vm.$bus.$on("getUserId", msg => {
-      vm.userId = msg;
-      vm.getChatList()
-    });
-    vm.connectHub();
-
+    // vm.$bus.$on("getUserId", msg => {
+    //   vm.userId = msg;
+    //   
+    // });
+    await vm.getUserInfo()
+    await vm.getChatList()
   },
   beforeDestroy () {
     this.$bus.$off("getUserId");
@@ -122,8 +166,14 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  li {
-    list-style: none;
+  .message {
+    &-title {
+      display: block;
+      font-size: 10px;
+    }
+    &-content {
+      display: block;
+    }
   }
   .chat {
     width: 100%;
@@ -147,11 +197,10 @@ export default {
     }
     &-message {
       display: flex;
-      align-items: center;
+      flex-direction: column;
       width: 100%;
       max-width: 150px;
       word-wrap: break-word;
-      height: 30px;
       padding: 10px 5px;
       margin: 5px;
       border-radius: 6px;
