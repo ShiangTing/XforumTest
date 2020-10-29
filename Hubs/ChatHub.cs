@@ -21,6 +21,11 @@ namespace XforumTest.Hubs
         }
 
 
+        public async Task Receive(string msg)
+        {
+            await Clients.All.ReceiveMessage(msg);
+        }
+
         public async Task SendGroupMessage(ChatGroupDto dto)
         {
             var chatRoom = _chats.GetFirst(x => x.ChatId == dto.ChatId);
