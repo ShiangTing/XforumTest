@@ -10,7 +10,7 @@ using XforumTest.Interface;
 
 namespace XforumTest.ApiController
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class ChatController : ControllerBase
     {
@@ -38,7 +38,18 @@ namespace XforumTest.ApiController
 
         //}
 
+        public ChatController(IHubContext<ChatHub, IChat> hubContext)
+        {
+            _hubContext = hubContext;
+        }
 
 
+
+
+        [HttpGet]
+        public async Task GetMessage(string msg)
+        {
+            await _hubContext.Clients.All.ReceiveMessage(msg);
+        }
     }
 }
