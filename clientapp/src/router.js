@@ -26,9 +26,14 @@ export default new VueRouter({
       name: 'register',
     },
     {
-      path: "/VerifyThread",
-      component: () => import('./views/VerifyThread.vue'),
-      name: 'verifythread'
+      path: "/VerifyThreadManagerPage",
+      component: () => import('./views/VerifyThreadManagerPage.vue'),
+      name: 'verifythreadManagerPage'
+    },
+    {
+      path: "/VerifyThreadModPage",
+      component: () => import('./views/VerifyThreadModPage.vue'),
+      name: 'verifyThreadModPage'
     },
     {
       path: '/CreateThread',

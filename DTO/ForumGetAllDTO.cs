@@ -71,4 +71,9 @@ namespace XforumTest.DTO
         public bool State { get; set; }
         public string RejectMsg { get; set; }
     }
+    public class AuditForumPageOfManagerAndMod
+    {
+        public bool State { get; set; }
+        public string RejectMsg { get; set; }
+    }
 }

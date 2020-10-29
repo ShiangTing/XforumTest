@@ -3,7 +3,7 @@
     <Navbar />
     <div class="container p-3">
       <div class="d-flex justify-content-center">
-        <button type="button" class="btn btn-outline-primary active" @click="getUnauditedForum">
+        <button type="button" class="btn btn-outline-primary" @click="getUnauditedForum">
           待審核
         </button>
         <button type="button" class="btn btn-outline-primary mx-3" @click="getNeedReauditForum">
@@ -101,14 +101,21 @@ export default {
         State: "",
         RejectMsg: "",
       },
+      AuditForumPageData: {
+        State: false,
+        RejectMsg: "",
+      },
     };
   },
   methods: {
     getUnauditedForum() {
-      const url = process.env.VUE_APP_API + "/api/Forum/GetUnauditedForum";
+      const url = process.env.VUE_APP_API + "/api/Forum/GetManagerForumPage";
+      this.AuditForumPageData.State = false;
+      this.AuditForumPageData.RejectMsg = null;
       axios({
         url: url,
-        method: "GET",
+        method: "POST",
+        data: this.AuditForumPageData,
         // headers: { Authorization: `Bearer ${token}` },
       })
         .then((res) => {       
@@ -122,10 +129,13 @@ export default {
         });
     },
     getNeedReauditForum() {
-      const url = process.env.VUE_APP_API + "/api/Forum/GetNeedReauditForum";
+      const url = process.env.VUE_APP_API + "/api/Forum/GetManagerForumPage";
+      this.AuditForumPageData.State = false;
+      this.AuditForumPageData.RejectMsg = "string";
       axios({
         url: url,
-        method: "GET",
+        method: "POST",
+        data: this.AuditForumPageData,
       })
         .then((res) => {
           this.posts = [];
@@ -138,10 +148,13 @@ export default {
         });
     },
     getPassedForum() {
-      const url = process.env.VUE_APP_API + "/api/Forum/GetPassedForum";
+      const url = process.env.VUE_APP_API + "/api/Forum/GetManagerForumPage";
+      this.AuditForumPageData.State = true;
+      this.AuditForumPageData.RejectMsg = "Passed!";
       axios({
         url: url,
-        method: "GET",
+        method: "POST",
+        data: this.AuditForumPageData,
       })
         .then((res) => {
           this.posts = [];

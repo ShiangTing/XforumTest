@@ -48,20 +48,10 @@ namespace XforumTest.Hubs
             //    ....
             //}
             //_C.create....
-
             //}
-
             //創建一個group 然後將兩個id加進group
             //SendMessage to all(client)
-
-
-            
-           await Groups.AddToGroupAsync(Context.ConnectionId, chatId);
-
-
-
-    
-
+            await Groups.AddToGroupAsync(Context.ConnectionId, chatId);
             // await Clients.All.ReceiveMessage(userId, message);
             //隊群組內所有人發送留言
             await Clients.Group(chatId).ReceiveGroupMessage(dto.UserId,dto.ChatId ,dto.Message,dto.Time);
@@ -69,19 +59,53 @@ namespace XforumTest.Hubs
 
         }
 
+        //public async Task SendGroupMessages(Guid userId,string Message,Guid chatId)
+        //{
+        //    var chatRoom = _chats.GetFirst(x => x.ChatId == chat);
+        //    string chatId = dto.ChatId.ToString();
+        //    if (chatRoom != null)
+        //    {
+        //        chatRoom.FriendId = dto.FriendId;
+        //        chatRoom.Message = dto.Message;
+        //        chatRoom.DateTime = dto.Time;
 
-        public async Task JoinGroup(Guid userId, Guid chatroomId)
+        //        chatRoom.UserId = dto.UserId;
+        //        _chats.Update(chatRoom);
+        //        _chats.SaveContext();
+        //        // _chats.Update()
+        //    }
+
+
+
+
+        //    await Groups.AddToGroupAsync(Context.ConnectionId, chatId);
+
+
+
+
+
+        //    // await Clients.All.ReceiveMessage(userId, message);
+        //    //隊群組內所有人發送留言
+        //    await Clients.Group(chatId).ReceiveGroupMessage(dto.UserId, dto.ChatId, dto.Message, dto.Time);
+
+
+        //}
+        public async Task JoinGroup( string chatroomId)
         {
-
+            await  Groups.AddToGroupAsync(Context.ConnectionId, chatroomId);
+        }
+        
+        public async Task SendMessageToGroup(string chatroomId,string message,string userName)
+        {
+            await Clients.Group(chatroomId).ReceiveGroupMessage(chatroomId,message, userName);
         }
 
 
-
         //送交友通知給特定人
-        public async Task SendMessageToMember(Guid userId, string userMessage)
+        public async Task SendMessageToMember(ProdcastDto dto)
         {
-            var stringId = userId.ToString();
-            await Clients.Client(stringId).SendMessage(userId, userMessage);
+            var stringId = dto.UserId.ToString();
+            await  Clients.Client(stringId).SendMessage(stringId, dto.UserMessage);
         }
 
      //   public Task SendInforToUser(string userId, string userMessage)
