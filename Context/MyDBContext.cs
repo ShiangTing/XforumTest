@@ -134,6 +134,8 @@ namespace XforumTest.Context
 
                 entity.Property(e => e.DateTime).HasColumnType("datetime");
 
+                entity.Property(e => e.RoomId).ValueGeneratedOnAdd();
+
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Chats)
                     .HasForeignKey(d => d.UserId)

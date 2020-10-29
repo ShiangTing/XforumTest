@@ -79,12 +79,14 @@ namespace XforumTest.Services
   
         public void Add(BaseChatDto dto)
         {
+             
             Chats chats = new Chats()
             {
                 ChatId = Guid.NewGuid(),
                 UserId = dto.UserId,
                 FriendId = dto.FriendId,
             };
+
             _chats.Create(chats);
             _chats.SaveContext();
         }
