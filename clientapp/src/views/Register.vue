@@ -9,108 +9,73 @@
             <ValidationObserver v-slot="{ handleSubmit }">
               <form>
                 <div class="form-group">
-                  <label for="account">暱稱</label>
+
                   <validation-provider rules="required" v-slot="{ errors }">
-                    <input
-                      class="form-control"
-                      type="text"
-                      v-model="registerData.username"
-                    />
-                    <span class="text-danger">{{ errors[0] }}</span>
+                    <div class="d-flex align-items-center">
+                      <label for="account">暱稱</label>
+                      <span class="text-danger text-center px-2 d-inline-block mb-1">{{ errors[0] }}</span>
+                    </div>
+                    <input id="account" class="form-control" type="text" v-model="registerData.username" />
                   </validation-provider>
                 </div>
                 <div class="form-group">
-                  <label for="email">帳號</label>
-                  <validation-provider
-                    name="信箱"
-                    rules="required|email"
-                    v-slot="{ errors }"
-                  >
-                    <input
-                      class="form-control"
-                      type="text"
-                      v-model="registerData.email"
-                    />
-                    <span class="text-danger">{{ errors[0] }}</span>
+                  <validation-provider name="信箱" rules="required|email" v-slot="{ errors }">
+                    <div class="d-flex align-items-center">
+                      <label for="email">帳號</label>
+                      <span class="text-danger text-center px-2 d-inline-block mb-1">{{ errors[0] }}</span>
+                    </div>
+                    <input id="email" class="form-control" type="text" v-model="registerData.email"
+                      :placeholder="registerData.email === '' ? '輸入信箱':''" />
                   </validation-provider>
                 </div>
                 <div class="form-group">
-                  <label for="password">密碼</label>
-                  <validation-provider
-                    name="confirm"
-                    rules="required|min:6"
-                    v-slot="{ errors }"
-                  >
-                    <input
-                      class="form-control"
-                      type="password"
-                      v-model="registerData.password"
-                    />
-                    <span class="text-danger">{{ errors[0] }}</span>
+                  <validation-provider name="confirm" rules="required|min:6" v-slot="{ errors }">
+                    <div class="d-flex align-items-center">
+                      <label for="password">密碼</label>
+                      <span class="text-danger text-center px-2 d-inline-block mb-1">{{ errors[0] }}</span>
+                    </div>
+                    <input id="password" class="form-control" type="password" v-model="registerData.password"
+                      :placeholder="registerData.password === '' ? '輸入超過6字元密碼':''" />
                   </validation-provider>
                 </div>
                 <div class="form-group">
-                  <label for="confirmPassword">確認密碼</label>
-                  <validation-provider
-                    rules="required|password:@confirm"
-                    v-slot="{ errors }"
-                  >
-                    <input
-                      class="form-control"
-                      type="password"
-                      v-model="registerData.confirmPassword"
-                    />
-                    <span class="text-danger">{{ errors[0] }}</span>
+                  <validation-provider rules="required|password:@confirm" v-slot="{ errors }">
+                    <div class="d-flex align-items-center">
+                      <label for="confirmPassword">確認密碼</label>
+                      <span class="text-danger text-center px-2 d-inline-block mb-1">{{ errors[0] }}</span>
+                    </div>
+                    <input id="confirmPassword" class="form-control" type="password" v-model="registerData.confirmPassword" :placeholder="registerData.confirmPassword === '' ? '需與密碼相符':''" />
                   </validation-provider>
                 </div>
                 <div class="form-group">
-                  <label>性別</label>
                   <validation-provider rules="required" v-slot="{ errors }">
+                    <div class="d-flex align-items-center">
+                      <label for="gender">性別</label>
+                      <span class="text-danger text-center px-2 d-inline-block mb-1">{{ errors[0] }}</span>
+                    </div>
                     <div class="d-flex">
                       <div class="form-check mr-5">
-                        <input
-                          class="form-check-input"
-                          type="radio"
-                          name="gender"
-                          id="male"
-                          value="male"
-                          v-model="registerData.gender"
-                        />
+                        <input class="form-check-input" type="radio" name="gender" id="male" value="male"
+                          v-model="registerData.gender" />
                         <label class="form-check-label" for="male">
                           男性
                         </label>
                       </div>
                       <div class="form-check">
-                        <input
-                          class="form-check-input"
-                          type="radio"
-                          name="gender"
-                          id="female"
-                          value="female"
-                          v-model="registerData.gender"
-                        />
+                        <input class="form-check-input" type="radio" name="gender" id="female" value="female"
+                          v-model="registerData.gender" />
                         <label class="form-check-label" for="female">
                           女性
                         </label>
                       </div>
                     </div>
-                    <div class="text-danger">{{ errors[0] }}</div>
                   </validation-provider>
                 </div>
-                <button
-                  type="submit"
-                  class="w-100 btn btn-primary"
-                  @click.prevent="handleSubmit(register)"
-                >
+                <button type="submit" class="w-100 btn btn-primary" @click.prevent="handleSubmit(register)">
                   註冊
                 </button>
-                <div
-                  class="alert mt-3"
-                  :class="message.isError ? 'alert-danger' : 'alert-success'"
-                  role="alert"
-                  v-if="message.display"
-                  v-html="message.content"
-                ></div>
+                <div class="alert mt-3" :class="message.isError ? 'alert-danger' : 'alert-success'" role="alert"
+                  v-if="message.display" v-html="message.content"></div>
               </form>
             </ValidationObserver>
           </div>
@@ -124,7 +89,7 @@
 import Navbar from "../components/common/Navbar";
 export default {
   components: { Navbar },
-  data() {
+  data () {
     return {
       registerData: {
         username: "",
@@ -142,7 +107,7 @@ export default {
     };
   },
   methods: {
-    register() {
+    register () {
       let vm = this;
       let url = process.env.VUE_APP_API + "/api/Users/Register";
       let data = {
@@ -180,7 +145,7 @@ export default {
           vm.message.content = str;
         });
     },
-    errorMessage(item = []) {
+    errorMessage (item = []) {
       let str = "";
       item.forEach((data) => {
         str += `<li>${data}</li>`;
@@ -188,49 +153,49 @@ export default {
       return str;
     },
   },
-  beforeDestroy() {
+  beforeDestroy () {
     let vm = this;
     window.clearTimeout(vm.timer);
   },
 };
 </script>
 <style lang="scss" scoped>
-@import "@/Assets/scss/style.scss";
-.card {
-  box-shadow: 0px 0px 20px 10px rgba(168, 173, 175, 0.3);
-}
-.login-title {
-  text-align: center;
-  font-size: 35px;
-  font-weight: 700;
-  margin-bottom: 10px;
-  letter-spacing: 3px;
-}
-label {
-  font-size: 16px;
-  margin-bottom: 5px;
-}
-.form-control {
-  height: 45px;
-  border-radius: 30px;
-  padding: 10px 30px;
-  transition: 0.5s;
-  &:active,
-  &:focus {
-    transform: scale(1.05);
-    color: #495057;
-    background-color: #fff;
-    border-color: #343a40;
-    outline: 0;
-    box-shadow: 0 0 0 0.2rem rgba(48, 48, 48, 0.3);
+  @import "@/Assets/scss/style.scss";
+  .card {
+    box-shadow: 0px 0px 20px 10px rgba(168, 173, 175, 0.3);
   }
-}
-select.form-control option {
-  width: 150px;
-}
-.btn {
-  height: 45px;
-  border-radius: 30px;
-  padding: 10px 30px;
-}
+  .login-title {
+    text-align: center;
+    font-size: 35px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    letter-spacing: 3px;
+  }
+  label {
+    font-size: 16px;
+    margin-bottom: 5px;
+  }
+  .form-control {
+    height: 45px;
+    border-radius: 30px;
+    padding: 10px 30px;
+    transition: 0.5s;
+    &:active,
+    &:focus {
+      transform: scale(1.05);
+      color: #495057;
+      background-color: #fff;
+      border-color: rgba(218, 205, 29,0.4);
+      outline: 0;
+      box-shadow: 0 0 0.2rem 0.2rem rgba(218, 205, 29,0.4) ;
+    }
+  }
+  select.form-control option {
+    width: 150px;
+  }
+  .btn {
+    height: 45px;
+    border-radius: 30px;
+    padding: 10px 30px;
+  }
 </style>

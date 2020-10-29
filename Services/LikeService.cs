@@ -266,8 +266,8 @@ namespace XforumTest.Services
                 return new UserLikeHistoryDto()
                 {
                     UserId = (Guid)userHistory.UserId,
-                    IsDisLike = userHistory.IsDisLike,
-                    IsLike = userHistory.IsLike,
+                    IsDisLike = (bool)userHistory.IsDisLike,
+                    IsLike = (bool)userHistory.IsLike,
                     //message or post id
                    // PostId = userHistory.PostId,
                    // MessageId = userHistory.MessageId
@@ -278,7 +278,7 @@ namespace XforumTest.Services
             {
                 return new UserLikeHistoryDto()
                 {
-
+                    
                 };
             }
             //return Dtu{dto.history = userhistory} 

@@ -36,17 +36,33 @@ namespace XforumTest.Services
                 var userList = _members.GetAll().ToList();//.Find(x => x.UserId.ToString().Contains(number.ToString()));
                 int index = random.Next(userList.Count);
 
-
-                return new MatchOutput()
+                if(userList[index]!= user)
                 {
-                    UserId = user.UserId,
-                    MatchedUserId = userList[index].UserId,
-                    imgLink = user.ImgLink,
-                    MatchimgLink = userList[index].ImgLink,
-                    Name = user.Name,
-                    MatchedName = userList[index].Name
+                    return new MatchOutput()
+                    {
+                        UserId = user.UserId,
+                        MatchedUserId = userList[index].UserId,
+                        imgLink = user.ImgLink,
+                        MatchimgLink = userList[index].ImgLink,
+                        Name = user.Name,
+                        MatchedName = userList[index].Name
 
-                };
+                    };
+                }
+                else
+                {
+                    return new MatchOutput()
+                    {
+                        UserId = user.UserId,
+                        MatchedUserId = userList[0].UserId,
+                        imgLink = user.ImgLink,
+                        MatchimgLink = userList[0].ImgLink,
+                        Name = user.Name,
+                        MatchedName = userList[0].Name
+
+                    };
+                }
+               
             }
 
 
@@ -83,12 +99,12 @@ namespace XforumTest.Services
                 var list = from c in _chats.GetAll2()
                            where dto.UserId == c.UserId
                            join m in _members.GetAll2()
-                           on c.UserId equals m.UserId
+                           on c.FriendId equals m.UserId
                            select new ChatListDto()
                            {
                                UserId = (Guid)c.FriendId,
                                ImgLink = m.ImgLink,
-                               Name = m.ImgLink
+                               Name = m.Name
                            };
                 return list;
 
@@ -104,7 +120,11 @@ namespace XforumTest.Services
         }
 
     
-    
+        public string GetSingleId(BaseChatDto dto)
+        {
+            var chatRoom = _chats.GetFirst(x => x.FriendId == dto.FriendId && x.UserId == dto.UserId);
+            return chatRoom.ChatId.ToString();
+        }
     
     
     

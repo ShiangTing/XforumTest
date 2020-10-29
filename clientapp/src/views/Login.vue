@@ -31,16 +31,6 @@
                   v-model="loginData.password"
                 />
               </div>
-              <div class="custom-control custom-switch text-center my-3">
-                <input
-                  type="checkbox"
-                  class="custom-control-input"
-                  id="remember"
-                />
-                <label class="custom-control-label" for="remember"
-                  >記住我</label
-                >
-              </div>
               <input
                 type="button"
                 class="w-100 btn btn-primary"
