@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using XforumTest.DTO;
 using XforumTest.Interface;
@@ -84,9 +80,8 @@ namespace XforumTest.ApiController
         /// </summary>
         /// <param name="roomId"></param>
         /// <returns></returns>
-
         [HttpPost]
-        public ApiResult<List<ChatDetailDto>> GetAllChatDetails([FromBody]RoomDto dto )
+        public ApiResult<List<ChatDetailDto>> GetAllChatDetails([FromBody]RoomDto dto)
         {
             var result = new ApiResult<List<ChatDetailDto>>();
             if (ModelState.IsValid)
@@ -102,7 +97,7 @@ namespace XforumTest.ApiController
         }
 
 
-
+       
 
     }
 }

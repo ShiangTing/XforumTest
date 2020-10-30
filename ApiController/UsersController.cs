@@ -39,6 +39,7 @@ namespace XforumTest.Controllers
         [HttpGet]
         public IActionResult GetUserName()
         {
+           
             return Ok(User.Identity.Name);
         }
         /// <summary>

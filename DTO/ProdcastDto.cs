@@ -7,7 +7,9 @@ namespace XforumTest.DTO
 {
     public class ProdcastDto
     {
-        public string UserId { get; set; }
+        public string UserName { get; set; }
+
+
         public string UserMessage { get; set; }
     }
 }

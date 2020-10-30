@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
@@ -58,13 +59,14 @@ namespace XforumTest.ApiController
         }
 
 
-        //public async Task JoinGroup(string chatroomId,)
-        //{
+        [Authorize]
+        [HttpPost]
+        public async Task GetPrivateMessage(string user,string message)
+        {
+           // var user = User.Identity.Name;
 
-        //}
-
-
-
+            await _hubContext.Clients.User(user).SendMessage(user, message);
+        }
 
     }
 }

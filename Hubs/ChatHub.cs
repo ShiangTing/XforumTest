@@ -24,48 +24,16 @@ namespace XforumTest.Hubs
         }
 
 
-        public async Task Receive(string msg)
-        {
-            await Clients.All.ReceiveMessage(msg);
-        }
+     
 
-        public async Task SendGroupMessage(ChatGroupDto dto)
-        {
-            var chatRoom = _chats.GetFirst(x => x.ChatId == dto.ChatId);
-            string chatId = dto.ChatId.ToString();
-            if (chatRoom != null)
-            {
-                chatRoom.FriendId = dto.FriendId;
-                chatRoom.Message = dto.Message;
-                chatRoom.DateTime = dto.Time;
-
-                chatRoom.UserId = dto.UserId;
-                _chats.Update(chatRoom);
-                _chats.SaveContext();
-                // _chats.Update()
-            }
-            //找是否有這個GroupId
-            //if(room!=null){
-            //將留言存進資料庫QQ
-            //Conversation = new Conversation
-            //{
-            //    ....
-            //}
-            //_C.create....
-            //}
-            //創建一個group 然後將兩個id加進group
-            //SendMessage to all(client)
-            await Groups.AddToGroupAsync(Context.ConnectionId, chatId);
-            // await Clients.All.ReceiveMessage(userId, message);
-            //隊群組內所有人發送留言
-            await Clients.Group(chatId).ReceiveGroupMessage(dto.UserId, dto.ChatId, dto.Message, dto.Time);
-
-
-        }
-
-        //public async Task SendGroupMessages(Guid userId,string Message,Guid chatId)
+        //public async Task Receive(string msg)
         //{
-        //    var chatRoom = _chats.GetFirst(x => x.ChatId == chat);
+        //    await Clients.All.ReceiveMessage(msg);
+        //}
+
+        //public async Task SendGroupMessage(ChatGroupDto dto)
+        //{
+        //    var chatRoom = _chats.GetFirst(x => x.ChatId == dto.ChatId);
         //    string chatId = dto.ChatId.ToString();
         //    if (chatRoom != null)
         //    {
@@ -78,22 +46,26 @@ namespace XforumTest.Hubs
         //        _chats.SaveContext();
         //        // _chats.Update()
         //    }
-
-
-
-
+        //    //找是否有這個GroupId
+        //    //if(room!=null){
+        //    //將留言存進資料庫QQ
+        //    //Conversation = new Conversation
+        //    //{
+        //    //    ....
+        //    //}
+        //    //_C.create....
+        //    //}
+        //    //創建一個group 然後將兩個id加進group
+        //    //SendMessage to all(client)
         //    await Groups.AddToGroupAsync(Context.ConnectionId, chatId);
-
-
-
-
-
         //    // await Clients.All.ReceiveMessage(userId, message);
         //    //隊群組內所有人發送留言
         //    await Clients.Group(chatId).ReceiveGroupMessage(dto.UserId, dto.ChatId, dto.Message, dto.Time);
 
 
         //}
+
+
         public async Task JoinGroup(string chatroomId)
         {
             //if (chatroomId != roomName)
@@ -135,11 +107,12 @@ namespace XforumTest.Hubs
         //送交友通知給特定人
         public async Task SendMessageToMember(ProdcastDto dto)
         {
-           
-           // var stringId = dto.UserId.ToString();
-          //  await  Clients.Client(stringId).SendMessage(stringId, dto.UserMessage);
+           // var a = Context.User.Identity.Name;
+            // var stringId = dto.UserId.ToString();
+            await Clients.User(dto.UserName).SendMessage(dto.UserName,dto.UserMessage);
+           // await  Clients.Client(stringId).SendMessage(stringId, dto.UserMessage);
             //var stringId = dto.UserId.ToString();
-            await Clients.All.SendMessage(dto.UserId, dto.UserMessage);
+            await Clients.All.SendMessage(dto.UserName, dto.UserMessage);
         }
 
         //   public Task SendInforToUser(string userId, string userMessage)
@@ -155,16 +128,7 @@ namespace XforumTest.Hubs
         //    await Clients.All.SendAsync("ReceiveMessage", user, message);
         //}
 
-        //
-        //public Task SendMessageToGroups(string message,Guid? groupId)
-        //{
-        //    if (groupId != null)
-        //    {
-        //        //取得group名字?
-        //        var
-        //        return Clients.Groups("a").ReceiveMessage(message);
-        //    }
-        //    //創建
+       
 
 
 
