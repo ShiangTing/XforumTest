@@ -82,7 +82,7 @@
                   </div>
                   <div class="col-12 col-md-3 d-flex align-items-center justify-content-end p-0">
                     <a class="title-btn msg-btn border-0 rounded-circle" v-if="message.userId === reply.userId"
-                      @click.prevent="deleteMessage(index)">
+                      @click.prevent="deleteMessage(message.messageId)">
                       <font-awesome-icon icon="trash" size="sm" />
                     </a>
                     <div class="d-flex align-items-center">
@@ -206,6 +206,8 @@ export default {
       },
       msgOriginThumbStatusList: [],
       msgCurrentThumbStatusList: [],
+
+      timer: null
     };
   },
   methods: {
@@ -244,6 +246,9 @@ export default {
         .catch((err) => {
           console.log(err);
         });
+    },
+    updateThumbTimer () {
+      // timer = setInterval( , 5000)
     },
     checkLogin () {
       let vm = this;
@@ -418,15 +423,36 @@ export default {
     deleteMessage (messageId) {
       let vm = this;
       let url = process.env.VUE_APP_API + "/api/RMessage/DeleteMessages";
-      vm.$axios({
-        method: 'delete',
-        url: url,
-        data: {
-          id: messageId
+      vm.$swal({
+        title: `刪除留言`,
+        text: "你確定要刪除嗎",
+        type: "question",
+        showCancelButton: true,
+        confirmButtonText: "確定",
+        cancelButtonText: "取消",
+      }).then((result) => {
+        if (result.value) {
+          vm.$axios({
+            method: 'delete',
+            url: url,
+            data: {
+              id: messageId
+            }
+          }).then((res) => {
+            vm.$swal({
+              position: "top-end",
+              title: "刪除成功",
+              icon: "success",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+
+          }).then(() => {
+            vm.getMessages()
+          })
         }
-      }).then((res) => {
-        console.log(res);
-      })
+      });
+
     },
     getUserThumbStatus (id, origin, current) {
       let vm = this;

@@ -88,8 +88,6 @@ export default {
       let vm = this;
       return vm.hubConnection.start().then(() => {
         vm.listenToHub();
-      }).then(() => {
-        vm.joinGroup()
       }).catch(() => {
         console.log("失敗");
       })
@@ -113,13 +111,6 @@ export default {
           }
         )
       });
-    },
-    callHubConnection () {
-      let vm = this;
-      let url = process.env.VUE_APP_API + "/Chat/GetMessage?msg=" + vm.inputMsg
-      vm.$axios.get(url).then(res => {
-        console.log("安安", res);
-      })
     },
     getChatList () {
       let vm = this;
@@ -159,10 +150,8 @@ export default {
     async createChatRoom (friendId) {
       let vm = this;
       if (vm.friendId === "" || vm.friendId !== friendId) {
-        vm.friendId = friendId
-        console.log(vm.friendId);
-        await vm.stopConnection();
-        await vm.connectHub()
+
+        vm.receiveMsg = [];
         await vm.getChatRoomId(friendId)
         await vm.joinGroup()
       }
@@ -171,9 +160,10 @@ export default {
   async created () {
     let vm = this;
     if (vm.$store.state.tokenModule.isAuthorize) {
+      await vm.connectHub()
       await vm.getUserInfo()
       await vm.getChatList()
-      
+
     }
   },
 //   async mounted () {
