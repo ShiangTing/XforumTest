@@ -18,5 +18,8 @@ namespace XforumTest.Interface
         IEnumerable<ChatListDto> GetAll(UserIdDto dto);
 
 
+        string GetSingleId(BaseChatDto dto);
+
+        List<ChatDetailDto> GetDetails(RoomDto dto);
     }
 }

@@ -70,15 +70,16 @@ namespace XforumTest.Services
         /// 編輯看板資料、回復軟刪除狀態
         /// </summary>
         /// <param name="json"></param>
-        public void Edit(ForumCreateDto json)
+        public void Edit(ForumEditDto json)
         {
             //var json = JsonConvert.DeserializeObject<ForumCreate>(data);
-            Forums oldforum = _Forums.GetAll().FirstOrDefault(f => f.RouteName == json.RouteName);
-            oldforum.Img = json.ImgLink;
-            oldforum.ForumName = json.ForumName;
+            //oldforum.Img = json.ImgLink;
             //oldforum.ModeratorId = json.ModeratorId;
-            oldforum.Description = json.Description;
+            Forums oldforum = _Forums.GetAll().FirstOrDefault(f => f.RouteName == json.RouteName);
             oldforum.ForumName = json.ForumName;
+            oldforum.Description = json.Description;
+            oldforum.State = json.State;
+            oldforum.RejectMsg = json.RejectMeg;
 
             _Forums.Update(oldforum);
             _Forums.SaveContext();
@@ -102,13 +103,13 @@ namespace XforumTest.Services
             return getall;
         }
         /// <summary>
-        /// 取得state = false的待創版審核之版面
+        /// 查詢管理者的待審、需重審、審核通過版面
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<GetUnauditedForum> GetUnauditedForum()
+        public IEnumerable<GetUnauditedForum> GetManagerForumPage(AuditForumPageOfManagerAndMod pageOfManager)
         {
             IEnumerable<GetUnauditedForum> Unaudited = (from f in _Forums.GetAll2()
-                                                        where f.State == false && f.RejectMsg == null
+                                                        where f.State == pageOfManager.State && string.IsNullOrEmpty(f.RejectMsg) == string.IsNullOrEmpty(pageOfManager.RejectMsg)
                                                         orderby f.CreatedDate descending
                                                         select new GetUnauditedForum()
                                                         {
@@ -120,52 +121,29 @@ namespace XforumTest.Services
                                                             CreatedDate = f.CreatedDate.ToString(),
                                                             RejectMsg = f.RejectMsg,
                                                             State = (bool)f.State
-                                                        }).ToList();
+                                                        });
             return Unaudited;
         }
         /// <summary>
-        /// 取得需重審版面
+        /// 根據版主Email,查詢版主創版之待審、需重審、審核通過的版面
         /// </summary>
+        /// <param name="UserEmail"></param>
+        /// <param name="pageOfMod"></param>
         /// <returns></returns>
-        public IEnumerable<GetUnauditedForum> GetNeedReauditForum()
+        public IEnumerable<GetUnauditedForum> GetModForumPage(string UserEmail, AuditForumPageOfManagerAndMod pageOfMod)
         {
-            IEnumerable<GetUnauditedForum> Unaudited = (from f in _Forums.GetAll2()
-                                                        where f.State == false && f.RejectMsg != null
-                                                        orderby f.CreatedDate descending
-                                                        select new GetUnauditedForum()
-                                                        {
-                                                            ForumName = f.ForumName,
-                                                            RouteName = f.RouteName,
-                                                            Description = f.Description,
-                                                            ModeratorName = _members.GetAll2().FirstOrDefault(x => x.UserId == f.ModeratorId).Name,
-                                                            ImgLink = f.Img,
-                                                            CreatedDate = f.CreatedDate.ToString(),
-                                                            RejectMsg = f.RejectMsg,
-                                                            State = (bool)f.State
-                                                        }).ToList();
-            return Unaudited;
-        }
-        /// <summary>
-        /// 取得審核通過版面
-        /// </summary>
-        /// <returns></returns>
-        public IEnumerable<GetUnauditedForum> GetPassedForum()
-        {
-            IEnumerable<GetUnauditedForum> Unaudited = (from f in _Forums.GetAll2()
-                                                        where f.State == true
-                                                        orderby f.CreatedDate descending
-                                                        select new GetUnauditedForum()
-                                                        {
-                                                            ForumName = f.ForumName,
-                                                            RouteName = f.RouteName,
-                                                            Description = f.Description,
-                                                            ModeratorName = _members.GetAll2().FirstOrDefault(x => x.UserId == f.ModeratorId).Name,
-                                                            ImgLink = f.Img,
-                                                            CreatedDate = f.CreatedDate.ToString(),
-                                                            RejectMsg = f.RejectMsg,
-                                                            State = (bool)f.State
-                                                        }).ToList();
-            return Unaudited;
+            Guid userId = _members.GetAll2().FirstOrDefault(x => x.Email == UserEmail).UserId;
+            return _Forums.GetAll2().Where(x => x.ModeratorId == userId && x.State == pageOfMod.State && string.IsNullOrEmpty(x.RejectMsg) == string.IsNullOrEmpty(pageOfMod.RejectMsg)).OrderByDescending(x => x.CreatedDate).Select(x => new GetUnauditedForum
+            {
+                ForumName = x.ForumName,
+                RouteName = x.RouteName,
+                Description = x.Description,
+                ModeratorName = _members.GetAll2().FirstOrDefault(y => y.UserId == x.ModeratorId).Name,
+                ImgLink = x.Img,
+                CreatedDate = x.CreatedDate.ToString(),
+                RejectMsg = x.RejectMsg,
+                State = (bool)x.State
+            });
         }
         /// <summary>
         /// 使用軟刪除 修改State 為 false

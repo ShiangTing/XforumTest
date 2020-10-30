@@ -2,17 +2,31 @@
   <div>
     <Navbar />
     <div class="container p-3">
-      <div class="d-flex justify-content-center">
-        <button type="button" class="btn btn-outline-primary active" @click="getUnauditedForum">
-          待審核
-        </button>
-        <button type="button" class="btn btn-outline-primary mx-3" @click="getNeedReauditForum">
-          需再審核
-        </button>
-        <button type="button" class="btn btn-outline-primary" @click="getPassedForum">
-          已通過審核
-        </button>
-      </div>
+      <nav>
+        <div class="nav nav-tabs justify-content-center" id="nav-tab" role="tablist">
+          <a
+            class="nav-link btn btn-outline-info active"
+            data-toggle="tab"
+            role="tab"
+            @click="getUnauditedForum"
+            >待審核</a
+          >
+          <a
+            class="nav-link btn btn-outline-info"
+            data-toggle="tab"
+            role="tab"
+            @click="getNeedReauditForum"
+            >需再審核</a
+          >
+          <a
+            class="nav-link btn btn-outline-info"
+            data-toggle="tab"
+            role="tab"
+            @click="getPassedForum"
+            >已通過審核</a
+          >
+        </div>
+      </nav>
       <div class="card-group mt-3">
         <div class="col-xs-12 col-md-4" v-for="(item, idx) in posts" :key="idx">
           <div class="card">
@@ -101,14 +115,21 @@ export default {
         State: "",
         RejectMsg: "",
       },
+      AuditForumPageData: {
+        State: false,
+        RejectMsg: "",
+      },
     };
   },
   methods: {
     getUnauditedForum() {
-      const url = process.env.VUE_APP_API + "/api/Forum/GetUnauditedForum";
+      const url = process.env.VUE_APP_API + "/api/Forum/GetManagerForumPage";
+      this.AuditForumPageData.State = false;
+      this.AuditForumPageData.RejectMsg = null;
       axios({
         url: url,
-        method: "GET",
+        method: "POST",
+        data: this.AuditForumPageData,
         // headers: { Authorization: `Bearer ${token}` },
       })
         .then((res) => {       
@@ -122,10 +143,13 @@ export default {
         });
     },
     getNeedReauditForum() {
-      const url = process.env.VUE_APP_API + "/api/Forum/GetNeedReauditForum";
+      const url = process.env.VUE_APP_API + "/api/Forum/GetManagerForumPage";
+      this.AuditForumPageData.State = false;
+      this.AuditForumPageData.RejectMsg = "string";
       axios({
         url: url,
-        method: "GET",
+        method: "POST",
+        data: this.AuditForumPageData,
       })
         .then((res) => {
           this.posts = [];
@@ -138,10 +162,13 @@ export default {
         });
     },
     getPassedForum() {
-      const url = process.env.VUE_APP_API + "/api/Forum/GetPassedForum";
+      const url = process.env.VUE_APP_API + "/api/Forum/GetManagerForumPage";
+      this.AuditForumPageData.State = true;
+      this.AuditForumPageData.RejectMsg = "Passed!";
       axios({
         url: url,
-        method: "GET",
+        method: "POST",
+        data: this.AuditForumPageData,
       })
         .then((res) => {
           this.posts = [];

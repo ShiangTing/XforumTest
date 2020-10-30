@@ -25,10 +25,16 @@ namespace XforumTest.DTO
         public string RouteName { get; set; }
         public string Description { get; set; }
         public string ModeratorId { get; set; }
-        //public string Contnet { get; set; }
         public string ImgLink { get; set; }
     }
-
+    public class ForumEditDto
+    {
+        public string ForumName { get; set; }
+        public string RouteName { get; set; }
+        public string Description { get; set; }
+        public string RejectMeg { get; set; }
+        public bool State { get; set; }
+    }
     public class ForumCreate : BaseFourmDto
     {
 
@@ -68,6 +74,11 @@ namespace XforumTest.DTO
     public class ChangeForumState
     {
         public string RouteName { get; set; }
+        public bool State { get; set; }
+        public string RejectMsg { get; set; }
+    }
+    public class AuditForumPageOfManagerAndMod
+    {
         public bool State { get; set; }
         public string RejectMsg { get; set; }
     }

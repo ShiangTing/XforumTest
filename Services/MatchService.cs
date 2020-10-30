@@ -13,10 +13,12 @@ namespace XforumTest.Services
     {
         private readonly IRepository<Chats> _chats;
         private readonly IRepository<ForumMembers> _members;
-        public MatchService(IRepository<Chats> chats, IRepository<ForumMembers> members)
+        private readonly IRepository<ChatDetails> _details;
+        public MatchService(IRepository<Chats> chats, IRepository<ForumMembers> members, IRepository<ChatDetails> details)
         {
             _chats = chats;
             _members = members;
+            _details = details;
         }
         /// <summary>
         /// 抓一個人來配對
@@ -79,13 +81,26 @@ namespace XforumTest.Services
   
         public void Add(BaseChatDto dto)
         {
+            string roomId = DateTime.Now.ToString("yyyyMMddff");
+
+
             Chats chats = new Chats()
             {
+                RoomId = roomId,
                 ChatId = Guid.NewGuid(),
                 UserId = dto.UserId,
                 FriendId = dto.FriendId,
             };
+            Chats friendChats = new Chats()
+            {
+                RoomId = roomId,
+                ChatId = Guid.NewGuid(),
+                UserId = dto.FriendId,
+                FriendId = dto.UserId,
+            };
+
             _chats.Create(chats);
+            _chats.Create(friendChats);
             _chats.SaveContext();
         }
 
@@ -120,9 +135,30 @@ namespace XforumTest.Services
         }
 
     
+        public string GetSingleId(BaseChatDto dto)
+        {
+            var chatRoom = _chats.GetFirst(x => x.FriendId == dto.FriendId && x.UserId == dto.UserId);
+            return chatRoom.RoomId;
+        }
     
-    
-    
+        public List<ChatDetailDto> GetDetails(RoomDto dto)
+        {
+            //var chat = _details.GetAll().Where(x => x.RoomId == roomId).Select;
+
+            var chatList = from d in _details.GetAll()
+                           where d.RoomId == dto.RoomId
+                           orderby d.DateTime 
+                           select new ChatDetailDto()
+                           {
+                               RoomId = dto.RoomId,
+                               Text = d.Text,
+                               DateTime = d.DateTime,
+                               UserName = d.UserName
+                           };
+
+
+            return chatList.ToList();
+        }
     
     }
 }

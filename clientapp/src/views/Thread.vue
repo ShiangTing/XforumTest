@@ -2,7 +2,7 @@
   <div>
     <b-container fluid>
       <b-row>
-        <b-col cols="2"> <Sidebar class="sidebar" /></b-col>
+        <b-col cols="2" md="0"> <Sidebar class="sidebar" /></b-col>
         <b-col cols="7">
           <div>
             <!-- 這裡是index區域的貼文 -->
