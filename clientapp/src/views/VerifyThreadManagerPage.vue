@@ -2,17 +2,31 @@
   <div>
     <Navbar />
     <div class="container p-3">
-      <div class="d-flex justify-content-center">
-        <button type="button" class="btn btn-outline-primary" @click="getUnauditedForum">
-          待審核
-        </button>
-        <button type="button" class="btn btn-outline-primary mx-3" @click="getNeedReauditForum">
-          需再審核
-        </button>
-        <button type="button" class="btn btn-outline-primary" @click="getPassedForum">
-          已通過審核
-        </button>
-      </div>
+      <nav>
+        <div class="nav nav-tabs justify-content-center" id="nav-tab" role="tablist">
+          <a
+            class="nav-link btn btn-outline-info active"
+            data-toggle="tab"
+            role="tab"
+            @click="getUnauditedForum"
+            >待審核</a
+          >
+          <a
+            class="nav-link btn btn-outline-info"
+            data-toggle="tab"
+            role="tab"
+            @click="getNeedReauditForum"
+            >需再審核</a
+          >
+          <a
+            class="nav-link btn btn-outline-info"
+            data-toggle="tab"
+            role="tab"
+            @click="getPassedForum"
+            >已通過審核</a
+          >
+        </div>
+      </nav>
       <div class="card-group mt-3">
         <div class="col-xs-12 col-md-4" v-for="(item, idx) in posts" :key="idx">
           <div class="card">

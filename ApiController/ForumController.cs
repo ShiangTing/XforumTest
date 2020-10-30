@@ -12,7 +12,6 @@ namespace XforumTest.ApiController
     [ApiController]
     public class ForumController : ControllerBase
     {
-        //private static ForumService forumservice = new ForumService();
         private readonly IForumService _forumservice;
         public ForumController(IForumService Service)
         {
@@ -36,6 +35,21 @@ namespace XforumTest.ApiController
         }
 
         /// <summary>
+        /// 編輯看板資料、回復軟刪除狀態
+        /// </summary>
+        /// <param name="json"></param>
+        [HttpPost]
+        public IActionResult Edit(ForumEditDto json)
+        {
+            if (ModelState.IsValid)
+            {
+                _forumservice.Edit(json);
+                return Ok();
+            }
+            return Ok();
+        }
+
+        /// <summary>
         /// Edit getsingle取得各版資料，edit post 以編輯的資料回DB
         /// </summary>
         /// <returns></returns>
@@ -45,21 +59,6 @@ namespace XforumTest.ApiController
             var edit = _forumservice.GetSingle(id);
             return edit;
         }
-
-        /// <summary>
-        /// 編輯看板資料、回復軟刪除狀態
-        /// </summary>
-        /// <param name="json"></param>
-        [HttpPost]
-        public IActionResult Edit(ForumCreateDto json)
-        {
-            if (ModelState.IsValid)
-            {
-                _forumservice.Edit(json);
-                return Ok();
-            }
-            return Ok();
-        }
         /// <summary>
         /// 軟刪除 修改狀態隱藏看板
         /// </summary>
@@ -67,7 +66,7 @@ namespace XforumTest.ApiController
         [HttpPost]
         public void ChangeForumState(ChangeForumState model)
         {
-            _forumservice.ChangeForumState(model);
+            if (ModelState.IsValid) { _forumservice.ChangeForumState(model); }
         }
 
         /// <summary>
