@@ -85,8 +85,8 @@ namespace XforumTest.ApiController
         /// <param name="roomId"></param>
         /// <returns></returns>
 
-        [HttpGet]
-        public ApiResult<List<ChatDetailDto>> GetAllChatDetails(RoomDto dto )
+        [HttpPost]
+        public ApiResult<List<ChatDetailDto>> GetAllChatDetails([FromBody]RoomDto dto )
         {
             var result = new ApiResult<List<ChatDetailDto>>();
             if (ModelState.IsValid)
