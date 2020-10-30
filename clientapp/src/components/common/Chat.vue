@@ -30,7 +30,7 @@
                   :class="item.userName === userData.username ? 'align-self-end right-color': 'align-self-start left-color'">
                   <span class="message-title" v-if="item.userName !== userData.username">{{item.userName}}</span>
                   <span class="message-content"
-                    :class="item.userName === userData.username ? 'text-right': 'text-left'">{{ item.message }}</span>
+                    :class="item.userName === userData.username ? 'text-right': 'text-left'">{{ item.text }}</span>
                 </div>
               </div>
               <div class="input-group chat-input-group">
@@ -94,20 +94,26 @@ export default {
     },
     sendMsgToHub () {
       let vm = this;
-      vm.hubConnection.send('SendMessageToGroup', vm.chatId, vm.inputMsg, vm.userData.username).then(() => {
+      let data = {
+        roomId: vm.chatId,
+        userName: vm.userData.username,
+        text: vm.inputMsg,
+        dataTime: new Date()
+      }
+      vm.hubConnection.send('SendMessageToGroup', data).then(() => {
         console.log('msg send');
       })
       vm.inputMsg = "";
     },
     listenToHub () {
       let vm = this;
-      vm.hubConnection.on('ReceiveGroupMessage', (chatroomId, message, userName) => {
+      vm.hubConnection.on('ReceiveGroupMessage', (roomId,username, text) => {
         console.log("回來囉");
-        console.log(chatroomId, message, userName);
+        console.log(roomId, text, username);
         vm.receiveMsg.push(
           {
-            userName: userName,
-            message: message
+            userName: username,
+            text: text,
           }
         )
       });
@@ -130,7 +136,6 @@ export default {
         FriendId: friendId
       }
       return vm.$axios.post(url, data).then(res => {
-
         vm.chatId = res.data.data
       })
     },
@@ -147,14 +152,29 @@ export default {
         console.log("中斷成功", res);
       })
     },
+    getUserMessageHistory () {
+      let vm = this;
+      let url = process.env.VUE_APP_API + "/api/Match/GetAllChatDetails"
+      let data = {
+        roomId: vm.chatId
+      }
+      return vm.$axios.post(url, data).then((res) => {
+        res.data.data.forEach(item => {
+          vm.receiveMsg.push({
+            userName: item.userName.trim(),
+            text: item.text,
+          })
+        })
+      })
+    },
     async createChatRoom (friendId) {
       let vm = this;
       if (vm.friendId === "" || vm.friendId !== friendId) {
-
         vm.receiveMsg = [];
-        await vm.getChatRoomId(friendId)
-        await vm.joinGroup()
       }
+      await vm.getChatRoomId(friendId);
+      await vm.joinGroup()
+      await vm.getUserMessageHistory();
     }
   },
   async created () {
@@ -163,13 +183,8 @@ export default {
       await vm.connectHub()
       await vm.getUserInfo()
       await vm.getChatList()
-
     }
   },
-//   async mounted () {
-//     //   保持連線
-//       await this.connectHub();
-//   },
   beforeDestroy () {
     let vm = this;
     vm.stopConnection()
@@ -238,6 +253,7 @@ export default {
     }
     &-message {
       display: flex;
+      max-width: 200px;
       flex-direction: column;
       word-wrap: break-word;
       padding: 10px 10px;

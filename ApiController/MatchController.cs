@@ -79,7 +79,27 @@ namespace XforumTest.ApiController
             }
         }
 
+        /// <summary>
+        /// 拿到該房間的詳細對話
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
 
+        [HttpPost]
+        public ApiResult<List<ChatDetailDto>> GetAllChatDetails([FromBody]RoomDto dto )
+        {
+            var result = new ApiResult<List<ChatDetailDto>>();
+            if (ModelState.IsValid)
+            {
+                result.Data = _matchService.GetDetails(dto);
+
+                return result;
+            }
+            else
+            {
+                return new ApiResult<List<ChatDetailDto>>("Dto");
+            }
+        }
 
 
 

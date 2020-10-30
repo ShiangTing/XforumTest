@@ -20,6 +20,6 @@ namespace XforumTest.Interface
 
         string GetSingleId(BaseChatDto dto);
 
-
+        List<ChatDetailDto> GetDetails(RoomDto dto);
     }
 }
