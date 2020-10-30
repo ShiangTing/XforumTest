@@ -1,7 +1,14 @@
 <template>
   <div class="main-nav">
-    <b-navbar toggleable="lg" type="dark" variant="dark" class="d-flex align-items-center">
-      <router-link class="title mx-5 my-2 text-white" to="/">Xforum</router-link>
+    <b-navbar
+      toggleable="lg"
+      type="dark"
+      variant="dark"
+      class="d-flex align-items-center"
+    >
+      <router-link class="title mx-5 my-2 text-white" to="/"
+        >Xforum</router-link
+      >
       <!-- <b-navbar-brand href="#">Xforum</b-navbar-brand> -->
 
       <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
@@ -10,6 +17,16 @@
         <b-navbar-nav class="ml-auto">
           <b-nav-item class="sidebarGroup">
             <SideBar />
+          </b-nav-item>
+
+          <b-nav-item class="pl-4" v-if="isLogin && newMsg">
+            <b-button id="popover-button-sync" variant="info">通知</b-button>
+            <b-popover target="popover-button-sync" title="通知">
+              {{ newMsg }}
+            </b-popover>
+
+            <b-popover show target="popover-button-open" title="通知">
+            </b-popover>
           </b-nav-item>
           <b-nav-item
             class="pl-4"
@@ -20,7 +37,7 @@
           </b-nav-item>
           <b-nav-item
             class="pl-4"
-            v-if="(isLogin && rolename == '版主')"
+            v-if="isLogin && rolename == '版主'"
             to="/VerifyThreadModPage"
           >
             <font-awesome-icon icon="clipboard-check" />
@@ -28,7 +45,11 @@
           <b-nav-item class="pl-4" v-if="isLogin" to="/Rank">
             <font-awesome-icon icon="crown" />
           </b-nav-item>
-          <b-nav-item class="pl-4" v-if="(isLogin && rolename == '版主') || rolename == '管理者'" to="/CreateThread">
+          <b-nav-item
+            class="pl-4"
+            v-if="(isLogin && rolename == '版主') || rolename == '管理者'"
+            to="/CreateThread"
+          >
             <font-awesome-icon icon="bookmark" />
           </b-nav-item>
           <b-nav-item class="pl-4" v-if="isLogin" to="/Post">
@@ -51,10 +72,19 @@
               <span class="px-2">{{ name }}</span>
             </template>
 
-            <b-dropdown-item to="/register" v-if="!isLogin">註冊</b-dropdown-item>
+            <b-dropdown-item to="/register" v-if="!isLogin"
+              >註冊</b-dropdown-item
+            >
             <b-dropdown-item to="/login" v-if="!isLogin">登入</b-dropdown-item>
-            <b-dropdown-item v-if="isLogin" href="javascript:;" @click.prevent="memberCTR">會員中心</b-dropdown-item>
-            <b-dropdown-item v-if="isLogin" @click.prevent="logout">登出</b-dropdown-item>
+            <b-dropdown-item
+              v-if="isLogin"
+              href="javascript:;"
+              @click.prevent="memberCTR"
+              >會員中心</b-dropdown-item
+            >
+            <b-dropdown-item v-if="isLogin" @click.prevent="logout"
+              >登出</b-dropdown-item
+            >
           </b-nav-item-dropdown>
         </b-navbar-nav>
       </b-collapse>
@@ -63,26 +93,28 @@
 </template>
 
 <script>
+// import * as signalR from "@aspnet/signalr";
 import SideBar from "../Home/Sidbar";
 export default {
   components: {
     SideBar,
   },
-  data () {
+  data() {
     return {
       name: "訪客",
       isLogin: false,
       userId: "",
       memberImg: "",
       rolename: "",
+      newMsg: "",
     };
   },
   methods: {
-    memberCTR () {
+    memberCTR() {
       const vm = this;
       vm.$router.push(`/MemberCenter`);
     },
-    logout () {
+    logout() {
       let vm = this;
       window.localStorage.clear();
       vm.$store.dispatch("clearAuth");
@@ -92,12 +124,10 @@ export default {
       vm.$router.push("/");
     },
   },
-  created () {
+  created() {
     let vm = this;
-    let auth = vm.$store.state.tokenModule;
-    let isAuth = auth.isAuthorize;
     let url = process.env.VUE_APP_API + "/api/Users/GetSingleMember";
-    if (isAuth) {
+    if (vm.$store.state.tokenModule.isAuthorize) {
       vm.$axios({
         url: url,
         method: "GET",
@@ -117,35 +147,38 @@ export default {
           vm.isLogin = false;
         });
     }
+    vm.$bus.$on("getNewMsg", (msg) => {
+      vm.newMsg = msg;
+    });
   },
 };
 </script>
 
 <style lang="scss" scoped>
-  /deep/ .list-group .list-group-item {
-    background-color: #343a40;
-    border: 0;
-    span.text-primary {
-      color: rgba(255, 255, 255, 0.5) !important;
-    }
+/deep/ .list-group .list-group-item {
+  background-color: #343a40;
+  border: 0;
+  span.text-primary {
+    color: rgba(255, 255, 255, 0.5) !important;
   }
-  /deep/.member-icon {
-    display: inline-block;
-    width: 25px;
-    height: 25px;
+}
+/deep/.member-icon {
+  display: inline-block;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  > img {
+    width: 100%;
+    height: 100%;
     border-radius: 50%;
-    > img {
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-    }
   }
-  @media screen and (min-width: 996px) {
-    .sidebarGroup {
-      display: none;
-    }
-    :focus {
-      outline: 0px;
-    }
+}
+@media screen and (min-width: 996px) {
+  .sidebarGroup {
+    display: none;
   }
+  :focus {
+    outline: 0px;
+  }
+}
 </style>

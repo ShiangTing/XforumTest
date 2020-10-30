@@ -2,7 +2,7 @@
   <div>
     <b-container fluid>
       <b-row>
-        <b-col cols="2"> <Sidebar class="sidebar" /></b-col>
+        <b-col class="block"> <Sidebar class="sidebar" /></b-col>
         <b-col cols="7">
           <div>
             <!-- 這裡是index區域的貼文 -->
@@ -240,5 +240,8 @@ $description: rgba(0, 0, 0, 1) !important;
   .sidebar {
     display: none;
   }
+  /deep/ .block {
+  display: none;
+}
 }
 </style>
