@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,7 @@ namespace XforumTest.Hubs
     {
         private readonly IRepository<ForumMembers> _members;
         private readonly IRepository<Chats> _chats;
-
+        private  static string roomName;
         public ChatHub(IRepository<ForumMembers> member, IRepository<Chats> chats)
         {
             _members = member;
@@ -93,18 +94,33 @@ namespace XforumTest.Hubs
         //}
         public async Task JoinGroup( string chatroomId)
         {
+            //if (chatroomId != roomName)
+            //{
+            //    await RemoveGroup(roomName);
+            //}
+
+              //  _chatGroupService.RemoveConnectionfromGroups(Context.ConnectionId);
             await  Groups.AddToGroupAsync(Context.ConnectionId, chatroomId);
+            roomName = chatroomId;
+
         }
         
+
+        public async Task RemoveGroup(string chatroomId)
+        {
+
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, chatroomId);
+        }
         public async Task SendMessageToGroup(string chatroomId,string message,string userName)
         {
             await Clients.Group(chatroomId).ReceiveGroupMessage(chatroomId,message, userName);
         }
 
-
+    
         //送交友通知給特定人
         public async Task SendMessageToMember(ProdcastDto dto)
         {
+           
             var stringId = dto.UserId.ToString();
             await  Clients.Client(stringId).SendMessage(stringId, dto.UserMessage);
         }

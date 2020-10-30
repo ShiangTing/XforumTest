@@ -46,13 +46,15 @@
 </template>
 
 <script>
-import * as signalR from '@aspnet/signalr'
+import * as signalR from '@microsoft/signalr'
 export default {
   data () {
     return {
       hubConnection: new signalR.HubConnectionBuilder()
         .configureLogging(signalR.LogLevel.Debug) //設定顯示log
-        .withUrl(process.env.VUE_APP_API + '/chathub').build(),
+        .withUrl(process.env.VUE_APP_API + '/chathub')
+        .withAutomaticReconnect()
+        .build(),
       chatList: [],
       show: false,
       inputMsg: "",
