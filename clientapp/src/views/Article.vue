@@ -605,9 +605,9 @@ export default {
     let vm = this;
     if (vm.$store.state.tokenModule.isAuthorize) {
       await vm.getUserInfo();
-      await vm.getArticle();
-      await vm.getMessages();
     }
+    await vm.getArticle();
+    await vm.getMessages();
   },
   beforeDestroy () {
     let vm = this;
