@@ -14,7 +14,7 @@ namespace XforumTest.Hubs
     {
         private readonly IRepository<ForumMembers> _members;
         private readonly IRepository<Chats> _chats;
-        private  static string roomName;
+        private string roomName;
         public ChatHub(IRepository<ForumMembers> member, IRepository<Chats> chats)
         {
             _members = member;
@@ -96,19 +96,18 @@ namespace XforumTest.Hubs
         {
             //if (chatroomId != roomName)
             //{
-            //    await RemoveGroup(roomName);
+            //    await LeaveGroup(roomName);
             //}
 
-              //  _chatGroupService.RemoveConnectionfromGroups(Context.ConnectionId);
+            //  _chatGroupService.RemoveConnectionfromGroups(Context.ConnectionId);
             await  Groups.AddToGroupAsync(Context.ConnectionId, chatroomId);
             roomName = chatroomId;
 
         }
         
 
-        public async Task RemoveGroup(string chatroomId)
+        public async Task LeaveGroup(string chatroomId)
         {
-
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, chatroomId);
         }
         public async Task SendMessageToGroup(string chatroomId,string message,string userName)

@@ -11,7 +11,8 @@
       </li>
     </ul>
 
-    <!-- Modal -->
+    <!--
+    console.log('----3', this.chatId) Modal -->
     <div class="modal fade" id="chatModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
       aria-hidden="true">
       <div class="modal-dialog" role="document">
@@ -135,6 +136,7 @@ export default {
         FriendId: friendId
       }
       return vm.$axios.post(url, data).then(res => {
+
         vm.chatId = res.data.data
       })
     },
@@ -146,7 +148,10 @@ export default {
         })
     },
     async createChatRoom (friendId) {
-      await this.connectHub()
+    //   await this.connectHub()
+    // 清除聊天室資料，之後要加入: 拿歷史對話資料(API) 並顯示
+    this.receiveMsg = [];
+      
       await this.getChatRoomId(friendId)
       await this.joinGroup()
     }
@@ -159,6 +164,10 @@ export default {
     // });
     await vm.getUserInfo()
     await vm.getChatList()
+  },
+  async mounted () {
+    //   保持連線
+      await this.connectHub();
   },
   beforeDestroy () {
     this.$bus.$off("getUserId");
