@@ -149,6 +149,7 @@ mixin icon(el)
 
 <script>
 import Navbar from "../components/common/Navbar";
+import * as signalR from "@aspnet/signalr";
 import $ from "jquery";
 // import axios from "axios";
 export default {
@@ -175,9 +176,57 @@ export default {
         userId: "",
         friendId: "",
       },
+      sendMsgJson: {
+        UserId: "ba8ccd2b-b320-43cc-a023-edb75ca0b8dd",
+        UserMessage: "我傳訊息了",
+      },
+      hubConnection: new signalR.HubConnectionBuilder()
+        .configureLogging(signalR.LogLevel.Debug) //設定顯示log
+        .withUrl(process.env.VUE_APP_API + "/chathub")
+        .build(),
     };
   },
   methods: {
+    connectHub() {
+      let vm = this;
+      vm.hubConnection
+        .start()
+        .then(() => {
+          vm.getConnectionId();
+        })
+        .then(() => {
+          vm.listenToHub();
+        })
+        .catch(() => {
+          console.log("失敗");
+        });
+    },
+    sendMsgToHub() {
+      let vm = this;
+      vm.hubConnection.send("SendMessageToMember", vm.sendMsgJson).then(() => {
+        console.log("msg send");
+      });
+    },
+    listenToHub() {
+      let vm = this;
+      vm.hubConnection.on("SendMessage", (id, msg) => {
+        this.$bus.$emit(
+          "getNewMsg",
+          `您將${vm.metchUser.matchedName}加入到好友清單了!`
+        );
+
+        console.log(vm.metchUser.matchedName);
+        console.log(id, msg);
+      });
+    },
+    getConnectionId() {
+      let vm = this;
+      vm.hubConnection.invoke("GetConnectionId").then((msg) => {
+        console.log("connectionId");
+        console.log("connectionId", msg);
+        vm.sendMsgJson.UserId = msg;
+      });
+    },
     startChat() {
       this.$swal({
         title: `您配對到的是${this.metchUser.matchedName}`,
@@ -195,13 +244,20 @@ export default {
             method: "POST",
             data: vm.chatData,
           })
-            .then(() => {})
+            .then(() => {
+              vm.sendMsgToHub();
+              vm.$router.push("/");
+            })
             .catch((err) => {
               console.log(err);
             });
         }
       });
     },
+  },
+  created() {
+    let vm = this;
+    vm.connectHub();
   },
   mounted() {
     $(".wantText").hide();

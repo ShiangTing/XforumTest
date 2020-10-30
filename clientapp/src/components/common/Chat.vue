@@ -3,43 +3,44 @@
     <ul class="list-group">
       <li class="list-group-item font-weight-bold bg-dark text-white">聊天列表</li>
       <li class="list-group-item" v-for="(item,index) in chatList" :key="index">
-        <a class="d-flex align-items-center text-black w-100 h-100" data-toggle="modal" data-target="#chatModal">
-          <img :src="item.imgLink" alt="" style="width: 30px; height: 30px">
-          <p class="m-0 pl-2 text-black">{{item.name}}</p>
+        <a class="d-flex align-items-center w-100 h-100" data-toggle="modal" data-target="#chatModal"
+          @click="createChatRoom(item)">
+          <img :src="item.imgLink" class="chatList-img">
+          <p class="m-0 pl-2 w-100 ">{{item.name}}</p>
         </a>
       </li>
     </ul>
 
-    <!-- Modal -->
+    <!--
+    console.log('----3', this.chatId) Modal -->
     <div class="modal fade" id="chatModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
       aria-hidden="true">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+            <h5 class="modal-title" id="exampleModalLabel">{{chatMember}}</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
           <div class="modal-body w-100">
             <div class="chat">
-              <div class="d-block chat-list">
-                <p class="chat-message" v-for="(text,index) in receiveMsg" :key="index">
-                  {{ text }}
-                </p>
+              <div class="d-flex flex-column chat-list">
+                <div class="chat-message" v-for="(item,index) in receiveMsg" :key="index"
+                  :class="item.userName === userData.username ? 'align-self-end right-color': 'align-self-start left-color'">
+                  <span class="message-title" v-if="item.userName !== userData.username">{{item.userName}}</span>
+                  <span class="message-content"
+                    :class="item.userName === userData.username ? 'text-right': 'text-left'">{{ item.text }}</span>
+                </div>
               </div>
               <div class="input-group chat-input-group">
                 <input type="text" class="form-control chat-input h-100" placeholder="在書城論壇尋求邂逅是否搞錯了甚麼?"
                   v-model="inputMsg">
                 <div class="input-group-append">
-                  <button class="btn btn-secondary " type="button" @click="sendMsgToHub">傳送</button>
+                  <button class="btn btn-secondary rounded-0" type="button" @click="sendMsgToHub">傳送</button>
                 </div>
               </div>
             </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary">Save changes</button>
           </div>
         </div>
       </div>
@@ -48,24 +49,45 @@
 </template>
 
 <script>
-import * as signalR from '@aspnet/signalr'
+import * as signalR from '@microsoft/signalr'
 export default {
   data () {
     return {
-      userId: "",
       hubConnection: new signalR.HubConnectionBuilder()
         .configureLogging(signalR.LogLevel.Debug) //設定顯示log
-        .withUrl(process.env.VUE_APP_API + '/chathub').build(),
+        .withUrl(process.env.VUE_APP_API + '/chathub')
+        .withAutomaticReconnect()
+        .build(),
+      chatMember: "",
       chatList: [],
       show: false,
       inputMsg: "",
       receiveMsg: [],
+      friendId: "",
+      chatId: "",
+      userData: {
+        userId: "",
+        username: ""
+      }
     }
   },
   methods: {
+    getUserInfo () {
+      let vm = this;
+      let userUrl = process.env.VUE_APP_API + "/api/Users/getSingleMember";
+      return vm.$axios
+        .get(userUrl)
+        .then((res) => {
+          vm.userData.userId = res.data.data.userId;
+          vm.userData.username = res.data.data.name;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
     connectHub () {
       let vm = this;
-      vm.hubConnection.start().then(() => {
+      return vm.hubConnection.start().then(() => {
         vm.listenToHub();
       }).catch(() => {
         console.log("失敗");
@@ -73,65 +95,146 @@ export default {
     },
     sendMsgToHub () {
       let vm = this;
-      console.log();
-      vm.hubConnection.send('Receive', vm.inputMsg).then(() => {
-        console.log('msg send');
+      let data = {
+        roomId: vm.chatId,
+        userName: vm.userData.username,
+        text: vm.inputMsg,
+        dataTime: new Date()
+      }
+      vm.hubConnection.send('SendMessageToGroup', data).then(() => {
       })
       vm.inputMsg = "";
     },
     listenToHub () {
       let vm = this;
-      vm.hubConnection.on('ReceiveMessage', (result) => {
-        console.log("回來囉");
-        vm.receiveMsg.push(result)
+      vm.hubConnection.on('ReceiveGroupMessage', (roomId, username, text) => {
+        vm.receiveMsg.push(
+          {
+            userName: username,
+            text: text,
+          }
+        )
       });
-    },
-    callHubConnection () {
-      let vm = this;
-      let url = process.env.VUE_APP_API + "/Chat/GetMessage?msg=" + vm.inputMsg
-      vm.$axios.get(url).then(res => {
-        console.log("安安", res);
-      })
     },
     getChatList () {
       let vm = this;
       let url = process.env.VUE_APP_API + "/api/Match/GetAllChatList"
       let data = {
-        userId: vm.userId
+        userId: vm.userData.userId
       }
-      console.log(data);
-      vm.$axios.post(url, data).then(res => {
+      return vm.$axios.post(url, data).then(res => {
         vm.chatList = res.data.data
       })
+    },
+    getChatRoomId (friendId) {
+      let vm = this;
+      let url = process.env.VUE_APP_API + "/api/Chat/GetChatRoomId"
+      let data = {
+        userId: vm.userData.userId,
+        FriendId: friendId
+      }
+      return vm.$axios.post(url, data).then(res => {
+        vm.chatId = res.data.data
+      })
+    },
+    joinGroup () {
+      let vm = this;
+      return vm.hubConnection.invoke('JoinGroup', vm.chatId)
+        .then(() => {
+        })
+    },
+    stopConnection () {
+      let vm = this;
+      return vm.hubConnection.stop()
+    },
+    getUserMessageHistory () {
+      let vm = this;
+      let url = process.env.VUE_APP_API + "/api/Match/GetAllChatDetails"
+      let data = {
+        roomId: vm.chatId
+      }
+      return vm.$axios.post(url, data).then((res) => {
+        res.data.data.forEach(item => {
+          vm.receiveMsg.push({
+            userName: item.userName.trim(),
+            text: item.text,
+          })
+        })
+      })
+    },
+    async createChatRoom (friend) {
+      let vm = this;
+      vm.chatMember = friend.name;
+      if (vm.friendId === "" || vm.friendId !== friend.userId) {
+        vm.receiveMsg = [];
+      }
+      await vm.getChatRoomId(friend.userId);
+      await vm.joinGroup()
+      await vm.getUserMessageHistory();
     }
   },
-  created () {
+  async created () {
     let vm = this;
-    vm.$bus.$on("getUserId", msg => {
-      vm.userId = msg;
-      vm.getChatList()
-    });
-    vm.connectHub();
-
+    if (vm.$store.state.tokenModule.isAuthorize) {
+      await vm.connectHub()
+      await vm.getUserInfo()
+      await vm.getChatList()
+    }
   },
   beforeDestroy () {
-    this.$bus.$off("getUserId");
+    let vm = this;
+    vm.stopConnection()
   }
 }
 
 </script>
 
 <style lang="scss" scoped>
-  li {
-    list-style: none;
+  a {
+    text-decoration: none;
+    cursor: pointer;
+    color: #000;
+  }
+  .chatList-img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+  }
+  .message {
+    &-title {
+      display: block;
+      letter-spacing: 1px;
+      font-weight: 700;
+      font-size: 10px;
+      color: #6c6c6c;
+    }
+    &-content {
+      display: block;
+    }
+  }
+  .left-color {
+    background-color: #f0bbd1;
+  }
+  .right-color {
+    background-color: rgb(67, 199, 33);
   }
   .chat {
     width: 100%;
     height: 500px;
     padding: 10px;
+
     &-list {
       width: 100%;
       height: 90%;
+      background: linear-gradient(
+          to left top,
+          rgba(255, 255, 255, 0.2),
+          rgba(255, 255, 255, 0.2)
+        ),
+        url("https://images.unsplash.com/photo-1507842217343-583bb7270b66?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1000&q=60");
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
       padding: 5px;
       overflow: auto;
       border: 1px solid #000;
@@ -141,21 +244,17 @@ export default {
         width: 100%;
         height: 10%;
       }
-
       border: 1px solid #000;
       border-radius: 0%;
     }
     &-message {
       display: flex;
-      align-items: center;
-      width: 100%;
-      max-width: 150px;
+      max-width: 200px;
+      flex-direction: column;
       word-wrap: break-word;
-      height: 30px;
-      padding: 10px 5px;
+      padding: 10px 10px;
       margin: 5px;
       border-radius: 6px;
-      background-color: rgba(67, 199, 33, 0.2);
     }
     .form-control:focus {
       outline: 1px solid #000;

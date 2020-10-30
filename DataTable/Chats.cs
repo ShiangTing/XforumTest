@@ -10,6 +10,7 @@ namespace XforumTest.DataTable
         public Guid? FriendId { get; set; }
         public string Message { get; set; }
         public DateTime? DateTime { get; set; }
+        public string RoomId { get; set; }
 
         public virtual ForumMembers User { get; set; }
     }

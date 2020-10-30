@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using XforumTest.DTO;
@@ -22,7 +23,7 @@ namespace XforumTest.ApiController
         {
             _matchService = matchService;
         }
-
+     
         [HttpPost]
 
         public ApiResult<MatchOutput> MatchUser(MatchDto dto)
@@ -30,6 +31,7 @@ namespace XforumTest.ApiController
             var result = new ApiResult<MatchOutput>();
             if (ModelState.IsValid)
             {
+                
                 result.Data = _matchService.Match(dto);
                
                 return result;
@@ -77,7 +79,27 @@ namespace XforumTest.ApiController
             }
         }
 
+        /// <summary>
+        /// 拿到該房間的詳細對話
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
 
+        [HttpPost]
+        public ApiResult<List<ChatDetailDto>> GetAllChatDetails([FromBody]RoomDto dto )
+        {
+            var result = new ApiResult<List<ChatDetailDto>>();
+            if (ModelState.IsValid)
+            {
+                result.Data = _matchService.GetDetails(dto);
+
+                return result;
+            }
+            else
+            {
+                return new ApiResult<List<ChatDetailDto>>("Dto");
+            }
+        }
 
 
 

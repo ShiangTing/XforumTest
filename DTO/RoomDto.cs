@@ -5,9 +5,8 @@ using System.Threading.Tasks;
 
 namespace XforumTest.DTO
 {
-    public class ProdcastDto
+    public class RoomDto
     {
-        public string UserId { get; set; }
-        public string UserMessage { get; set; }
+        public string RoomId { get; set; }
     }
 }

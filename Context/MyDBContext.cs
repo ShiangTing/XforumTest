@@ -22,6 +22,7 @@ namespace XforumTest.Context
         public virtual DbSet<AspNetUserRoles> AspNetUserRoles { get; set; }
         public virtual DbSet<AspNetUsers> AspNetUsers { get; set; }
         public virtual DbSet<Category> Category { get; set; }
+        public virtual DbSet<ChatDetails> ChatDetails { get; set; }
         public virtual DbSet<Chats> Chats { get; set; }
         public virtual DbSet<ForumMembers> ForumMembers { get; set; }
         public virtual DbSet<ForumRoles> ForumRoles { get; set; }
@@ -117,6 +118,17 @@ namespace XforumTest.Context
                 entity.Property(e => e.Points).HasColumnType("decimal(18, 6)");
             });
 
+            modelBuilder.Entity<ChatDetails>(entity =>
+            {
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
+                entity.Property(e => e.DateTime).HasColumnType("datetime");
+
+                entity.Property(e => e.UserName)
+                    .HasMaxLength(10)
+                    .IsFixedLength();
+            });
+
             modelBuilder.Entity<Chats>(entity =>
             {
                 entity.HasKey(e => e.ChatId);
@@ -124,6 +136,8 @@ namespace XforumTest.Context
                 entity.Property(e => e.ChatId).ValueGeneratedNever();
 
                 entity.Property(e => e.DateTime).HasColumnType("datetime");
+
+                entity.Property(e => e.RoomId).HasMaxLength(50);
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Chats)
