@@ -2,29 +2,35 @@
   <div>
     <Navbar />
     <div class="container p-3">
-      <div class="d-flex justify-content-center">
-        <button
-          type="button"
-          class="btn btn-outline-primary"
-          @click="getUnauditedForum"
+      <nav>
+        <div
+          class="nav nav-tabs justify-content-center"
+          id="nav-tab"
+          role="tablist"
         >
-          待審核
-        </button>
-        <button
-          type="button"
-          class="btn btn-outline-primary mx-3"
-          @click="getNeedReauditForum"
-        >
-          需再審核
-        </button>
-        <button
-          type="button"
-          class="btn btn-outline-primary"
-          @click="getPassedForum"
-        >
-          已通過審核
-        </button>
-      </div>
+          <a
+            class="nav-link btn btn-outline-info active"
+            data-toggle="tab"
+            role="tab"
+            @click="getUnauditedForum"
+            >待審核</a
+          >
+          <a
+            class="nav-link btn btn-outline-info"
+            data-toggle="tab"
+            role="tab"
+            @click="getNeedReauditForum"
+            >需再審核</a
+          >
+          <a
+            class="nav-link btn btn-outline-info"
+            data-toggle="tab"
+            role="tab"
+            @click="getPassedForum"
+            >已通過審核</a
+          >
+        </div>
+      </nav>
       <div class="card-group mt-3">
         <div class="col-xs-12 col-md-4" v-for="(item, idx) in posts" :key="idx">
           <div class="card">
@@ -52,9 +58,25 @@
                 </button> -->
                 <button
                   type="button"
+                  class="btn btn-outline-success"
+                  @click="resetCreate(item.routeName)"
+                  v-if="!item.state && item.rejectMsg != null"
+                >
+                  再次申請
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary"
+                  @click="editCreate(item.routeName)"
+                  v-if="!item.state && item.rejectMsg != null"
+                >
+                  修改內容
+                </button>
+                <button
+                  type="button"
                   class="btn btn-outline-danger"
                   @click="rejectCreate(item.routeName)"
-                  v-if="!item.state && item.rejectMsg != 'Passed!'"
+                  v-if="!item.state"
                 >
                   取消申請
                 </button>
@@ -117,6 +139,13 @@ export default {
         State: false,
         RejectMsg: "",
       },
+      EditForumData: {
+        ForumName: "",
+        Description: "",
+        RouteName: "",
+        RejectMsg: "",
+        State: false,
+      },
     };
   },
   methods: {
@@ -128,6 +157,7 @@ export default {
       let token = auth.token;
       this.AuditForumPageData.State = false;
       this.AuditForumPageData.RejectMsg = null;
+
       if (isAuth) {
         axios({
           url: url,
@@ -153,7 +183,8 @@ export default {
       let isAuth = auth.isAuthorize;
       let token = auth.token;
       this.AuditForumPageData.State = false;
-      this.AuditForumPageData.RejectMsg = "string" ;  
+      this.AuditForumPageData.RejectMsg = "string";
+
       if (isAuth) {
         axios({
           url: url,
@@ -180,6 +211,7 @@ export default {
       let token = auth.token;
       this.AuditForumPageData.State = true;
       this.AuditForumPageData.RejectMsg = "Passed!";
+
       if (isAuth) {
         axios({
           url: url,
@@ -234,7 +266,6 @@ export default {
       this.changeForumState.State = false;
 
       console.log(this.changeForumState);
-
       this.$swal
         .fire({
           title: "確定?",
@@ -265,6 +296,92 @@ export default {
             })
               .then(() => {
                 console.log("駁回申請");
+                this.$router.go(0);
+              })
+              .catch((err) => console.log(err.response));
+          }
+        });
+    },
+    resetCreate(routename) {
+      const url = process.env.VUE_APP_API + "/api/Forum/ChangeForumState";
+      this.changeForumState.RouteName = routename;
+      this.changeForumState.State = false;
+      console.log(this.changeForumState);
+      this.$swal
+        .fire({
+          title: "確定重新送出審核?",
+          text: "確定!?",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, do it!",
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            this.changeForumState.RejectMsg = null;
+            axios({
+              url: url,
+              method: "POST",
+              data: this.changeForumState,
+            })
+              .then(() => {
+                this.$router.go(0);
+              })
+              .catch((err) => console.log(err.response));
+          }
+        });
+    },
+    editCreate(routename) {
+      const url = process.env.VUE_APP_API + "/api/Forum/Edit";
+      this.EditForumData.RouteName = routename;
+      this.EditForumData.State = false;
+      console.log(this.EditForumData);
+      this.$swal
+        .fire({
+          title: "修改內容",
+          text: "",
+          html:
+            '<input id="swal-input1" class="swal2-input" placeholder="修改看板名稱">' +
+            '<input id="swal-input2" class="swal2-input" placeholder="修改看板介紹">',
+          icon: "warning",
+          // preConfirm: function() {
+          //   return new Promise(function() {
+          //     // Validate input
+          //     if (
+          //       document.getElementById(
+          //     "swal-input1"
+          //   ).value == "" ||
+          //       document.getElementById(
+          //     "swal-input2"
+          //   ).value == ""
+          //     ) {
+          //       alert('Enter a value in both fields');
+          //     }else{
+          //       alert('OK!,');
+          //     }
+          //   });
+          // },
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "再次申請!",
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            this.EditForumData.RejectMsg = null;
+            this.EditForumData.ForumName = document.getElementById(
+              "swal-input1"
+            ).value;
+            this.EditForumData.Description = document.getElementById(
+              "swal-input2"
+            ).value;
+            axios({
+              url: url,
+              method: "POST",
+              data: this.EditForumData,
+            })
+              .then(() => {
                 this.$router.go(0);
               })
               .catch((err) => console.log(err.response));

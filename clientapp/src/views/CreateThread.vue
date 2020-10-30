@@ -24,7 +24,7 @@
             id="Title"
             class="mb-2 mr-sm-2 mb-sm-0 col-4"
             placeholder="請輸入文字"
-            maxlength="4"
+            maxlength="20"
           ></b-input>
         </div>
         <div class="d-flex my-2 align-items-center">
@@ -36,18 +36,7 @@
             placeholder="請輸入文字"
             maxlength="4"
           ></b-input>
-        </div>
-        <!-- <div class="d-flex my-2 align-items-center">
-          <label class="mr-3 col-2" for="Textarea">申請說明:</label>
-          <input
-            v-model="forum.content"
-            class="form-control"
-            id="Textarea"
-            rows="5"
-            placeholder="請輸入文字"
-            maxlength="500"
-          />
-        </div> -->
+        </div>        
         <div style="padding: 0px 15px">
           <img
             style="border: 1px dashed wheat"
@@ -95,7 +84,6 @@ export default {
         RouteName: "",
         Description: "",
         ModeratorId: "",
-        // content:"",
         ImgLink: "",
       },
       isLogin: "",

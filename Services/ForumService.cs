@@ -70,15 +70,16 @@ namespace XforumTest.Services
         /// 編輯看板資料、回復軟刪除狀態
         /// </summary>
         /// <param name="json"></param>
-        public void Edit(ForumCreateDto json)
+        public void Edit(ForumEditDto json)
         {
             //var json = JsonConvert.DeserializeObject<ForumCreate>(data);
-            Forums oldforum = _Forums.GetAll().FirstOrDefault(f => f.RouteName == json.RouteName);
-            oldforum.Img = json.ImgLink;
-            oldforum.ForumName = json.ForumName;
+            //oldforum.Img = json.ImgLink;
             //oldforum.ModeratorId = json.ModeratorId;
-            oldforum.Description = json.Description;
+            Forums oldforum = _Forums.GetAll().FirstOrDefault(f => f.RouteName == json.RouteName);
             oldforum.ForumName = json.ForumName;
+            oldforum.Description = json.Description;
+            oldforum.State = json.State;
+            oldforum.RejectMsg = json.RejectMeg;
 
             _Forums.Update(oldforum);
             _Forums.SaveContext();
