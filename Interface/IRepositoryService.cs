@@ -8,7 +8,9 @@ namespace XforumTest.Interface
 {
     public interface IRepository<T> where T:class
     {
-        void Create(T entity);
+        // void Create<A>(A entity) where A:class;
+
+        void Create<A>(A entity) where A : class;
         void Update(T entity);
         void Delete(T entity);
 
