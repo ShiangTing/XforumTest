@@ -143,7 +143,6 @@ import Navbar from "../components/common/Navbar";
 import { VueEditor } from "vue2-editor";
 import { ImageDrop } from "quill-image-drop-module";
 import ImageResize from "quill-image-resize";
-import _ from 'lodash';
 import axios from "axios";
 export default {
   components: { Navbar, VueEditor },
@@ -473,53 +472,58 @@ export default {
       return
     },
     thumbUpCheck (orignThumbStatus, currentThumbStatus, viewData) {
-
+      if (this.articleCurrentThumbStatus.isLike === this.articleOriginThumbStatus.isLike
+        && this.articleCurrentThumbStatus.isDisLike === this.articleOriginThumbStatus.isDisLike) {
+        this.articleCurrentThumbStatus.likeNumber = this.articleOriginThumbStatus.likeNumber
+        this.articleCurrentThumbStatus.disLikeNumber = this.articleOriginThumbStatus.disLikeNumber
+      }
       if (!currentThumbStatus.isLike && !currentThumbStatus.isDisLike) {
         currentThumbStatus.isLike = true
-        currentThumbStatus.likeNumber += 1
+        currentThumbStatus.likeNumber = 1
         viewData.likeNumber += 1
         return;
       }
 
       if (currentThumbStatus.isLike && !currentThumbStatus.isDisLike) {
         currentThumbStatus.isLike = false
-        currentThumbStatus.likeNumber -= 1
+        currentThumbStatus.likeNumber = -1
         viewData.likeNumber -= 1
         return;
       }
       if (!currentThumbStatus.isLike && currentThumbStatus.isDisLike) {
         currentThumbStatus.isLike = true
-        currentThumbStatus.likeNumber += 1
+        currentThumbStatus.likeNumber = 1
         viewData.likeNumber += 1
         currentThumbStatus.isDisLike = false
-        currentThumbStatus.disLikeNumber -= 1
+        currentThumbStatus.disLikeNumber = -1
         viewData.disLikeNumber -= 1
         return;
       }
     },
     thumbDownCheck (orignThumbStatus, currentThumbStatus, viewData) {
-      if (orignThumbStatus.isDisLike === currentThumbStatus.isDisLike) {
-        currentThumbStatus.isDisLike = orignThumbStatus.isDisLike
-        currentThumbStatus.disLikeNumber = 0
+      if (this.articleCurrentThumbStatus.isLike === this.articleOriginThumbStatus.isLike
+        && this.articleCurrentThumbStatus.isDisLike === this.articleOriginThumbStatus.isDisLike) {
+        this.articleCurrentThumbStatus.likeNumber = this.articleOriginThumbStatus.likeNumber
+        this.articleCurrentThumbStatus.disLikeNumber = this.articleOriginThumbStatus.disLikeNumber
       }
       if (!currentThumbStatus.isLike && !currentThumbStatus.isDisLike) {
         currentThumbStatus.isDisLike = true
-        currentThumbStatus.disLikeNumber += 1
+        currentThumbStatus.disLikeNumber = 1
         viewData.disLikeNumber += 1
         return;
       }
       if (currentThumbStatus.isLike && !currentThumbStatus.isDisLike) {
         currentThumbStatus.isLike = false
-        currentThumbStatus.likeNumber -= 1
+        currentThumbStatus.likeNumber = -1
         viewData.likeNumber -= 1
         currentThumbStatus.isDisLike = true
-        currentThumbStatus.disLikeNumber += 1
+        currentThumbStatus.disLikeNumber = 1
         viewData.disLikeNumber += 1
         return;
       }
       if (!currentThumbStatus.isLike && currentThumbStatus.isDisLike) {
         currentThumbStatus.isDisLike = false
-        currentThumbStatus.disLikeNumber -= 1
+        currentThumbStatus.disLikeNumber = -1
         viewData.disLikeNumber -= 1
         return;
       }
@@ -528,30 +532,39 @@ export default {
       let vm = this;
       if (vm.checkLogin()) {
         vm.thumbUpCheck(vm.articleOriginThumbStatus, vm.articleCurrentThumbStatus, vm.article);
-        vm.throttleArticle()
+        vm.updateArticleStatus(vm.articleCurrentThumbStatus).then(() => {
+          vm.getUserThumbStatus(vm.article.postId, vm.articleOriginThumbStatus, vm.articleCurrentThumbStatus)
+        })
       }
-
     },
     dislikeArticle () {
       let vm = this;
-      vm.thumbDownCheck(vm.articleOriginThumbStatus, vm.articleCurrentThumbStatus, vm.article);
       if (vm.checkLogin()) {
-        vm.throttleArticle()
+        vm.thumbDownCheck(vm.articleOriginThumbStatus, vm.articleCurrentThumbStatus, vm.article);
+        vm.updateArticleStatus(vm.articleCurrentThumbStatus).then(() => {
+          vm.getUserThumbStatus(vm.article.postId, vm.articleOriginThumbStatus, vm.articleCurrentThumbStatus)
+        })
       }
     },
     likeMessage (index) {
       let vm = this;
       if (vm.checkLogin()) {
-        vm.thumbUpCheck(vm.msgCurrentThumbStatusList[index], vm.messageList[index])
-        vm.throttleMsg(vm, index);
+        vm.thumbUpCheck(vm.msgOriginThumbStatusList[index],vm.msgCurrentThumbStatusList[index], vm.messageList[index])
+        vm.updateMessageStatus(vm.msgCurrentThumbStatusList[index])
+          .then(() => {
+            vm.getUserThumbStatus(vm.msgCurrentThumbStatusList[index].messageId, vm.msgOriginThumbStatusList[index], vm.msgCurrentThumbStatusList[index])
+          })
       }
 
     },
     dislikeMessage (index) {
       let vm = this;
       if (vm.checkLogin()) {
-        vm.thumbDownCheck(vm.msgCurrentThumbStatusList[index], vm.messageList[index])
-        vm.throttleMsg(vm, index);
+        vm.thumbDownCheck(vm.msgOriginThumbStatusList[index],vm.msgCurrentThumbStatusList[index], vm.messageList[index])
+        vm.updateMessageStatus(vm.msgCurrentThumbStatusList[index])
+          .then(() => {
+            vm.getUserThumbStatus(vm.msgCurrentThumbStatusList[index].messageId, vm.msgOriginThumbStatusList[index], vm.msgCurrentThumbStatusList[index])
+          })
       }
 
     },
@@ -576,30 +589,30 @@ export default {
       }
       return
     },
-    throttleArticle: _.throttle(function () {
-      console.log(this);
-      if (this.articleCurrentThumbStatus.isLike === this.articleOriginThumbStatus.isLike
-        && this.articleCurrentThumbStatus.isDisLike === this.articleOriginThumbStatus.isDisLike) {
-        this.articleCurrentThumbStatus.likeNumber = this.articleOriginThumbStatus.likeNumber
-        this.articleCurrentThumbStatus.disLikeNumber = this.articleOriginThumbStatus.disLikeNumber
-      }
-      this.updateArticleStatus(this.articleCurrentThumbStatus).then(() => {
-        this.getUserThumbStatus(this.article.postId, this.articleOriginThumbStatus, this.articleCurrentThumbStatus)
-      })
-    }, 1000),
-    throttleMsg (vm, index) {
-      window._.throttle(function () {
-        if (vm.msgOriginThumbStatusList[index].isLike === vm.msgCurrentThumbStatusList[index].isLike
-          && vm.msgOriginThumbStatusList[index].isDisLike === vm.msgCurrentThumbStatusList[index].isDisLike) {
-          return
-        } else {
-          vm.updateMessageStatus(vm.msgCurrentThumbStatusList[index])
-            .then(() => {
-              vm.getUserThumbStatus(vm.msgCurrentThumbStatusList[index].messageId, vm.msgOriginThumbStatusList[index], vm.msgCurrentThumbStatusList[index])
-            })
-        }
-      }, 1000)
-    }
+    // throttleArticle: _.throttle(function () {
+    //   console.log(this);
+    //   if (this.articleCurrentThumbStatus.isLike === this.articleOriginThumbStatus.isLike
+    //     && this.articleCurrentThumbStatus.isDisLike === this.articleOriginThumbStatus.isDisLike) {
+    //     this.articleCurrentThumbStatus.likeNumber = this.articleOriginThumbStatus.likeNumber
+    //     this.articleCurrentThumbStatus.disLikeNumber = this.articleOriginThumbStatus.disLikeNumber
+    //   }
+    //   this.updateArticleStatus(this.articleCurrentThumbStatus).then(() => {
+    //     this.getUserThumbStatus(this.article.postId, this.articleOriginThumbStatus, this.articleCurrentThumbStatus)
+    //   })
+    // }, 1000),
+    // throttleMsg (vm, index) {
+    //   window._.throttle(function () {
+    //     if (vm.msgOriginThumbStatusList[index].isLike === vm.msgCurrentThumbStatusList[index].isLike
+    //       && vm.msgOriginThumbStatusList[index].isDisLike === vm.msgCurrentThumbStatusList[index].isDisLike) {
+    //       return
+    //     } else {
+    //       vm.updateMessageStatus(vm.msgCurrentThumbStatusList[index])
+    //         .then(() => {
+    //           vm.getUserThumbStatus(vm.msgCurrentThumbStatusList[index].messageId, vm.msgOriginThumbStatusList[index], vm.msgCurrentThumbStatusList[index])
+    //         })
+    //     }
+    //   }, 1000)
+    // }
   },
   async created () {
     let vm = this;
@@ -611,7 +624,7 @@ export default {
   },
   beforeDestroy () {
     let vm = this;
-    vm.updateArticleStatus(this.articleCurrentThumbStatus)
+    vm.throttleArticle()
   },
 };
 </script>
@@ -655,11 +668,6 @@ export default {
     height: 40px;
     border: $border-color;
     margin: 0 5px;
-    transition: all 0.3s;
-    &:hover {
-      border: 1px solid rgb(244, 156, 66);
-      color: rgb(244, 156, 66);
-    }
   }
 
   a.active {
