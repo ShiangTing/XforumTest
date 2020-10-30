@@ -110,7 +110,8 @@
                       <img :src="memberImg" alt="memberImg" v-else />
                     </a>
                     <textarea class="form-control" placeholder="留個言吧~" v-model="reply.context"></textarea>
-                    <button class="btn btn-secondary h-100" @click.prevent="postMessage" :disabled="reply.context.trim() !== ''? false:true">
+                    <button class="btn btn-secondary h-100" @click.prevent="postMessage"
+                      :disabled="reply.context.trim() !== ''? false:true">
                       送出
                     </button>
                   </div>
@@ -243,6 +244,26 @@ export default {
         .catch((err) => {
           console.log(err);
         });
+    },
+    checkLogin () {
+      let vm = this;
+      if (!vm.isLogin) {
+        vm.$swal({
+          title: `請先登入喔`,
+          text: "登入才能做此操作",
+          type: "question",
+          showCancelButton: true,
+          confirmButtonText: "前往登入",
+          cancelButtonText: "取消",
+        }).then((result) => {
+          if (result.value) {
+            vm.$router.push('/login')
+          }
+        });
+        return false
+      } else {
+        return true
+      }
     },
     // 文章內容
     getArticle () {
@@ -475,53 +496,46 @@ export default {
     },
     likeArticle () {
       let vm = this;
-      vm.thumbUpCheck(vm.articleCurrentThumbStatus, vm.article);
-      let debounceThumb = _.debounce(
-        () => {
-          vm.updateArticleStatus(vm.articleCurrentThumbStatus).then(() => {
-            vm.getUserThumbStatus(vm.article.postId, vm.articleOriginThumbStatus, vm.articleCurrentThumbStatus)
-          })
-        }
-        , 3000, { leading: true, trailing: false })
-      debounceThumb();
+      if (vm.checkLogin()) {
+        vm.thumbUpCheck(vm.articleCurrentThumbStatus, vm.article);
+        vm.updateArticleStatus(vm.articleCurrentThumbStatus).then(() => {
+          vm.getUserThumbStatus(vm.article.postId, vm.articleOriginThumbStatus, vm.articleCurrentThumbStatus)
+        })
+      }
+
     },
     dislikeArticle () {
       let vm = this;
-      vm.thumbDownCheck(vm.articleCurrentThumbStatus, vm.article);
-      let debounceThumb = _.debounce(
-        () => {
-          vm.updateArticleStatus(vm.articleCurrentThumbStatus).then(() => {
-            vm.getUserThumbStatus(vm.article.postId, vm.articleOriginThumbStatus, vm.articleCurrentThumbStatus)
-          })
-        }
-        , 3000, { leading: true, trailing: false })
-      debounceThumb();
+      if (vm.checkLogin()) {
+        vm.thumbDownCheck(vm.articleCurrentThumbStatus, vm.article);
+        vm.updateArticleStatus(vm.articleCurrentThumbStatus).then(() => {
+          vm.getUserThumbStatus(vm.article.postId, vm.articleOriginThumbStatus, vm.articleCurrentThumbStatus)
+        })
+      }
+
     },
     likeMessage (index) {
       let vm = this;
-      vm.thumbUpCheck(vm.msgCurrentThumbStatusList[index], vm.messageList[index])
-      let debounceThumb = _.debounce(
-        () => {
-          vm.updateMessageStatus(vm.msgCurrentThumbStatusList[index])
-            .then(() => {
-              vm.getUserThumbStatus(vm.msgCurrentThumbStatusList[index].messageId, vm.msgOriginThumbStatusList[index], vm.msgCurrentThumbStatusList[index])
-            })
-        }
-        , 3000, { leading: true, trailing: false })
-      debounceThumb();
+      if (vm.checkLogin()) {
+
+        vm.thumbUpCheck(vm.msgCurrentThumbStatusList[index], vm.messageList[index])
+        vm.updateMessageStatus(vm.msgCurrentThumbStatusList[index])
+          .then(() => {
+            vm.getUserThumbStatus(vm.msgCurrentThumbStatusList[index].messageId, vm.msgOriginThumbStatusList[index], vm.msgCurrentThumbStatusList[index])
+          })
+      }
+
     },
     dislikeMessage (index) {
       let vm = this;
-      vm.thumbDownCheck(vm.msgCurrentThumbStatusList[index], vm.messageList[index])
-      let debounceThumb = _.debounce(() => {
-
+      if (vm.checkLogin()) {
+        vm.thumbDownCheck(vm.msgCurrentThumbStatusList[index], vm.messageList[index])
         vm.updateMessageStatus(vm.msgCurrentThumbStatusList[index])
           .then(() => {
             vm.getUserThumbStatus(vm.msgCurrentThumbStatusList[index].messageId, vm.msgOriginThumbStatusList[index], vm.smsgCurrentThumbStatusList[index])
           })
       }
-        , 3000, { leading: true, trailing: false })
-      debounceThumb();
+
     },
     updateArticleStatus (current) {
       let vm = this;
@@ -549,9 +563,11 @@ export default {
   },
   async created () {
     let vm = this;
-    await vm.getUserInfo();
-    await vm.getArticle();
-    await vm.getMessages();
+    if (vm.$store.state.tokenModule.isAuthorize) {
+      await vm.getUserInfo();
+      await vm.getArticle();
+      await vm.getMessages();
+    }
   },
 };
 </script>

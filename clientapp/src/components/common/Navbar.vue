@@ -126,10 +126,8 @@ export default {
   },
   created() {
     let vm = this;
-    let auth = vm.$store.state.tokenModule;
-    let isAuth = auth.isAuthorize;
     let url = process.env.VUE_APP_API + "/api/Users/GetSingleMember";
-    if (isAuth) {
+    if (vm.$store.state.tokenModule.isAuthorize) {
       vm.$axios({
         url: url,
         method: "GET",

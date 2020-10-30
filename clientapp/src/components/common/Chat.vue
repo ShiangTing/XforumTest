@@ -3,10 +3,10 @@
     <ul class="list-group">
       <li class="list-group-item font-weight-bold bg-dark text-white">聊天列表</li>
       <li class="list-group-item" v-for="(item,index) in chatList" :key="index">
-        <a class="d-flex align-items-center text-black w-100 h-100" data-toggle="modal" data-target="#chatModal"
+        <a class="d-flex align-items-center w-100 h-100" data-toggle="modal" data-target="#chatModal"
           @click="createChatRoom(item.userId)">
-          <img :src="item.imgLink" alt="" style="width: 30px; height: 30px">
-          <p class="m-0 pl-2 text-black">{{item.name}}</p>
+          <img :src="item.imgLink" class="chatList-img">
+          <p class="m-0 pl-2 w-100 ">{{item.name}}</p>
         </a>
       </li>
     </ul>
@@ -17,24 +17,26 @@
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+            <h5 class="modal-title" id="exampleModalLabel">ChatRoom</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
           <div class="modal-body w-100">
             <div class="chat">
-              <div class="d-block chat-list">
-                <div class="chat-message" v-for="(item,index) in receiveMsg" :key="index">
-                  <span class="message-title">{{item.userName}}</span>
-                  <span class="message-content">{{ item.message }}</span>
+              <div class="d-flex flex-column chat-list">
+                <div class="chat-message" v-for="(item,index) in receiveMsg" :key="index"
+                  :class="item.userName === userData.username ? 'align-self-end right-color': 'align-self-start left-color'">
+                  <span class="message-title" v-if="item.userName !== userData.username">{{item.userName}}</span>
+                  <span class="message-content"
+                    :class="item.userName === userData.username ? 'text-right': 'text-left'">{{ item.message }}</span>
                 </div>
               </div>
               <div class="input-group chat-input-group">
                 <input type="text" class="form-control chat-input h-100" placeholder="在書城論壇尋求邂逅是否搞錯了甚麼?"
                   v-model="inputMsg">
                 <div class="input-group-append">
-                  <button class="btn btn-secondary " type="button" @click="sendMsgToHub">傳送</button>
+                  <button class="btn btn-secondary rounded-0" type="button" @click="sendMsgToHub">傳送</button>
                 </div>
               </div>
             </div>
@@ -57,6 +59,7 @@ export default {
       show: false,
       inputMsg: "",
       receiveMsg: [],
+      friendId: "",
       chatId: "",
       userData: {
         userId: "",
@@ -82,13 +85,14 @@ export default {
       let vm = this;
       return vm.hubConnection.start().then(() => {
         vm.listenToHub();
+      }).then(() => {
+        vm.joinGroup()
       }).catch(() => {
         console.log("失敗");
       })
     },
     sendMsgToHub () {
       let vm = this;
-      console.log();
       vm.hubConnection.send('SendMessageToGroup', vm.chatId, vm.inputMsg, vm.userData.username).then(() => {
         console.log('msg send');
       })
@@ -120,7 +124,6 @@ export default {
       let data = {
         userId: vm.userData.userId
       }
-      console.log(data);
       return vm.$axios.post(url, data).then(res => {
         vm.chatList = res.data.data
       })
@@ -143,45 +146,86 @@ export default {
           console.log('join Group');
         })
     },
+    stopConnection () {
+      let vm = this;
+      return vm.hubConnection.stop().then(res => {
+        console.log("中斷成功", res);
+      })
+    },
     async createChatRoom (friendId) {
-      await this.connectHub()
-      await this.getChatRoomId(friendId)
-      await this.joinGroup()
+      let vm = this;
+      if (vm.friendId === "" || vm.friendId !== friendId) {
+        vm.friendId = friendId
+        console.log(vm.friendId);
+        await vm.stopConnection();
+        await vm.connectHub()
+        await vm.getChatRoomId(friendId)
+        await vm.joinGroup()
+      }
     }
   },
   async created () {
     let vm = this;
-    // vm.$bus.$on("getUserId", msg => {
-    //   vm.userId = msg;
-    //   
-    // });
-    await vm.getUserInfo()
-    await vm.getChatList()
+    if (vm.$store.state.tokenModule.isAuthorize) {
+      await vm.getUserInfo()
+      await vm.getChatList()
+      
+    }
   },
   beforeDestroy () {
-    this.$bus.$off("getUserId");
+    let vm = this;
+    vm.stopConnection()
   }
 }
 
 </script>
 
 <style lang="scss" scoped>
+  a {
+    text-decoration: none;
+    cursor: pointer;
+    color: #000;
+  }
+  .chatList-img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+  }
   .message {
     &-title {
       display: block;
+      letter-spacing: 1px;
+      font-weight: 700;
       font-size: 10px;
+      color: #6c6c6c;
     }
     &-content {
       display: block;
     }
   }
+  .left-color {
+    background-color: #f0bbd1;
+  }
+  .right-color {
+    background-color: rgb(67, 199, 33);
+  }
   .chat {
     width: 100%;
     height: 500px;
     padding: 10px;
+
     &-list {
       width: 100%;
       height: 90%;
+      background: linear-gradient(
+          to left top,
+          rgba(255, 255, 255, 0.2),
+          rgba(255, 255, 255, 0.2)
+        ),
+        url("https://images.unsplash.com/photo-1507842217343-583bb7270b66?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1000&q=60");
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
       padding: 5px;
       overflow: auto;
       border: 1px solid #000;
@@ -191,20 +235,16 @@ export default {
         width: 100%;
         height: 10%;
       }
-
       border: 1px solid #000;
       border-radius: 0%;
     }
     &-message {
       display: flex;
       flex-direction: column;
-      width: 100%;
-      max-width: 150px;
       word-wrap: break-word;
-      padding: 10px 5px;
+      padding: 10px 10px;
       margin: 5px;
       border-radius: 6px;
-      background-color: rgba(67, 199, 33, 0.2);
     }
     .form-control:focus {
       outline: 1px solid #000;

@@ -30,10 +30,12 @@ instance.interceptors.response.use(
     const originalRequest = error.config;
     if (error.response.status === 401) {
       const token = await refreshAccessToken();
-      if (token) {
-        console.log("輸入");
+      if (token !== "") {
         originalRequest.headers.Authorization = 'Bearer ' + token;
         return instance(originalRequest);
+      }
+      else {
+        alert("登入驗證過期請重新登入")
       }
     }
     if (error.response.status) {
@@ -49,18 +51,21 @@ function refreshAccessToken() {
   axios
     .post(refreshUrl, { refreshToken: refreshToken })
     .then((res) => {
-      store.dispatch('clearAuth');
-      let data = {
-        refreshToken: res.data.refreshToken.toString(),
-        token: res.data.token.toString(),
-        expireTime: res.data.expireTime.toString(),
-        isAuthorize: true,
-      };
-      store.dispatch('setAuth', data);
-      return store.state.tokenModule.token;
+      if (res.status === 200 && res.data.issuccessful) {
+        let data = {
+          refreshToken: res.data.refreshToken,
+          token: res.data.token,
+          expireTime: res.data.expireTime,
+          isAuthorize: true,
+        };
+        store.dispatch('setAuth', data);
+        return store.state.tokenModule.token;
+      } else {
+        return "";
+      }
     })
-    .catch((err) => {
-      console.log(err.response,'驗證過期請重新登入');
+    .catch(() => {
+      console.log('登入驗證錯誤');
     });
 }
 export default instance;
