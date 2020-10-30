@@ -14,11 +14,13 @@ namespace XforumTest.Hubs
     {
         private readonly IRepository<ForumMembers> _members;
         private readonly IRepository<Chats> _chats;
+        private readonly IRepository<ChatDetails> _details;
         private string roomName;
-        public ChatHub(IRepository<ForumMembers> member, IRepository<Chats> chats)
+        public ChatHub(IRepository<ForumMembers> member, IRepository<Chats> chats, IRepository<ChatDetails> details)
         {
             _members = member;
             _chats = chats;
+            _details = details;
         }
 
 
@@ -110,9 +112,23 @@ namespace XforumTest.Hubs
         {
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, chatroomId);
         }
-        public async Task SendMessageToGroup(string chatroomId,string message,string userName)
+        //改成Dto
+        public async Task SendMessageToGroup(ChatDetailDto dto)
         {
-            await Clients.Group(chatroomId).ReceiveGroupMessage(chatroomId, message, userName);
+           // 聊天後就存入資料庫
+            ChatDetails  details = new ChatDetails()
+            {
+                Id = Guid.NewGuid(),
+                RoomId = dto.RoomId,
+                UserName = dto.UserName,
+                //DateTime =
+                Text = dto.Text,
+            };
+            _details.Create(details);
+            _details.SaveContext();
+
+
+            await Clients.Group(dto.RoomId).ReceiveGroupMessage(dto.RoomId, dto.Text, dto.UserName);
         }
 
     
