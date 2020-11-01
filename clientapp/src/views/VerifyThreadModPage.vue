@@ -75,7 +75,7 @@
                 <button
                   type="button"
                   class="btn btn-outline-danger"
-                  @click="rejectCreate(item.routeName)"
+                  @click="deleteCreate(item.forumId)"
                   v-if="!item.state"
                 >
                   取消申請
@@ -145,6 +145,9 @@ export default {
         RouteName: "",
         RejectMsg: "",
         State: false,
+      },
+      DeleteForumData:{
+        forumId:"",
       },
     };
   },
@@ -382,6 +385,35 @@ export default {
               data: this.EditForumData,
             })
               .then(() => {
+                this.$router.go(0);
+              })
+              .catch((err) => console.log(err.response));
+          }
+        });
+    },
+    deleteCreate(forumId) {
+      const url = process.env.VUE_APP_API + "/api/Forum/DeleteForum";
+      this.DeleteForumData.forumId = forumId;
+      console.log(this.DeleteForumData);
+      this.$swal
+        .fire({
+          title: "確定刪除?",
+          text: "成功後無法修正!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, do it!",
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            axios({
+              url: url,
+              method: "Delete",
+              data: this.DeleteForumData,
+            })
+              .then(() => {
+                console.log("刪除版面");
                 this.$router.go(0);
               })
               .catch((err) => console.log(err.response));
