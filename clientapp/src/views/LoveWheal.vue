@@ -184,10 +184,10 @@ export default {
       connectList:{
           UserName:"大傑神",
           ConnectionId:"",
-      }
+      },
       hubConnection: new signalR.HubConnectionBuilder()
         .configureLogging(signalR.LogLevel.Debug) //設定顯示log
-        .withUrl(process.env.VUE_APP_API + "/chathub" , { accessTokenFactory: () => this.loginToken })
+        .withUrl(process.env.VUE_APP_API + "/chathub")
         .withAutomaticReconnect()
         .build(),
     };

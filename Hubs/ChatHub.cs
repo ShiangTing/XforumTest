@@ -18,8 +18,8 @@ namespace XforumTest.Hubs
         private readonly IRepository<ForumMembers> _members;
         private readonly IRepository<Chats> _chats;
         private readonly IRepository<ChatDetails> _details;
-        private static Dictionary<string, string> ConnectionList;
-        private static List<OnlineListDto> ConnectList;
+     //   private static Dictionary<string, string> ConnectionList;
+        private static List<OnlineListDto> ConnectList = new List<OnlineListDto>();
         public ChatHub(IRepository<ForumMembers> member, IRepository<Chats> chats, IRepository<ChatDetails> details)
         {
             _members = member;
@@ -160,15 +160,18 @@ namespace XforumTest.Hubs
         public override async Task OnConnectedAsync()
         {
             //AddOnlineInList(userName);
-            ConnectionList.Add("UserConnected", GetConnectionId());
-            OnlineListDto onlineList = new OnlineListDto()
-            {
-                UserName = "",
-                ConnectionId = GetConnectionId()
-            };
-            ConnectList.Add(onlineList);
+          //  ConnectionList.Add("UserConnected", GetConnectionId());
+            //OnlineListDto onlineList = new OnlineListDto()
+            //{
+            //    UserName = "",
+            //    ConnectionId = GetConnectionId()
+            //};
+            //ConnectList.Add(onlineList);
+
+            ConnectList.Add(new OnlineListDto { UserName = "", ConnectionId = GetConnectionId() });
+            Debug.WriteLine("UserConnected---"+ Context.ConnectionId);
             //測試
-            await Clients.Caller.SendMessage("UserConnected", GetConnectionId());
+          //  await Clients.Caller.SendMessage("UserConnected", GetConnectionId());
             
             await base.OnConnectedAsync();
         }
@@ -181,7 +184,8 @@ namespace XforumTest.Hubs
 
             ConnectList.Remove(user);
             //測試
-            await Clients.All.SendMessage("UserDisConnected", Context.ConnectionId);
+            Debug.WriteLine("UserDisConnected---" + Context.ConnectionId);
+           // await Clients.All.SendMessage("UserDisConnected", Context.ConnectionId);
             await base.OnDisconnectedAsync(exception);
         }
 
