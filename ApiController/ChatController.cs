@@ -70,11 +70,11 @@ namespace XforumTest.ApiController
           //  await _hubContext.Clients.All.SendMessage(users, dto.UserMessage);
         }
 
-        public async Task<bool> CheckIfConnected(string userName)
-        {
+        //public async Task<bool> CheckIfConnected(string userName)
+        //{
 
-            await _hubContext.Clients.All.CheckConnnected
-        }
+        //    await _hubContext.Clients.All.CheckConnnected
+        //}
 
     }
 }
