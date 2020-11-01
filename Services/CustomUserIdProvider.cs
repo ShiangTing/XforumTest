@@ -17,7 +17,9 @@ namespace XforumTest.Services
 
         public string GetUserId(HubConnectionContext connection)
         {
-            
+            return connection.User?.Identity?.Name;
         }
+
+        
     }
 }

@@ -18,6 +18,8 @@ using XforumTest.Interface;
 using XforumTest.Repository;
 using XforumTest.Services;
 using XforumTest.Hubs;
+using Microsoft.AspNetCore.SignalR;
+using System.Threading.Tasks;
 
 namespace XforumTest
 {
@@ -67,7 +69,7 @@ namespace XforumTest
 
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
             services.AddControllers().AddNewtonsoftJson();
-
+           
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
             {
                 options.IncludeErrorDetails = true;
@@ -82,8 +84,29 @@ namespace XforumTest
                     ValidateIssuerSigningKey = false,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration.GetValue<string>("JwtSettings:SignKey")))
                 };
+                options.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        var accessToken = context.Request.Query["access_token"];
+
+                        // If the request is for our hub...
+                        var path = context.HttpContext.Request.Path;
+                        if (!string.IsNullOrEmpty(accessToken) &&
+                            (path.StartsWithSegments("/hubs/chat")))
+                        {
+                            // Read the token out of the query string
+                            context.Token = accessToken;
+                        }
+                        return Task.CompletedTask;
+                    }
+                };
             });
+
+           
             services.AddSignalR();
+            services.AddSingleton<IUserIdProvider, CustomUserIdProvider>();
+
             services.AddSwaggerGen(c =>
             {
                 //c.SwaggerDoc("v1", new OpenApiInfo

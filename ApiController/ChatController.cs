@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -59,13 +60,20 @@ namespace XforumTest.ApiController
         }
 
 
-        [Authorize]
+    //    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost]
-        public async Task GetPrivateMessage(string user,string message)
+        public async Task GetPrivateMessage(PMDto dto)
         {
-           // var user = User.Identity.Name;
+           var users = User.Identity.Name;
 
-            await _hubContext.Clients.User(user).SendMessage(user, message);
+            await _hubContext.Clients.User(users).SendMessage(users, dto.UserMessage);
+          //  await _hubContext.Clients.All.SendMessage(users, dto.UserMessage);
+        }
+
+        public async Task<bool> CheckIfConnected(string userName)
+        {
+            //從list 取得
+            await 
         }
 
     }

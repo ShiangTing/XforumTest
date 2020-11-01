@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using XforumTest.DataTable;
@@ -10,12 +12,13 @@ using XforumTest.Interface;
 
 namespace XforumTest.Hubs
 {
+    //[Authorize]
     public class ChatHub : Hub<IChat>
     {
         private readonly IRepository<ForumMembers> _members;
         private readonly IRepository<Chats> _chats;
         private readonly IRepository<ChatDetails> _details;
-        private string roomName;
+        private static Dictionary<string, string> ConnectionList;
         public ChatHub(IRepository<ForumMembers> member, IRepository<Chats> chats, IRepository<ChatDetails> details)
         {
             _members = member;
@@ -103,73 +106,59 @@ namespace XforumTest.Hubs
             await Clients.Group(dto.RoomId).ReceiveGroupMessage(dto.RoomId, dto.Text, dto.UserName);
         }
 
-    
+
         //送交友通知給特定人
-        public async Task SendMessageToMember(ProdcastDto dto)
+        // [Authorize]
+      //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task SendMessageToMember(string userId,string userMsg)
         {
-           // var a = Context.User.Identity.Name;
-            // var stringId = dto.UserId.ToString();
-            await Clients.User(dto.UserName).SendMessage(dto.UserName,dto.UserMessage);
+
+
+
+            Debug.WriteLine(Context.User.Identity.Name);
+            await Clients.User(userId).SendMessage(userId,userMsg);
+            Debug.WriteLine("id--" + userId + ", msg" + userMsg);
            // await  Clients.Client(stringId).SendMessage(stringId, dto.UserMessage);
             //var stringId = dto.UserId.ToString();
-            await Clients.All.SendMessage(dto.UserName, dto.UserMessage);
+           // await Clients.All.SendMessage(dto.UserName, dto.UserMessage);
         }
 
-        //   public Task SendInforToUser(string userId, string userMessage)
-        // {
-        // userId = Context.ConnectionId;
-        //return Clients.Client(userId).SendAsync("sendToUser", userId, userMessage);
-        //}
 
-
-        //發送訊息給所有人
-        //public async Task SendMessage(string user, string message)
-        //{
-        //    await Clients.All.SendAsync("ReceiveMessage", user, message);
-        //}
-
-       
-
-
-
-        //}
 
         //給user特定Id
 
-        //  public async Task SendPrivateMessage(string userId,string message)
-        //   {
-        //Clients.All.
-        //find user
-        //var user =
-        //if (user!=null){
-        //  var connctionId = Context.ConnectionId;
-        //  await Clients.Client(userId).SendAsync("ReceiveMessage", message);
-        //}
-        // var message = $"Send message to you with user id {userId}";
-        //await Clients.Client(userId).SendAsync("ReceiveMessage", message);
+        public async Task SendInfoToUser(string userId, string message)
+        {
+            //check dictionary if same
+            //將dictionary 裡同userId的connectionId蓋過去
+            if (user != null)
+            {
+                var connctionId = Context.ConnectionId;
+                await Clients.Client(userId).SendAsync("ReceiveMessage", message);
+            }
 
-        //    }
+            //將message傳給connectionId
+            var message = $"Send message to you with user id {userId}";
+            await Clients.Client(userId).SendAsync("ReceiveMessage", message);
+
+        }
 
 
 
 
-        //   public async Task SendMessaeToGroup(string user, string content, string recipientId, string chatRoomId)
-        //   {
-        // await Groups.AddToGroupAsync(Context.ConnectionId, chatRoomId);
 
-        // await Clients.Group(chatRoomId).SendAsync("ReceiveMessage", user, content);
-        // }
 
         // 連線
         public override async Task OnConnectedAsync()
         {
-            await Clients.All.SendMessage("UserConnected", Context.ConnectionId);
+            await Clients.Caller.SendMessage("UserConnected", GetConnectionId());
+            
             await base.OnConnectedAsync();
         }
         // 斷線
         public override async Task OnDisconnectedAsync(Exception exception)
         {
-            await Clients.All.SendMessage("UserDisConnected", Context.ConnectionId);
+            //await Clients.All.SendMessage("UserDisConnected", Context.ConnectionId);
             await base.OnDisconnectedAsync(exception);
         }
 
@@ -178,6 +167,11 @@ namespace XforumTest.Hubs
         {
             return Context.ConnectionId;
         }
-        //
+        
+
+        public void CheckConnnected()
+        {
+
+        }
     }
 }

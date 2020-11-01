@@ -149,7 +149,7 @@ mixin icon(el)
 
 <script>
 import Navbar from "../components/common/Navbar";
-import * as signalR from "@aspnet/signalr";
+import * as signalR from '@microsoft/signalr';
 import $ from "jquery";
 // import axios from "axios";
 export default {
@@ -163,6 +163,7 @@ export default {
         age: "",
         gender: "",
         imgLink: "",
+        email: "",
       },
       self: {
         userId: "",
@@ -177,12 +178,13 @@ export default {
         friendId: "",
       },
       sendMsgJson: {
-        UserId: "ba8ccd2b-b320-43cc-a023-edb75ca0b8dd",
+        UserId: "apitest@test.com",
         UserMessage: "我傳訊息了",
       },
       hubConnection: new signalR.HubConnectionBuilder()
         .configureLogging(signalR.LogLevel.Debug) //設定顯示log
-        .withUrl(process.env.VUE_APP_API + "/chathub")
+        .withUrl(process.env.VUE_APP_API + "/chathub" , { accessTokenFactory: () => this.loginToken })
+        .withAutomaticReconnect()
         .build(),
     };
   },
@@ -192,33 +194,68 @@ export default {
       vm.hubConnection
         .start()
         .then(() => {
-          vm.getConnectionId();
+            vm.sendMessageToMember();
         })
-        .then(() => {
+        .then( () => {
           vm.listenToHub();
         })
+        // .then((resolve) => {
+        //   vm.sendMessageToMember();
+        //   resolve();
+        // })
         .catch(() => {
           console.log("失敗");
         });
     },
-    sendMsgToHub() {
+    // 本來的
+    // sendMsgToHub() {
+    //   let vm = this;
+    //   vm.hubConnection.send("SendMessageToMember", vm.sendMsgJson).then(() => {
+    //     console.log("msg send");
+    //   });
+    // },
+    async listenToHub() {
+        // console.log("--- listenToHub start");
       let vm = this;
-      vm.hubConnection.send("SendMessageToMember", vm.sendMsgJson).then(() => {
-        console.log("msg send");
-      });
-    },
-    listenToHub() {
-      let vm = this;
-      vm.hubConnection.on("SendMessage", (id, msg) => {
+      vm.hubConnection.on("SendMessage", (userId, userMsg) => {
+          console.log('--- listenToHub', userId, userMsg);
         this.$bus.$emit(
           "getNewMsg",
-          `您將${vm.metchUser.matchedName}加入到好友清單了!`
+         // `您將${vm.metchUser.matchedName}加入到好友清單了!`
+         `您將大傑加入到好友清單了!`
         );
-
-        console.log(vm.metchUser.matchedName);
-        console.log(id, msg);
-      });
+        //console.log(vm.metchUser.matchedName);
+        
+        console.log('sendtosb');
+      })
+        
     },
+    // 新加的
+    async sendMessageToMember(){
+        let vm = this;
+        // console.log("--- sendMessageToMember start", this.user.email, vm.sendMsgJson.UserId);
+        //if (this.user.email !== vm.sendMsgJson.UserId) {
+          //  console.log('--- sendMessageToMember 1')
+            //vm.hubConnection.send("SendMessageToMember", vm.sendMsgJson.UserId, vm.sendMsgJson.UserMessage)
+            //.then(()=>{
+               // console.log("--- sendMessageToMember 2");
+                // vm.sendMsgJson.UserId =userId;
+            //});
+
+            let form = new FormData();
+           form.append('UserId', vm.sendMsgJson.UserId);
+           form.append('UserMessage', vm.sendMsgJson.UserMessage);
+            const matchUrl = process.env.VUE_APP_API + "/api/Chat/GetPrivateMessage";
+            vm.$axios({
+                url: matchUrl,
+                method: "POST",
+                data:vm.sendMsgJson,
+            })
+            .then((a)=>{console.log('--- sendMessageToMember 1',a)})
+       // }
+        
+    },
+    // 本來的
     getConnectionId() {
       let vm = this;
       vm.hubConnection.invoke("GetConnectionId").then((msg) => {
@@ -256,6 +293,17 @@ export default {
     },
   },
   created() {
+      this.$axios({
+        url: process.env.VUE_APP_API + "/api/Users/GetSingleMember",
+        method: "GET",
+      })
+        .then((res) => {
+            
+          vm.user.email = res.data.data.email;
+        })
+
+
+
     let vm = this;
     vm.connectHub();
   },
