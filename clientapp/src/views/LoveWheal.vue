@@ -178,9 +178,13 @@ export default {
         friendId: "",
       },
       sendMsgJson: {
-        UserId: "apitest@test.com",
+        UserName: "大傑神",
         UserMessage: "我傳訊息了",
       },
+      connectList:{
+          UserName:"大傑神",
+          ConnectionId:"",
+      }
       hubConnection: new signalR.HubConnectionBuilder()
         .configureLogging(signalR.LogLevel.Debug) //設定顯示log
         .withUrl(process.env.VUE_APP_API + "/chathub" , { accessTokenFactory: () => this.loginToken })
@@ -193,32 +197,29 @@ export default {
       let vm = this;
       vm.hubConnection
         .start()
-        .then(() => {
-            vm.sendMessageToMember();
+        // .then(() => {
+        //     vm.sendMessageToMember();
+        // })
+        .then( () => {
+          vm.AddOnlineInList();
+        })
+        .then( () => {
+          vm.sendMsgToHub();
         })
         .then( () => {
           vm.listenToHub();
         })
-        // .then((resolve) => {
-        //   vm.sendMessageToMember();
-        //   resolve();
-        // })
+ 
         .catch(() => {
           console.log("失敗");
         });
     },
-    // 本來的
-    // sendMsgToHub() {
-    //   let vm = this;
-    //   vm.hubConnection.send("SendMessageToMember", vm.sendMsgJson).then(() => {
-    //     console.log("msg send");
-    //   });
-    // },
+ 
     async listenToHub() {
         // console.log("--- listenToHub start");
       let vm = this;
-      vm.hubConnection.on("SendMessage", (userId, userMsg) => {
-          console.log('--- listenToHub', userId, userMsg);
+      vm.hubConnection.on("ReceiveMessage", (userName, userMsg) => {
+          console.log('--- listenToHub', userName, userMsg);
         this.$bus.$emit(
           "getNewMsg",
          // `您將${vm.metchUser.matchedName}加入到好友清單了!`
@@ -230,29 +231,45 @@ export default {
       })
         
     },
+    AddOnlineInList(){
+        let vm = this;
+         vm.hubConnection.invoke("AddOnlineInList",vm.connectList)
+         .then(() => {
+        console.log("connectionId");
+        console.log("connectionId", vm.connectList.ConnectionId);
+        //vm.sendMsgJson.UserId = msg;
+      });
+    },
+       // 本來的
+    sendMsgToHub() {
+      let vm = this;
+      vm.hubConnection.send("SendInfoToUser", vm.sendMsgJson).then(() => {
+        console.log("msg send ");
+      });
+    },
     // 新加的
     async sendMessageToMember(){
         let vm = this;
-        // console.log("--- sendMessageToMember start", this.user.email, vm.sendMsgJson.UserId);
-        //if (this.user.email !== vm.sendMsgJson.UserId) {
-          //  console.log('--- sendMessageToMember 1')
-            //vm.hubConnection.send("SendMessageToMember", vm.sendMsgJson.UserId, vm.sendMsgJson.UserMessage)
-            //.then(()=>{
+         console.log("--- SendMessageToMember start", this.user.email, vm.sendMsgJson.UserId);
+        if (this.user.email !== vm.sendMsgJson.UserId) {
+            console.log('--- SendMessageToMember 1')
+            vm.hubConnection.send("SendMessageToMember", vm.sendMsgJson.UserId, vm.sendMsgJson.UserMessage)
+            .then(()=>{
                // console.log("--- sendMessageToMember 2");
                 // vm.sendMsgJson.UserId =userId;
-            //});
+            });
 
-            let form = new FormData();
-           form.append('UserId', vm.sendMsgJson.UserId);
-           form.append('UserMessage', vm.sendMsgJson.UserMessage);
-            const matchUrl = process.env.VUE_APP_API + "/api/Chat/GetPrivateMessage";
-            vm.$axios({
-                url: matchUrl,
-                method: "POST",
-                data:vm.sendMsgJson,
-            })
-            .then((a)=>{console.log('--- sendMessageToMember 1',a)})
-       // }
+        //     let form = new FormData();
+        //    form.append('UserId', vm.sendMsgJson.UserId);
+        //    form.append('UserMessage', vm.sendMsgJson.UserMessage);
+        //     const matchUrl = process.env.VUE_APP_API + "/api/Chat/GetPrivateMessage";
+        //     vm.$axios({
+        //         url: matchUrl,
+        //         method: "POST",
+        //         data:vm.sendMsgJson,
+        //     })
+        //     .then((a)=>{console.log('--- sendMessageToMember 1',a)})
+        }
         
     },
     // 本來的

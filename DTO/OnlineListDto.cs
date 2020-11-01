@@ -5,9 +5,10 @@ using System.Threading.Tasks;
 
 namespace XforumTest.DTO
 {
-    public class PMDto
+    public class OnlineListDto
     {
+
         public string UserName { get; set; }
-        public string UserMessage { get; set; }
+        public string ConnectionId { get; set; }
     }
 }

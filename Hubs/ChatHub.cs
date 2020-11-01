@@ -19,6 +19,7 @@ namespace XforumTest.Hubs
         private readonly IRepository<Chats> _chats;
         private readonly IRepository<ChatDetails> _details;
         private static Dictionary<string, string> ConnectionList;
+        private static List<OnlineListDto> ConnectList;
         public ChatHub(IRepository<ForumMembers> member, IRepository<Chats> chats, IRepository<ChatDetails> details)
         {
             _members = member;
@@ -78,7 +79,7 @@ namespace XforumTest.Hubs
 
             //  _chatGroupService.RemoveConnectionfromGroups(Context.ConnectionId);
             await  Groups.AddToGroupAsync(Context.ConnectionId, chatroomId);
-            roomName = chatroomId;
+           
 
         }
         
@@ -127,19 +128,26 @@ namespace XforumTest.Hubs
 
         //給user特定Id
 
-        public async Task SendInfoToUser(string userId, string message)
+        public async Task SendInfoToUser(PMDto dto)
         {
+            //確認該Id 是否在線
             //check dictionary if same
             //將dictionary 裡同userId的connectionId蓋過去
+            var user = ConnectList.FirstOrDefault(x => x.UserName == dto.UserName);
             if (user != null)
             {
-                var connctionId = Context.ConnectionId;
-                await Clients.Client(userId).SendAsync("ReceiveMessage", message);
+              //  var connctionId = Context.ConnectionId;
+                await Clients.Client(user.ConnectionId).ReceiveMessage(dto.UserName, dto.UserMessage);
             }
 
+            else
+            {
+                var message = $"此使用者目前不在線 {dto.UserName}";
+                await Clients.Caller.ReceiveMessage(dto.UserName, message);
+            }
             //將message傳給connectionId
-            var message = $"Send message to you with user id {userId}";
-            await Clients.Client(userId).SendAsync("ReceiveMessage", message);
+            
+            
 
         }
 
@@ -151,17 +159,62 @@ namespace XforumTest.Hubs
         // 連線
         public override async Task OnConnectedAsync()
         {
+            //AddOnlineInList(userName);
+            ConnectionList.Add("UserConnected", GetConnectionId());
+            OnlineListDto onlineList = new OnlineListDto()
+            {
+                UserName = "",
+                ConnectionId = GetConnectionId()
+            };
+            ConnectList.Add(onlineList);
+            //測試
             await Clients.Caller.SendMessage("UserConnected", GetConnectionId());
             
             await base.OnConnectedAsync();
         }
+
+
         // 斷線
         public override async Task OnDisconnectedAsync(Exception exception)
         {
-            //await Clients.All.SendMessage("UserDisConnected", Context.ConnectionId);
+            var user = ConnectList.FirstOrDefault(x => x.ConnectionId == GetConnectionId());
+
+            ConnectList.Remove(user);
+            //測試
+            await Clients.All.SendMessage("UserDisConnected", Context.ConnectionId);
             await base.OnDisconnectedAsync(exception);
         }
 
+
+        /// <summary>
+        /// 補充在線資料
+        /// </summary>
+        /// <param name="dto"></param>
+   
+
+        public void AddOnlineInList(OnlineListDto dto)
+        {
+            var user = ConnectList.FirstOrDefault(x => x.ConnectionId == dto.ConnectionId);
+            if (user != null)
+            {
+                user.UserName = dto.UserName;
+            }
+            else
+            {
+                OnlineListDto onlineList = new OnlineListDto()
+                {
+                    UserName = dto.UserName,
+                    ConnectionId = GetConnectionId()
+                };
+                ConnectList.Add(onlineList);
+            }
+        }
+
+
+        //public void CheckRemainMsg()
+        //{
+        //    //進資料庫找
+        //}
 
         public string GetConnectionId()
         {
@@ -169,9 +222,8 @@ namespace XforumTest.Hubs
         }
         
 
-        public void CheckConnnected()
-        {
+        
 
-        }
+        
     }
 }

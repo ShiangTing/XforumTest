@@ -9,12 +9,14 @@ namespace XforumTest.Interface
     public interface IChat
     {
 
-        Task ReceiveMessage(Guid userId, string message);
+        Task ReceiveMessage(string userName, string message);
         Task ReceiveMessage(string message);
 
         Task SendMessage(string userId,string message);
         Task ReceiveGroupMessage(Guid userId, Guid roomId, string message,DateTime postTime);
 
         Task ReceiveGroupMessage(string chatroomId, string message, string userName);
+
+        Task CheckConnnected(string userId);
     }
 }

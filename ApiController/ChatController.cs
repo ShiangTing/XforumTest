@@ -72,8 +72,8 @@ namespace XforumTest.ApiController
 
         public async Task<bool> CheckIfConnected(string userName)
         {
-            //從list 取得
-            await 
+
+            await _hubContext.Clients.All.CheckConnnected
         }
 
     }
