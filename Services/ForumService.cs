@@ -15,13 +15,15 @@ namespace XforumTest.Services
         private readonly IRepository<ForumMembers> _members;
         private readonly IRepository<Posts> _posts;
         private readonly IRepository<ReposiveMessages> _repoMsgs;
+        private readonly IRepository<LikeAndDislikeHistory> _likes;
 
-        public ForumService(IRepository<Forums> Forums, IRepository<ForumMembers> members, IRepository<Posts> posts, IRepository<ReposiveMessages> repoMsgs)
+        public ForumService(IRepository<Forums> Forums, IRepository<ForumMembers> members, IRepository<Posts> posts, IRepository<ReposiveMessages> repoMsgs, IRepository<LikeAndDislikeHistory> likes)
         {
             _Forums = Forums;
             _members = members;
             _posts = posts;
             _repoMsgs = repoMsgs;
+            _likes = likes;
         }
         /// <summary>
         /// 創版
@@ -89,13 +91,23 @@ namespace XforumTest.Services
             _Forums.SaveContext();
         }
         /// <summary>
-        /// 刪除看板(版內的文章,留言內容一併刪除)
+        /// 刪除看板(版內的文章,留言內容,按讚紀錄一併刪除)
         /// </summary>
         /// <param name="deletedForum"></param>
         public void Delete(ForumDeleteDto deletedForum)
         {
             //Guid b = _repoMsgs.GetAll2().FirstOrDefault(x => x.PostId == _posts.GetAll2().FirstOrDefault(x => x.ForumId == deletedForum.ForumId).PostId).MessageId;
 
+            //刪除有按讚的版(未做完)
+            //IEnumerable<LikeAndDislikeHistory> likes = _likes.GetAll2().Where(x => x.MessageId == _repoMsgs.GetAll2().First(y => y.PostId == _posts.GetAll2().First(z => z.ForumId == deletedForum.ForumId).PostId).MessageId);
+
+            //foreach(LikeAndDislikeHistory like in likes)
+            //{
+            //    _likes.Delete(like);
+            //}
+            //_repoMsgs.SaveContext();
+
+            //刪除未有按讚的版
             IEnumerable<ReposiveMessages> repoMsgs = _repoMsgs.GetAll2().Where(x => x.PostId == _posts.GetAll2().FirstOrDefault(y => y.ForumId == deletedForum.ForumId).PostId);
             foreach (ReposiveMessages msgs in repoMsgs)
             {
