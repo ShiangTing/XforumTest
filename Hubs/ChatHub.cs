@@ -18,56 +18,17 @@ namespace XforumTest.Hubs
         private readonly IRepository<ForumMembers> _members;
         private readonly IRepository<Chats> _chats;
         private readonly IRepository<ChatDetails> _details;
-     //   private static Dictionary<string, string> ConnectionList;
+       // private readonly IRepository<Msg> _Msg;
+
         private static List<OnlineListDto> ConnectList = new List<OnlineListDto>();
         public ChatHub(IRepository<ForumMembers> member, IRepository<Chats> chats, IRepository<ChatDetails> details)
         {
             _members = member;
             _chats = chats;
             _details = details;
+          //  _Msg = Msg;
         }
 
-
-     
-
-        //public async Task Receive(string msg)
-        //{
-        //    await Clients.All.ReceiveMessage(msg);
-        //}
-
-        //public async Task SendGroupMessage(ChatGroupDto dto)
-        //{
-        //    var chatRoom = _chats.GetFirst(x => x.ChatId == dto.ChatId);
-        //    string chatId = dto.ChatId.ToString();
-        //    if (chatRoom != null)
-        //    {
-        //        chatRoom.FriendId = dto.FriendId;
-        //        chatRoom.Message = dto.Message;
-        //        chatRoom.DateTime = dto.Time;
-
-        //        chatRoom.UserId = dto.UserId;
-        //        _chats.Update(chatRoom);
-        //        _chats.SaveContext();
-        //        // _chats.Update()
-        //    }
-        //    //找是否有這個GroupId
-        //    //if(room!=null){
-        //    //將留言存進資料庫QQ
-        //    //Conversation = new Conversation
-        //    //{
-        //    //    ....
-        //    //}
-        //    //_C.create....
-        //    //}
-        //    //創建一個group 然後將兩個id加進group
-        //    //SendMessage to all(client)
-        //    await Groups.AddToGroupAsync(Context.ConnectionId, chatId);
-        //    // await Clients.All.ReceiveMessage(userId, message);
-        //    //隊群組內所有人發送留言
-        //    await Clients.Group(chatId).ReceiveGroupMessage(dto.UserId, dto.ChatId, dto.Message, dto.Time);
-
-
-        //}
 
 
         public async Task JoinGroup(string chatroomId)
@@ -114,8 +75,6 @@ namespace XforumTest.Hubs
         public async Task SendMessageToMember(string userId,string userMsg)
         {
 
-
-
             Debug.WriteLine(Context.User.Identity.Name);
             await Clients.User(userId).SendMessage(userId,userMsg);
             Debug.WriteLine("id--" + userId + ", msg" + userMsg);
@@ -134,6 +93,8 @@ namespace XforumTest.Hubs
             //check dictionary if same
             //將dictionary 裡同userId的connectionId蓋過去
             var user = ConnectList.FirstOrDefault(x => x.UserName == dto.UserName);
+   
+           
             if (user != null)
             {
               //  var connctionId = Context.ConnectionId;
@@ -151,22 +112,10 @@ namespace XforumTest.Hubs
 
         }
 
-
-
-
-
-
         // 連線
         public override async Task OnConnectedAsync()
         {
-            //AddOnlineInList(userName);
-          //  ConnectionList.Add("UserConnected", GetConnectionId());
-            //OnlineListDto onlineList = new OnlineListDto()
-            //{
-            //    UserName = "",
-            //    ConnectionId = GetConnectionId()
-            //};
-            //ConnectList.Add(onlineList);
+    
 
             ConnectList.Add(new OnlineListDto { UserName = "", ConnectionId = GetConnectionId() });
             Debug.WriteLine("UserConnected---"+ Context.ConnectionId);
@@ -214,10 +163,31 @@ namespace XforumTest.Hubs
             }
         }
 
-
-        //public void CheckRemainMsg()
+        /// <summary>
+        /// 使用者上線時確認是否有資料沒送到
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <returns></returns>
+        //public async Task CheckRemainMsg(string userName)
         //{
         //    //進資料庫找
+        //    var msg = _Msg.GetAll().Where(x => x.UserName == userName);
+           
+               
+            
+        //    if (msg != null)
+        //    {
+        //        var userMsgs = _Msg.GetAll().Where(x => x.UserName == dto.UserName);
+        //        foreach (var u in userMsgs)
+        //        {
+        //            await Clients.Client(user.ConnectionId).ReceiveMessage(dto.UserName, dto.UserMessage);
+        //        }
+                
+        //    }
+        //    else
+        //    {
+                
+        //    }
         //}
 
         public string GetConnectionId()
