@@ -80,14 +80,14 @@
                 >
                   取消申請
                 </button>
-                <button
+                <!-- <button
                   type="button"
                   class="btn btn-outline-danger"
                   @click="rejectCreate(item.routeName)"
                   v-if="item.state && item.rejectMsg == 'Passed!'"
                 >
                   取消已審核
-                </button>
+                </button> -->
               </div>
               <p
                 class="card-text text-center mt-3 bg-warning"

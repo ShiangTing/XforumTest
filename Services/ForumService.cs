@@ -14,12 +14,14 @@ namespace XforumTest.Services
         private readonly IRepository<Forums> _Forums;
         private readonly IRepository<ForumMembers> _members;
         private readonly IRepository<Posts> _posts;
+        private readonly IRepository<ReposiveMessages> _repoMsgs;
 
-        public ForumService(IRepository<Forums> Forums, IRepository<ForumMembers> members, IRepository<Posts> posts)
+        public ForumService(IRepository<Forums> Forums, IRepository<ForumMembers> members, IRepository<Posts> posts, IRepository<ReposiveMessages> repoMsgs)
         {
             _Forums = Forums;
             _members = members;
             _posts = posts;
+            _repoMsgs = repoMsgs;
         }
         /// <summary>
         /// 創版
@@ -87,20 +89,31 @@ namespace XforumTest.Services
             _Forums.SaveContext();
         }
         /// <summary>
-        /// 刪除看板
+        /// 刪除看板(版內的文章,留言內容一併刪除)
         /// </summary>
         /// <param name="deletedForum"></param>
         public void Delete(ForumDeleteDto deletedForum)
         {
-            Forums oldForum = _Forums.GetFirst(x => x.ForumId == deletedForum.ForumId);
+            //Guid b = _repoMsgs.GetAll2().FirstOrDefault(x => x.PostId == _posts.GetAll2().FirstOrDefault(x => x.ForumId == deletedForum.ForumId).PostId).MessageId;
+
+            IEnumerable<ReposiveMessages> repoMsgs = _repoMsgs.GetAll2().Where(x => x.PostId == _posts.GetAll2().FirstOrDefault(y => y.ForumId == deletedForum.ForumId).PostId);
+            foreach (ReposiveMessages msgs in repoMsgs)
+            {
+                _repoMsgs.Delete(msgs);
+            }
+            _repoMsgs.SaveContext();
+
             IEnumerable<Posts> oldPosts = _posts.GetAll2().Where(x => x.ForumId == deletedForum.ForumId);
-            foreach(Posts post in oldPosts)
+            foreach (Posts post in oldPosts)
             {
                 _posts.Delete(post);
             }
-            _Forums.Delete(oldForum);
             _posts.SaveContext();
+
+            Forums oldForum = _Forums.GetFirst(x => x.ForumId == deletedForum.ForumId);
+            _Forums.Delete(oldForum);
             _Forums.SaveContext();
+
         }
         /// <summary>
         /// 取得所有看板

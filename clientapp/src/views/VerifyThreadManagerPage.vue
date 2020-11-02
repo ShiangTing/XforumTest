@@ -66,7 +66,15 @@
                   @click="rejectCreate(item.routeName)"
                   v-if="item.state && item.rejectMsg == 'Passed!'"
                 >
-                  取消已審核
+                  退回重申
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-outline-danger"
+                  @click="deleteCreate(item.forumId)"
+                  v-if="item.state && item.rejectMsg == 'Passed!'"
+                >
+                  刪除版面
                 </button>
               </div>
               <p
@@ -118,6 +126,9 @@ export default {
       AuditForumPageData: {
         State: false,
         RejectMsg: "",
+      },
+      DeleteForumData:{
+        forumId:"",
       },
     };
   },
@@ -214,9 +225,7 @@ export default {
       const url = process.env.VUE_APP_API + "/api/Forum/ChangeForumState";
       this.changeForumState.RouteName = routename;
       this.changeForumState.State = false;
-
       console.log(this.changeForumState);
-
       this.$swal
         .fire({
           title: "確定?",
@@ -252,17 +261,35 @@ export default {
               .catch((err) => console.log(err.response));
           }
         });
-
-      // axios({
-      //   url: url,
-      //   method: "Post",
-      //   data: this.changeForumState,
-      // }).then(() => {
-      //   console.log("駁回申請");
-      //   this.$swal.fire("駁回申請", "", "warning").then(()=> {
-      //     this.$router.go(0);
-      //   });
-      // });
+    },
+    deleteCreate(forumId) {
+      const url = process.env.VUE_APP_API + "/api/Forum/DeleteForum";
+      this.DeleteForumData.forumId = forumId;
+      console.log(this.DeleteForumData);
+      this.$swal
+        .fire({
+          title: "確定刪除?",
+          text: "成功後無法修正!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, do it!",
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            axios({
+              url: url,
+              method: "Delete",
+              data: this.DeleteForumData,
+            })
+              .then(() => {
+                console.log("刪除版面");
+                this.$router.go(0);
+              })
+              .catch((err) => console.log(err.response));
+          }
+        });
     },
   },
   async created() {
