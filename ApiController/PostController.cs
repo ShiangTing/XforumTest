@@ -65,6 +65,7 @@ namespace XforumTest.ApiController
         [HttpGet]
         public List<PostListDto> GetAllPosts()
         {
+            Debug.WriteLine(User.Identity.Name);
 
             return _postservice.GetAll();
         }

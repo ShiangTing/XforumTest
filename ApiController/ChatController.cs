@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
@@ -58,13 +60,21 @@ namespace XforumTest.ApiController
         }
 
 
-        //public async Task JoinGroup(string chatroomId,)
+    //    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpPost]
+        public async Task GetPrivateMessage(PMDto dto)
+        {
+           var users = User.Identity.Name;
+
+            await _hubContext.Clients.User(users).SendMessage(users, dto.UserMessage);
+          //  await _hubContext.Clients.All.SendMessage(users, dto.UserMessage);
+        }
+
+        //public async Task<bool> CheckIfConnected(string userName)
         //{
 
+        //    await _hubContext.Clients.All.CheckConnnected
         //}
-
-
-
 
     }
 }
