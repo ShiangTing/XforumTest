@@ -17,12 +17,14 @@ namespace XforumTest.Services
         private readonly IRepository<ReposiveMessages> _messages;
         private readonly IRepository<ForumMembers> _members;
         private readonly IRepository<Posts> _post;
+        private readonly IRepository<LikeAndDislikeHistory> _history;
 
-        public RMessageService(IRepository<ReposiveMessages> messages, IRepository<Posts> posts, IRepository<ForumMembers> members)
+        public RMessageService(IRepository<ReposiveMessages> messages, IRepository<Posts> posts, IRepository<ForumMembers> members, IRepository<LikeAndDislikeHistory> history)
         {
             _messages = messages;
             _members = members;
             _post = posts;
+            _history = history;
         }
 
         public void Create(RMessageDTO dto)
@@ -56,8 +58,10 @@ namespace XforumTest.Services
             try
             {
                 var deletMessage = _messages.GetFirst(x => x.MessageId == dto.Id);
-                if (deletMessage != null)
+                var history = _history.GetFirst(x => x.PostId == dto.Id || x.MessageId == dto.Id);
+                if (deletMessage != null && history!=null)
                 {
+                    _history.Delete(history);
                     _messages.Delete(deletMessage);
                     _messages.SaveContext();
                 }
