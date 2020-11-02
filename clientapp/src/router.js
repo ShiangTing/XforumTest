@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
+
 Vue.use(VueRouter);
 
 const originalPush = VueRouter.prototype.push;
@@ -10,7 +11,11 @@ VueRouter.prototype.push = function push(location) {
 export default new VueRouter({
   mode: 'hash',
   routes: [
-
+    {
+      path: "/reloadPage",
+      name: "ReloadPage",
+      component: ()=> import("./views/ReloadPage.vue")
+    },
     {
       path: '*',
       redirect: { name: 'home' },

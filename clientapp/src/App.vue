@@ -1,17 +1,26 @@
 <template>
-  <div>
-    <router-view />
+  <div id="app">
+    <router-view v-if="routerAlive" />
   </div>
-</template>
-
-<script>
+</template> 
+<script> 
 export default {
-  data() {
-    return {};
+  data () {
+    return { routerAlive: true }
   },
-};
+  provide () {
+    return { routerRefresh: this.routerRefresh }
+  },
+  methods: {
+    routerRefresh () {
+      this.routerAlive = false;
+      this.$nextTick(() => { this.routerAlive = true; });
+    },
+  }
+}
+
 </script>
+
 <style lang="scss">
-@import '@/assets/scss/style.scss';
-  
+  @import "@/assets/scss/style.scss";
 </style>
