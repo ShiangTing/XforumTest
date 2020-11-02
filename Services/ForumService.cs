@@ -13,11 +13,13 @@ namespace XforumTest.Services
     {
         private readonly IRepository<Forums> _Forums;
         private readonly IRepository<ForumMembers> _members;
+        private readonly IRepository<Posts> _posts;
 
-        public ForumService(IRepository<Forums> Forums, IRepository<ForumMembers> members)
+        public ForumService(IRepository<Forums> Forums, IRepository<ForumMembers> members, IRepository<Posts> posts)
         {
             _Forums = Forums;
             _members = members;
+            _posts = posts;
         }
         /// <summary>
         /// 創版
@@ -70,17 +72,34 @@ namespace XforumTest.Services
         /// 編輯看板資料、回復軟刪除狀態
         /// </summary>
         /// <param name="json"></param>
-        public void Edit(ForumCreateDto json)
+        public void Edit(ForumEditDto json)
         {
             //var json = JsonConvert.DeserializeObject<ForumCreate>(data);
-            Forums oldforum = _Forums.GetAll().FirstOrDefault(f => f.RouteName == json.RouteName);
-            oldforum.Img = json.ImgLink;
-            oldforum.ForumName = json.ForumName;
+            //oldforum.Img = json.ImgLink;
             //oldforum.ModeratorId = json.ModeratorId;
-            oldforum.Description = json.Description;
+            Forums oldforum = _Forums.GetAll().FirstOrDefault(f => f.RouteName == json.RouteName);
             oldforum.ForumName = json.ForumName;
+            oldforum.Description = json.Description;
+            oldforum.State = json.State;
+            oldforum.RejectMsg = json.RejectMeg;
 
             _Forums.Update(oldforum);
+            _Forums.SaveContext();
+        }
+        /// <summary>
+        /// 刪除看板
+        /// </summary>
+        /// <param name="deletedForum"></param>
+        public void Delete(ForumDeleteDto deletedForum)
+        {
+            Forums oldForum = _Forums.GetFirst(x => x.ForumId == deletedForum.ForumId);
+            IEnumerable<Posts> oldPosts = _posts.GetAll2().Where(x => x.ForumId == deletedForum.ForumId);
+            foreach(Posts post in oldPosts)
+            {
+                _posts.Delete(post);
+            }
+            _Forums.Delete(oldForum);
+            _posts.SaveContext();
             _Forums.SaveContext();
         }
         /// <summary>
@@ -112,6 +131,7 @@ namespace XforumTest.Services
                                                         orderby f.CreatedDate descending
                                                         select new GetUnauditedForum()
                                                         {
+                                                            ForumId = f.ForumId,
                                                             ForumName = f.ForumName,
                                                             RouteName = f.RouteName,
                                                             Description = f.Description,
@@ -134,6 +154,7 @@ namespace XforumTest.Services
             Guid userId = _members.GetAll2().FirstOrDefault(x => x.Email == UserEmail).UserId;
             return _Forums.GetAll2().Where(x => x.ModeratorId == userId && x.State == pageOfMod.State && string.IsNullOrEmpty(x.RejectMsg) == string.IsNullOrEmpty(pageOfMod.RejectMsg)).OrderByDescending(x => x.CreatedDate).Select(x => new GetUnauditedForum
             {
+                ForumId = x.ForumId,
                 ForumName = x.ForumName,
                 RouteName = x.RouteName,
                 Description = x.Description,

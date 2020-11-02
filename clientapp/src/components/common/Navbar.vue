@@ -121,7 +121,7 @@ export default {
       vm.isLogin = false;
       vm.name = "訪客";
       vm.rolename = "";
-      vm.$router.push("/");
+      vm.$router.push("/Login");
     },
   },
   created() {

@@ -13,7 +13,7 @@ namespace XforumTest.Interface
         Task ReceiveMessage(string message);
 
         Task SendMessage(string userId,string message);
-        Task ReceiveGroupMessage(Guid userId, Guid roomId, string message,DateTime postTime);
+        Task ReceiveGroupMessage(string roomId, string userName, string message,DateTime postTime);
 
         Task ReceiveGroupMessage(string chatroomId, string message, string userName);
 

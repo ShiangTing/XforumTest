@@ -78,7 +78,7 @@ namespace XforumTest.ApiController
         /// <summary>
         /// 拿到該房間的詳細對話
         /// </summary>
-        /// <param name="roomId"></param>
+        /// <param name="dto"></param>
         /// <returns></returns>
         [HttpPost]
         public ApiResult<List<ChatDetailDto>> GetAllChatDetails([FromBody]RoomDto dto)

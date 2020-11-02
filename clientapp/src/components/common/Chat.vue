@@ -1,10 +1,10 @@
 <template>
   <div>
-    <ul class="list-group">
+    <ul class="list-group" v-if="chatList.length > 0">
       <li class="list-group-item font-weight-bold bg-dark text-white">聊天列表</li>
       <li class="list-group-item" v-for="(item,index) in chatList" :key="index">
         <a class="d-flex align-items-center w-100 h-100" data-toggle="modal" data-target="#chatModal"
-          @click="createChatRoom(item.userId)">
+          @click="createChatRoom(item)">
           <img :src="item.imgLink" class="chatList-img">
           <p class="m-0 pl-2 w-100 ">{{item.name}}</p>
         </a>
@@ -18,7 +18,7 @@
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">ChatRoom</h5>
+            <h5 class="modal-title" id="exampleModalLabel">{{chatMember}}</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -30,7 +30,7 @@
                   :class="item.userName === userData.username ? 'align-self-end right-color': 'align-self-start left-color'">
                   <span class="message-title" v-if="item.userName !== userData.username">{{item.userName}}</span>
                   <span class="message-content"
-                    :class="item.userName === userData.username ? 'text-right': 'text-left'">{{ item.message }}</span>
+                    :class="item.userName === userData.username ? 'text-right': 'text-left'">{{ item.text }}</span>
                 </div>
               </div>
               <div class="input-group chat-input-group">
@@ -58,6 +58,7 @@ export default {
         .withUrl(process.env.VUE_APP_API + '/chathub')
         .withAutomaticReconnect()
         .build(),
+      chatMember: "",
       chatList: [],
       show: false,
       inputMsg: "",
@@ -94,20 +95,23 @@ export default {
     },
     sendMsgToHub () {
       let vm = this;
-      vm.hubConnection.send('SendMessageToGroup', vm.chatId, vm.inputMsg, vm.userData.username).then(() => {
-        console.log('msg send');
+      let data = {
+        roomId: vm.chatId,
+        userName: vm.userData.username,
+        text: vm.inputMsg,
+        dataTime: new Date()
+      }
+      vm.hubConnection.send('SendMessageToGroup', data).then(() => {
       })
       vm.inputMsg = "";
     },
     listenToHub () {
       let vm = this;
-      vm.hubConnection.on('ReceiveGroupMessage', (chatroomId, message, userName) => {
-        console.log("回來囉");
-        console.log(chatroomId, message, userName);
+      vm.hubConnection.on('ReceiveGroupMessage', (roomId, username, text) => {
         vm.receiveMsg.push(
           {
-            userName: userName,
-            message: message
+            userName: username,
+            text: text,
           }
         )
       });
@@ -130,7 +134,6 @@ export default {
         FriendId: friendId
       }
       return vm.$axios.post(url, data).then(res => {
-
         vm.chatId = res.data.data
       })
     },
@@ -138,23 +141,36 @@ export default {
       let vm = this;
       return vm.hubConnection.invoke('JoinGroup', vm.chatId)
         .then(() => {
-          console.log('join Group');
         })
     },
     stopConnection () {
       let vm = this;
-      return vm.hubConnection.stop().then(res => {
-        console.log("中斷成功", res);
+      return vm.hubConnection.stop()
+    },
+    getUserMessageHistory () {
+      let vm = this;
+      let url = process.env.VUE_APP_API + "/api/Match/GetAllChatDetails"
+      let data = {
+        roomId: vm.chatId
+      }
+      return vm.$axios.post(url, data).then((res) => {
+        res.data.data.forEach(item => {
+          vm.receiveMsg.push({
+            userName: item.userName.trim(),
+            text: item.text,
+          })
+        })
       })
     },
-    async createChatRoom (friendId) {
+    async createChatRoom (friend) {
       let vm = this;
-      if (vm.friendId === "" || vm.friendId !== friendId) {
-
+      vm.chatMember = friend.name;
+      if (vm.friendId === "" || vm.friendId !== friend.userId) {
         vm.receiveMsg = [];
-        await vm.getChatRoomId(friendId)
-        await vm.joinGroup()
       }
+      await vm.getChatRoomId(friend.userId);
+      await vm.joinGroup()
+      await vm.getUserMessageHistory();
     }
   },
   async created () {
@@ -163,13 +179,8 @@ export default {
       await vm.connectHub()
       await vm.getUserInfo()
       await vm.getChatList()
-
     }
   },
-//   async mounted () {
-//     //   保持連線
-//       await this.connectHub();
-//   },
   beforeDestroy () {
     let vm = this;
     vm.stopConnection()
@@ -238,6 +249,7 @@ export default {
     }
     &-message {
       display: flex;
+      max-width: 200px;
       flex-direction: column;
       word-wrap: break-word;
       padding: 10px 10px;

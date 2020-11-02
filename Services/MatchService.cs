@@ -147,6 +147,7 @@ namespace XforumTest.Services
 
             var chatList = from d in _details.GetAll()
                            where d.RoomId == dto.RoomId
+                           orderby d.DateTime 
                            select new ChatDetailDto()
                            {
                                RoomId = dto.RoomId,

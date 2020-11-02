@@ -43,7 +43,7 @@ namespace XforumTest.Hubs
            
 
         }
-        
+
 
         public async Task LeaveGroup(string chatroomId)
         {
@@ -52,20 +52,22 @@ namespace XforumTest.Hubs
         //改成Dto
         public async Task SendMessageToGroup(ChatDetailDto dto)
         {
-           // 聊天後就存入資料庫
-            ChatDetails  details = new ChatDetails()
+            // 聊天後就存入資料庫
+            ChatDetails details = new ChatDetails()
             {
                 Id = Guid.NewGuid(),
                 RoomId = dto.RoomId,
                 UserName = dto.UserName,
-                //DateTime =
                 Text = dto.Text,
+
+                DateTime = DateTime.UtcNow,
+
             };
             _details.Create(details);
             _details.SaveContext();
 
 
-            await Clients.Group(dto.RoomId).ReceiveGroupMessage(dto.RoomId, dto.Text, dto.UserName);
+            await Clients.Group(dto.RoomId).ReceiveGroupMessage(dto.RoomId, dto.UserName, dto.Text, TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, TimeZoneInfo.Local));
         }
 
 
