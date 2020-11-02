@@ -197,33 +197,35 @@ export default {
       let vm = this;
       vm.hubConnection
         .start()
-        // .then(() => {
-        //     vm.sendMessageToMember();
+        .then(vm.getConnectionId)
+        .then(vm.AddOnlineInList)
+        // .then(()=>{ 
+        //     vm.getConnectionId() ;
         // })
-        .then( () => {
-          vm.AddOnlineInList();
-        })
-        .then( () => {
-          vm.sendMsgToHub();
-        })
-        .then( () => {
-          vm.listenToHub();
-        })
- 
+        // .then( () => {
+        //   vm.AddOnlineInList();
+        // })
+        // .then( () => {
+        //   vm.sendMsgToHub();
+        // })
+        // .then( () => {
+        //   vm.listenToHub();
+        // })
+        .then(vm.listenToHub)
         .catch(() => {
           console.log("失敗");
         });
     },
  
     async listenToHub() {
-        // console.log("--- listenToHub start");
+        console.log("--- listenToHub start");
       let vm = this;
-      vm.hubConnection.on("ReceiveMessage", (userName, userMsg) => {
-          console.log('--- listenToHub', userName, userMsg);
+      return vm.hubConnection.on("ReceiveMessage", (userName, userMsg) => {
+          console.log('--- listenToHub then', userName, userMsg);
         this.$bus.$emit(
           "getNewMsg",
-         // `您將${vm.metchUser.matchedName}加入到好友清單了!`
-         `您將大傑加入到好友清單了!`
+          `您將${vm.metchUser.matchedName}加入到好友清單了!`
+        // `您將大傑加入到好友清單了!`
         );
         //console.log(vm.metchUser.matchedName);
         
@@ -233,11 +235,12 @@ export default {
     },
     AddOnlineInList(){
         let vm = this;
-         vm.hubConnection.invoke("AddOnlineInList",vm.connectList)
+        console.log('--- AddOnlineInList')
+        return vm.hubConnection.invoke("AddOnlineInList",vm.connectList)
          .then(() => {
-        console.log("connectionId");
-        console.log("connectionId", vm.connectList.ConnectionId);
-        //vm.sendMsgJson.UserId = msg;
+        
+            console.log("--- AddOnlineInList then", vm.connectList.ConnectionId);
+            //vm.sendMsgJson.UserId = msg;
       });
     },
        // 本來的
@@ -272,13 +275,13 @@ export default {
         }
         
     },
-    // 本來的
+    // 4
     getConnectionId() {
       let vm = this;
-      vm.hubConnection.invoke("GetConnectionId").then((msg) => {
-        console.log("connectionId");
-        console.log("connectionId", msg);
-        vm.sendMsgJson.UserId = msg;
+      console.log("connectionId");
+      return vm.hubConnection.invoke("GetConnectionId").then((msg) => {
+        console.log("connectionId then", msg);
+        vm.connectList.ConnectionId = msg;
       });
     },
     startChat() {

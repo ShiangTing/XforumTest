@@ -150,9 +150,15 @@ namespace XforumTest.Hubs
         public void AddOnlineInList(OnlineListDto dto)
         {
             var user = ConnectList.FirstOrDefault(x => x.ConnectionId == dto.ConnectionId);
+            foreach(var a in ConnectList)
+            {
+                Debug.WriteLine("listId--" + a.ConnectionId);
+                Debug.WriteLine("listId--" + a.UserName);
+            }
             if (user != null)
             {
                 user.UserName = dto.UserName;
+              
             }
             else
             {
