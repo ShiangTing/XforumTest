@@ -35,6 +35,10 @@ namespace XforumTest.DTO
         public string RejectMeg { get; set; }
         public bool State { get; set; }
     }
+    public class ForumDeleteDto
+    {
+        public Guid ForumId { get; set; }
+    }
     public class ForumCreate : BaseFourmDto
     {
 
@@ -61,6 +65,7 @@ namespace XforumTest.DTO
     }
     public class GetUnauditedForum
     {
+        public Guid ForumId { get; set; }
         public string ForumName { get; set; }
         public string RouteName { get; set; }
         public string Description { get; set; }

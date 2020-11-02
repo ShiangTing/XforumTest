@@ -48,7 +48,11 @@ namespace XforumTest.ApiController
             }
             return Ok();
         }
-
+        [HttpDelete]
+        public void DeleteForum(ForumDeleteDto deletedForum)
+        {
+            if (ModelState.IsValid) { _forumservice.Delete(deletedForum); }
+        }
         /// <summary>
         /// Edit getsingle取得各版資料，edit post 以編輯的資料回DB
         /// </summary>
