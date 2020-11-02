@@ -10,7 +10,9 @@ namespace XforumTest.Interface
     {
         // void Create<A>(A entity) where A:class;
 
-        void Create<A>(A entity) where A : class;
+        // void Create<A>(A entity) where A : class;
+
+        void Create(T entity);
         void Update(T entity);
         void Delete(T entity);
 
