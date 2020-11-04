@@ -97,9 +97,9 @@ namespace XforumTest.Services
         {
             try
             {
-                var editedContext = _members.GetFirst(x => x.Email == userEmail);
+                ForumMembers editedContext = _members.GetFirst(x => x.Email == userEmail);
                 editedContext.Name = dto.Name;
-                editedContext.Password = dto.Password;
+                editedContext.Password = _encrypt.ToMD5(dto.Password);
                 editedContext.Age = dto.Age;
                 editedContext.Phone = dto.Phone;
                 editedContext.Gender = dto.Gender;
@@ -113,6 +113,33 @@ namespace XforumTest.Services
             catch (Exception ex)
             {
                 Debug.WriteLine(ex.Message);
+            }
+        }
+        /// <summary>
+        /// Edit password if forget
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        public ApiResult<EditPasswordDto> EditPasswordIfForgot(EditPasswordDto dto)
+        {
+            if (!_members.GetAll().Any(x => x.Email == dto.Email))
+            {
+                return new ApiResult<EditPasswordDto>($"{dto.Email} not exists!");
+            }
+            else
+            {
+                try
+                {
+                    ForumMembers member = _members.GetFirst(x => x.Email == dto.Email);
+                    member.Password = _encrypt.ToMD5(dto.Password);
+                    _members.Update(member);
+                    _members.SaveContext();
+                    return new ApiResult<EditPasswordDto>();
+                }
+                catch (Exception ex)
+                {
+                    return new ApiResult<EditPasswordDto>($"{ex}");
+                }
             }
         }
         /// <summary>

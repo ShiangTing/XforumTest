@@ -39,7 +39,7 @@ namespace XforumTest.Controllers
         [HttpGet]
         public IActionResult GetUserName()
         {
-           
+
             return Ok(User.Identity.Name);
         }
         /// <summary>
@@ -94,6 +94,17 @@ namespace XforumTest.Controllers
             {
                 return new ApiResult<EditMemberDTO>("id is null");
             }
+        }
+        [AllowAnonymous]
+        [HttpPatch]
+        public ApiResult<EditPasswordDto> EditPasswordIfForgot([FromBody] EditPasswordDto dto)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = _userService.EditPasswordIfForgot(dto);
+                return result;
+            }
+            return new ApiResult<EditPasswordDto>("Error Model!");
         }
     }
 }

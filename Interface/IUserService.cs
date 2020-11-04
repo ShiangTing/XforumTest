@@ -30,6 +30,8 @@ namespace XforumTest.Interface
         /// <param name="userEmail"></param>
         void Edit(EditMemberDTO dto, string userEmail);
 
+        ApiResult<EditPasswordDto> EditPasswordIfForgot(EditPasswordDto dto);
+
         /// <summary>
         /// Verify user Email and name
         /// </summary>

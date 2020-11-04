@@ -39,7 +39,7 @@
               />
             </form>
             <p class="mt-3 text-center">
-              <a href="javascript:;">忘記密碼</a> |
+              <router-link :to="{ name: 'forgetAccount' }"> 忘記密碼 /</router-link>
               <router-link :to="{ name: 'register' }"> 註冊</router-link>
             </p>
           </div>

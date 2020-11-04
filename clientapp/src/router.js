@@ -41,6 +41,11 @@ export default new VueRouter({
       name: 'verifyThreadModPage'
     },
     {
+      path: "/ForgetAccount",
+      component: () => import('./views/ForgetAccount.vue'),
+      name: 'forgetAccount'
+    },
+    {
       path: '/CreateThread',
       component: () => import('./views/CreateThread.vue'),
       name: 'createthread',
