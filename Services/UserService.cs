@@ -116,7 +116,7 @@ namespace XforumTest.Services
             }
         }
         /// <summary>
-        /// Edit password if forget
+        /// Edit user password to new password if forget
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>

@@ -95,6 +95,11 @@ namespace XforumTest.Controllers
                 return new ApiResult<EditMemberDTO>("id is null");
             }
         }
+        /// <summary>
+        /// Edit user password to new password if forget
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
         [AllowAnonymous]
         [HttpPatch]
         public ApiResult<EditPasswordDto> EditPasswordIfForgot([FromBody] EditPasswordDto dto)
