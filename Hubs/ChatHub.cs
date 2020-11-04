@@ -168,7 +168,6 @@ namespace XforumTest.Hubs
         /// <summary>
         /// 使用者上線時確認是否有資料沒送到
         /// </summary>
-        /// <param name="userName"></param>
         /// <returns></returns>
         //public async Task CheckRemainMsg(string userName)
         //{
