@@ -5,6 +5,7 @@ const instance = axios.create();
 
 let isRefreshing = false;
 let refreshSubscribers = [];
+let failTimes = 0
 
 instance.interceptors.request.use(
   async (config) => {
@@ -31,6 +32,13 @@ instance.interceptors.response.use(
   (error) => {
     const originalRequest = error.config;
     if (error.response.status === 401) {
+      //錯誤超過5次就停止請求
+      if(failTimes <= 5) {
+        failTimes ++;
+      }else {
+        alert("驗證失敗請重新登入")
+        return;
+      }
       if (!isRefreshing) {
         isRefreshing = true;
         let refreshUrl = process.env.VUE_APP_API + '/api/JwtHelper/refresh';

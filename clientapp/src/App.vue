@@ -16,7 +16,10 @@ export default {
       this.routerAlive = false;
       this.$nextTick(() => { this.routerAlive = true; });
     },
-  }
+  },
+  beforeDestroy() {
+    window.localStorage.clear();
+  },
 }
 
 </script>
