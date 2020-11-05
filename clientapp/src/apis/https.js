@@ -1,11 +1,13 @@
 import axios from 'axios';
 import store from '../store/index';
-import errorHandle from './errorHandle';
 // axios 配置
 const instance = axios.create();
 
+let isRefreshing = false;
+let refreshSubscribers = [];
+
 instance.interceptors.request.use(
-  (config) => {
+  async (config) => {
     if (
       config.url.indexOf('/refresh') >= 0 ||
       config.url.indexOf('/login') >= 0
@@ -26,46 +28,56 @@ instance.interceptors.response.use(
   (response) => {
     return response;
   },
-  async (error) => {
+  (error) => {
     const originalRequest = error.config;
     if (error.response.status === 401) {
-      const token = await refreshAccessToken();
-      if (token !== "") {
-        originalRequest.headers.Authorization = 'Bearer ' + token;
-        return instance(originalRequest);
+      if (!isRefreshing) {
+        isRefreshing = true;
+        let refreshUrl = process.env.VUE_APP_API + '/api/JwtHelper/refresh';
+        let refreshToken = store.state.tokenModule.refreshToken;
+        axios
+          .post(refreshUrl, { refreshToken: refreshToken })
+          .then((res) => {
+            if (res.status === 200 && res.data.issuccessful) {
+              let data = {
+                refreshToken: res.data.refreshToken,
+                token: res.data.token,
+                expireTime: res.data.expireTime,
+                isAuthorize: true,
+              };
+              store.dispatch('setAuth', data);
+              return res.data.token;
+            } else {
+              return '';
+            }
+          })
+          .then((newToken) => {
+            isRefreshing = false;
+            onRefreshed(newToken);
+          })
+          .catch(() => {
+            console.log('登入驗證錯誤');
+          });
       }
-      else {
-        alert("登入驗證過期請重新登入")
-      }
-    }
-    if (error.response.status) {
-      errorHandle(error.response.status.toString(), error.response.config.url);
-    }
 
-    return Promise.reject(error.response.data);
+      const retryOrigReq = new Promise((resolve) => {
+        subscribeTokenRefresh((token) => {
+          // replace the expired token and retry
+          originalRequest.headers['Authorization'] = 'Bearer ' + token;
+          resolve(axios(originalRequest));
+        });
+      });
+      return retryOrigReq;
+    } else {
+      return Promise.reject(error.response.data);
+    }
   }
 );
-function refreshAccessToken() {
-  let refreshUrl = process.env.VUE_APP_API + '/api/JwtHelper/refresh';
-  let refreshToken = store.state.tokenModule.refreshToken;
-  axios
-    .post(refreshUrl, { refreshToken: refreshToken })
-    .then((res) => {
-      if (res.status === 200 && res.data.issuccessful) {
-        let data = {
-          refreshToken: res.data.refreshToken,
-          token: res.data.token,
-          expireTime: res.data.expireTime,
-          isAuthorize: true,
-        };
-        store.dispatch('setAuth', data);
-        return store.state.tokenModule.token;
-      } else {
-        return "";
-      }
-    })
-    .catch(() => {
-      console.log('登入驗證錯誤');
-    });
+function subscribeTokenRefresh(cb) {
+  refreshSubscribers.push(cb);
+}
+
+function onRefreshed(token) {
+  refreshSubscribers.map((cb) => cb(token));
 }
 export default instance;

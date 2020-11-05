@@ -317,6 +317,8 @@ export default {
         .then((res) => {
             
           vm.user.email = res.data.data.email;
+        }).catch(err => {
+          console.log(err);
         })
 
 
