@@ -588,31 +588,7 @@ export default {
         })
       }
       return
-    },
-    // throttleArticle: _.throttle(function () {
-    //   console.log(this);
-    //   if (this.articleCurrentThumbStatus.isLike === this.articleOriginThumbStatus.isLike
-    //     && this.articleCurrentThumbStatus.isDisLike === this.articleOriginThumbStatus.isDisLike) {
-    //     this.articleCurrentThumbStatus.likeNumber = this.articleOriginThumbStatus.likeNumber
-    //     this.articleCurrentThumbStatus.disLikeNumber = this.articleOriginThumbStatus.disLikeNumber
-    //   }
-    //   this.updateArticleStatus(this.articleCurrentThumbStatus).then(() => {
-    //     this.getUserThumbStatus(this.article.postId, this.articleOriginThumbStatus, this.articleCurrentThumbStatus)
-    //   })
-    // }, 1000),
-    // throttleMsg (vm, index) {
-    //   window._.throttle(function () {
-    //     if (vm.msgOriginThumbStatusList[index].isLike === vm.msgCurrentThumbStatusList[index].isLike
-    //       && vm.msgOriginThumbStatusList[index].isDisLike === vm.msgCurrentThumbStatusList[index].isDisLike) {
-    //       return
-    //     } else {
-    //       vm.updateMessageStatus(vm.msgCurrentThumbStatusList[index])
-    //         .then(() => {
-    //           vm.getUserThumbStatus(vm.msgCurrentThumbStatusList[index].messageId, vm.msgOriginThumbStatusList[index], vm.msgCurrentThumbStatusList[index])
-    //         })
-    //     }
-    //   }, 1000)
-    // }
+    }
   },
   async created () {
     let vm = this;
@@ -623,8 +599,6 @@ export default {
     await vm.getMessages();
   },
   beforeDestroy () {
-    let vm = this;
-    vm.throttleArticle()
   },
 };
 </script>
