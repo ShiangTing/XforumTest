@@ -124,7 +124,12 @@ export default {
       if (this.confirmResult.confirmPassword != this.changedPassword.Password) {
         this.confirmResult.confirmError = true;
         this.confirmResult.confirmErrorMsg = "確認密碼不吻合，請再確認！";
-      } else {
+      }
+      if (
+        this.changedPassword.Email != "" &&
+        this.changedPassword.Password != "" &&
+        this.confirmResult.confirmPassword != ""
+      ) {
         axios({
           url: url,
           method: "Patch",
