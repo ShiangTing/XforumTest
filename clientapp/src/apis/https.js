@@ -1,11 +1,12 @@
 import axios from 'axios';
 import store from '../store/index';
+import router from '../router';
 // axios 配置
 const instance = axios.create();
 
 let isRefreshing = false;
 let refreshSubscribers = [];
-let failTimes = 0
+let failTimes = 0;
 
 instance.interceptors.request.use(
   async (config) => {
@@ -33,10 +34,10 @@ instance.interceptors.response.use(
     const originalRequest = error.config;
     if (error.response.status === 401) {
       //錯誤超過5次就停止請求
-      if(failTimes <= 5) {
-        failTimes ++;
-      }else {
-        alert("驗證失敗請重新登入")
+      if (failTimes <= 5) {
+        failTimes++;
+      } else {
+        alert('驗證失敗請重新登入');
         return;
       }
       if (!isRefreshing) {
@@ -60,11 +61,17 @@ instance.interceptors.response.use(
             }
           })
           .then((newToken) => {
-            isRefreshing = false;
-            onRefreshed(newToken);
+            if (newToken === '') {
+              isRefreshing = false;
+              refreshSubscribers = [];
+            } else {
+              isRefreshing = false;
+              onRefreshed(newToken);
+            }
           })
           .catch(() => {
-            console.log('登入驗證錯誤');
+            alert('驗證過期，請重新登入');
+            router.push('/login');
           });
       }
 
